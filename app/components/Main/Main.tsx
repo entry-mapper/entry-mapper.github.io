@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Col, Dropdown, InputNumber, Layout, Row, Table, Typography } from 'antd';
+import { Button, Card, Col, Dropdown, InputNumber, Layout, Row, Select, Table, Typography } from 'antd';
 import type { MenuProps, TableColumnsType } from 'antd';
 import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Key } from 'antd/es/table/interface';
@@ -18,33 +18,12 @@ interface DataType {
 
 const Main: React.FC = () => {
     const [editingKey, setEditingKey] = useState<Key | null>(null);
-    const items: MenuProps['items'] = [
+    const regions = [
         {
             key: '1',
-            label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-                    1st menu item
-                </a>
-            ),
-        },
-        {
-            key: '2',
-            label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-                    2nd menu item
-                </a>
-            ),
-        },
-        {
-            key: '3',
-            label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-                    3rd menu item
-                </a>
-            ),
-        },
-    ];
-
+            label: 'United Kingdom'
+        }
+    ]
     const columns: TableColumnsType<DataType> = [
         {
             title: 'Country Name',
@@ -69,17 +48,17 @@ const Main: React.FC = () => {
                         {
                             record.key === editingKey ?
                                 (
-                                    <Dropdown className='shadow-inner rounded'
-                                        menu={{ items }}
-                                        dropdownRender={(menu) => (
-                                            <div>
-                                                {React.cloneElement(menu as React.ReactElement)}
-                                                <Row className='bg-[#ffff00]'>Add L2</Row>
-                                            </div>
-                                        )}
-                                    >
-                                        <div className='p-3'>{record.region}</div>
-                                    </Dropdown>
+                                    <Select
+                                        showSearch
+                                        value={record.region}
+                                        placeholder="Select a region"
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        options={regions.map((value) => (
+                                            { value: value.key, label: value.label }
+                                        ))}
+                                    />
                                 ) :
                                 (
                                     <div className='p-3'>{record.region}</div>
@@ -100,17 +79,17 @@ const Main: React.FC = () => {
                         {
                             record.key === editingKey ?
                                 (
-                                    <Dropdown className='shadow-inner rounded'
-                                        menu={{ items }}
-                                        dropdownRender={(menu) => (
-                                            <div>
-                                                {React.cloneElement(menu as React.ReactElement)}
-                                                <Row className='bg-[#ffff00]'>Add L1</Row>
-                                            </div>
-                                        )}
-                                    >
-                                        <div className='p-3'>{record.L1}</div>
-                                    </Dropdown>
+                                    <Select
+                                        showSearch
+                                        value={record.L1}
+                                        placeholder="Select a L1"
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        options={regions.map((value) => (
+                                            { value: value.key, label: value.label }
+                                        ))}
+                                    />
                                 ) :
                                 (
                                     <div className='p-3'>{record.L1}</div>
@@ -131,17 +110,17 @@ const Main: React.FC = () => {
                         {
                             record.key === editingKey ?
                                 (
-                                    <Dropdown className='shadow-inner rounded'
-                                        menu={{ items }}
-                                        dropdownRender={(menu) => (
-                                            <div>
-                                                {React.cloneElement(menu as React.ReactElement)}
-                                                <Row className='bg-[#ffff00]'>Add L2</Row>
-                                            </div>
-                                        )}
-                                    >
-                                        <div className='p-3'>{record.L2}</div>
-                                    </Dropdown>
+                                    <Select
+                                        showSearch
+                                        value={record.L1}
+                                        placeholder="Select a L1"
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        options={regions.map((value) => (
+                                            { value: value.key, label: value.label }
+                                        ))}
+                                    />
                                 ) :
                                 (
                                     <div className='p-3'>{record.L2}</div>
@@ -162,17 +141,17 @@ const Main: React.FC = () => {
                         {
                             record.key === editingKey ?
                                 (
-                                    <Dropdown className='shadow-inner rounded'
-                                        menu={{ items }}
-                                        dropdownRender={(menu) => (
-                                            <div>
-                                                {React.cloneElement(menu as React.ReactElement)}
-                                                <Row className='bg-[#ffff00]'>Add Metric</Row>
-                                            </div>
-                                        )}
-                                    >
-                                        <div className='p-3'>{record.metric}</div>
-                                    </Dropdown>
+                                    <Select
+                                        showSearch
+                                        value={record.L1}
+                                        placeholder="Select a L1"
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        options={regions.map((value) => (
+                                            { value: value.key, label: value.label }
+                                        ))}
+                                    />
                                 ) :
                                 (
                                     <div className='p-3'>{record.metric}</div>
@@ -193,17 +172,17 @@ const Main: React.FC = () => {
                         {
                             record.key === editingKey ?
                                 (
-                                    <Dropdown className='shadow-inner rounded'
-                                        menu={{ items }}
-                                        dropdownRender={(menu) => (
-                                            <div>
-                                                {React.cloneElement(menu as React.ReactElement)}
-                                                <Row className='bg-[#ffff00]'>Add Unit</Row>
-                                            </div>
-                                        )}
-                                    >
-                                        <div className='p-3'>{record.unit}</div>
-                                    </Dropdown>
+                                    <Select
+                                        showSearch
+                                        value={record.L1}
+                                        placeholder="Select a L1"
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        options={regions.map((value) => (
+                                            { value: value.key, label: value.label }
+                                        ))}
+                                    />
                                 ) :
                                 (
                                     <div className='p-3'>{record.unit}</div>
@@ -223,9 +202,9 @@ const Main: React.FC = () => {
                 return (
                     <Row>
                         {
-                            editingKey === record.key ? 
-                            <InputNumber value={record.value} onChange={(e) => e?.valueOf() ? record.value = JSON.parse(e.toString()) : null}></InputNumber>
-                            : <div>{record.value}</div>
+                            editingKey === record.key ?
+                                <InputNumber value={record.value} onChange={(e) => e?.valueOf() ? record.value = JSON.parse(e.toString()) : null}></InputNumber>
+                                : <div>{record.value}</div>
                         }
                     </Row>
                 )
@@ -244,12 +223,12 @@ const Main: React.FC = () => {
                         {
                             editingKey === record.key ? (
                                 <Row className='gap-1'>
-                                <Button className='w-[30px]'>
-                                    <CheckOutlined className='text-[#00ff00]'></CheckOutlined>
-                                </Button>
-                                <Button className='w-[30px]' onClick={() => setEditingKey(null)}>
-                                    <CloseOutlined className='text-[#ff1a1a]'></CloseOutlined>
-                                </Button>
+                                    <Button className='w-[30px]'>
+                                        <CheckOutlined className='text-[#00ff00]'></CheckOutlined>
+                                    </Button>
+                                    <Button className='w-[30px]' onClick={() => setEditingKey(null)}>
+                                        <CloseOutlined className='text-[#ff1a1a]'></CloseOutlined>
+                                    </Button>
                                 </Row>
                             ) : (
                                 <Button className='w-[30px]' onClick={() => setEditingKey(record.key)}>
@@ -280,12 +259,12 @@ const Main: React.FC = () => {
                     </Typography.Text>
                 </Row>
                 <Table<DataType>
-                    className="rounded-xl shadow"
+                    className="rounded-xl shadow overflow-hidden"
                     pagination={false}
                     columns={columns}
                     dataSource={dataSource}
                     rowHoverable={false}
-                    rowClassName={(record) => editingKey === record.key ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc]" : ""}
+                    rowClassName={(record) => editingKey === record.key ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl" : "rounded-xl"}
                     scroll={{ x: 'max-content' }}
                 />
             </Col>
