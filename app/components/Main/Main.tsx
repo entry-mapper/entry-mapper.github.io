@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, Dropdown, Input, InputNumber, Layout, Row, Table, Typography } from 'antd';
+import React, { useState } from 'react';
+import { Button, Col, Dropdown, InputNumber, Layout, Row, Table, Typography } from 'antd';
 import type { MenuProps, TableColumnsType } from 'antd';
 import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Key } from 'antd/es/table/interface';

@@ -12,6 +12,7 @@
     "@ant-design/icons": "^5.5.2",
     "@fontsource/inter": "^5.1.0",
     "antd": "^5.22.2",
+    "axios": "^1.7.8",
     "dayjs": "^1.11.13",
     "next": "14",
     "react": "18.2.0",
