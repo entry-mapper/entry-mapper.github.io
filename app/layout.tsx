@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthContextProvider } from "./context/auth.context";
+import { Button, Row } from "antd";
 
 export const metadata: Metadata = {
   title: "Admin Portal",
@@ -24,7 +26,9 @@ export default function RootLayout({
         }}
       >
         <script>0</script>
+        <AuthContextProvider>
           {children}
+        </AuthContextProvider>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@ import { Button, Card, Col, Dropdown, InputNumber, Layout, Row, Select, Table, T
 import type { MenuProps, TableColumnsType } from 'antd';
 import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Key } from 'antd/es/table/interface';
+import { useAuthContext } from '@/app/context/auth.context';
 
 interface DataType {
     key: React.Key;
@@ -17,6 +18,7 @@ interface DataType {
 
 
 const Main: React.FC = () => {
+    const {logout} = useAuthContext();
     const [editingKey, setEditingKey] = useState<Key | null>(null);
     const regions = [
         {
@@ -252,9 +254,14 @@ const Main: React.FC = () => {
 
     return (
         <Layout className='h-screen items-center bg-transparent'>
+        <Row className="w-full h-[100px] bg-zinc-600 justify-between items-center pl-[20px] pr-[20px]">
+            <div className="text-[30px] font-['Inter']">Admin Portal</div>
+            <Button className="text-[15px] font-['Inter'] text-white bg-black hover:!bg-zinc-600 hover:!text-white" onClick={logout}>Logout</Button>
+          </Row>
+
             <Col className='pt-[20px] w-[90%] justify-center'>
                 <Row className="w-full justify-center h-[20%]">
-                    <Typography.Text className='text-4xl underline'>
+                    <Typography.Text className='text-[20px] underline'>
                         Country Data
                     </Typography.Text>
                 </Row>
