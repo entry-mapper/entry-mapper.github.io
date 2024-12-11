@@ -23,7 +23,7 @@ const Main: React.FC = () => {
     const regions = [
         {
             key: '1',
-            label: 'United Kingdom'
+            label: 'UK'
         }
     ]
     const columns: TableColumnsType<DataType> = [
