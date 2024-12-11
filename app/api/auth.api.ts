@@ -1,7 +1,7 @@
 import { http } from "../utils/http";
 import { LoginForm, LoginResponse } from "../interfaces/auth.interfaces";
 
-const BASE_URL= process.env.NEXT_PUBLIC_NEST_CONNECTION_STRING;
+const BASE_URL= "https://dev.snrautos.co.uk";
 
 export const login = async (
     credentials: LoginForm

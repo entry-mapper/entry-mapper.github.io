@@ -1,7 +1,7 @@
 import { Country } from "../interfaces/country.interfaces";
 import { http } from "../utils/http";
 
-const BASE_URL = process.env.NEXT_PUBLIC_NEST_CONNECTION_STRING;
+const BASE_URL = "https://dev.snrautos.co.uk";
 
 export const getCountriesApi = async (token: string): Promise<Country[]> => {
     try {
