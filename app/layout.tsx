@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthContextProvider } from "./context/auth.context";
 import { Button, Row } from "antd";
+import {Layout} from "antd";
 
 export const metadata: Metadata = {
   title: "Admin Portal",
@@ -13,6 +14,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <head>
@@ -27,7 +29,9 @@ export default function RootLayout({
       >
         <script>0</script>
         <AuthContextProvider>
+        <Layout className='h-screen items-center bg-transparent'>
           {children}
+          </Layout>
         </AuthContextProvider>
       </body>
     </html>

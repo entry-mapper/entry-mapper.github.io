@@ -1,12 +1,10 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import Main from "./components/Main/Main";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";``
 import { useAuthContext } from "./context/auth.context";
+import { useEffect } from "react";
 
-export default function Home() {
- 
+export default function App() {
   const router = useRouter();
 
   const {isAuthenticated} = useAuthContext();
@@ -17,16 +15,5 @@ export default function Home() {
     } else {
       router.push("/home");
     }
-  }, [isAuthenticated, router]);  
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, [])
-
-  if (!isLoading && isAuthenticated) {
-    return <Main></Main>
-  } else {
-    return null
-  }
+  }, [isAuthenticated, router]);
 }
