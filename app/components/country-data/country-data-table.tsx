@@ -17,7 +17,7 @@ interface DataType {
 }
 
 
-const Main: React.FC = () => {
+const CountryDataTable: React.FC = () => {
     const {logout} = useAuthContext();
     const [editingKey, setEditingKey] = useState<Key | null>(null);
     const regions = [
@@ -26,6 +26,7 @@ const Main: React.FC = () => {
             label: 'UK'
         }
     ]
+
     const columns: TableColumnsType<DataType> = [
         {
             title: 'Country Name',
@@ -65,7 +66,7 @@ const Main: React.FC = () => {
                                 (
                                     <div className='p-3'>{record.region}</div>
                                 )
-
+    
                         }
                     </Row>
                 )
@@ -96,7 +97,7 @@ const Main: React.FC = () => {
                                 (
                                     <div className='p-3'>{record.L1}</div>
                                 )
-
+    
                         }
                     </Row>
                 )
@@ -127,7 +128,7 @@ const Main: React.FC = () => {
                                 (
                                     <div className='p-3'>{record.L2}</div>
                                 )
-
+    
                         }
                     </Row>
                 )
@@ -158,7 +159,7 @@ const Main: React.FC = () => {
                                 (
                                     <div className='p-3'>{record.metric}</div>
                                 )
-
+    
                         }
                     </Row>
                 )
@@ -189,7 +190,7 @@ const Main: React.FC = () => {
                                 (
                                     <div className='p-3'>{record.unit}</div>
                                 )
-
+    
                         }
                     </Row>
                 )
@@ -212,7 +213,7 @@ const Main: React.FC = () => {
                 )
             },
             sorter: (a, b) => a.value - b.value,
-
+    
         },
         {
             title: 'Action',
@@ -253,20 +254,16 @@ const Main: React.FC = () => {
     ];
 
     return (
-        <Layout className='h-screen items-center bg-transparent'>
-        <Row className="w-full h-[100px] bg-zinc-600 justify-between items-center pl-[20px] pr-[20px]">
-            <div className="text-[30px] font-['Inter']">Admin Portal</div>
-            <Button className="text-[15px] font-['Inter'] text-white bg-black hover:!bg-zinc-600 hover:!text-white" onClick={logout}>Logout</Button>
-          </Row>
-
-            <Col className='pt-[20px] w-[90%] justify-center'>
+          <div className='w-full flex items-center justify-center'>
+                        <Col className='w-[90%] justify-center'>
                 <Row className="w-full justify-center h-[20%]">
                     <Typography.Text className='text-[20px] underline'>
                         Country Data
                     </Typography.Text>
                 </Row>
+                
                 <Table<DataType>
-                    className="rounded-xl shadow overflow-hidden"
+                    className="rounded-xl shadow overflow-hidden mt-4"
                     pagination={false}
                     columns={columns}
                     dataSource={dataSource}
@@ -275,8 +272,9 @@ const Main: React.FC = () => {
                     scroll={{ x: 'max-content' }}
                 />
             </Col>
-        </Layout>
+          </div>
+
     );
 };
 
-export default Main;
+export default CountryDataTable;
