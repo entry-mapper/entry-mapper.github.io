@@ -6,13 +6,15 @@ import { useEffect, useState } from "react";
 import CountryDataTable from "@/app/components/country-data/country-data-table";
 import CountrySelect from "@/app/components/country-data/country-select.component";
 import { Row, Button } from "antd";
+import { CountryData } from "@/app/interfaces/country.interfaces";
+import { getCountryDataApi } from "@/app/api/country-data.api";
 
 export default function Home() {
   const { isAuthenticated, logout } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCountry, setSelectedCountry] = useState<number | null>(null); // State to hold selected country
   const router = useRouter();
-  const [countryData, setCountryData] = useState()
+  const [countryData, setCountryData] = useState<CountryData[]>();
 
   useEffect(() => {
     setIsLoading(true);
@@ -22,12 +24,20 @@ export default function Home() {
     setIsLoading(false);
   }, [isAuthenticated, router]);
 
-  // useEffect(()=>{
-  //   if(selectedCountry){
-  //     const countryDataResponse = 
-  //   }
-
-  // }, [selectedCountry])
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (selectedCountry && token) {
+      const fetchCountries = async () => {
+        const countryDataResponse: CountryData[] = await getCountryDataApi(
+          token,
+          selectedCountry
+        );
+        setCountryData(countryDataResponse);
+      };
+      fetchCountries();
+      console.log(countryData);
+    }
+  }, [selectedCountry]);
 
   if (!isLoading) {
     return (
@@ -41,8 +51,11 @@ export default function Home() {
             Logout
           </Button>
         </Row>
-        <CountrySelect setSelectedCountry={setSelectedCountry} selectedCountry={selectedCountry}/>
-        <CountryDataTable />
+        <CountrySelect
+          setSelectedCountry={setSelectedCountry}
+          selectedCountry={selectedCountry}
+        />
+        <CountryDataTable countryData={countryData}/>
       </div>
     );
   }

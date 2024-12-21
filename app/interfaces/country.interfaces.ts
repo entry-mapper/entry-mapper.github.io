@@ -7,3 +7,14 @@ export interface Country {
         region_name: string
     } | null
 }
+
+export interface CountryData {
+    id: number;
+    country_name: string;
+    region_name: string;
+    metric: string;
+    category: string | null;
+    super_category: string;
+    unit: string;
+    value: number | null;
+}

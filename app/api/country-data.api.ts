@@ -1,13 +1,15 @@
-import { Country } from "../interfaces/country.interfaces";
+import { CountryData } from "../interfaces/country.interfaces";
 import { http } from "../utils/http";
 
 const BASE_URL = "https://dev.snrautos.co.uk";
 
-export const getCountryDataApi = async (token: string): Promise<Country[]> => {
+export const getCountryDataApi = async (token: string, id: number): Promise<CountryData[]> => {
+    console.log('country data api')
     try {
-        const response = await http.get(`${BASE_URL}/countries`, {
+        const response = await http.get(`${BASE_URL}/country-data/country/${id}`, {
                 Authorization: `Bearer ${token}`, 
             },)
+        console.log(response);
         return response;
     } catch (error: any) {
         const errorMessageDefault = "An unknown error occured while fetching regions";
