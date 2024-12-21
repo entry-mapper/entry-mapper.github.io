@@ -37,6 +37,16 @@ export const http = {
     }
   },
 
+  patch: async (url: string, body?: any, headers?: any): Promise<any> => {
+    try {
+      const response = await apiClient.patch(url, body, { headers });
+      return response.data;
+    } catch (error) {
+      console.error('Error in PUT request:', error);
+      throw error;
+    }
+  },
+
   del: async (url: string, headers?: any): Promise<any> => {
     try {
       const response = await apiClient.delete(url, { headers });

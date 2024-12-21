@@ -43,7 +43,7 @@ export default function Home() {
     return (
       <div className="space-y-6 w-full flex flex-col items-center">
         <Row className="w-full h-[100px] bg-zinc-600 justify-between items-center pl-[20px] pr-[20px]">
-          <div className="text-[30px] font-['Inter']">Admin Portal</div>
+          <div className="text-[30px]">Admin Portal</div>
           <Button
             className="text-[15px] font-['Inter'] text-white bg-black hover:!bg-zinc-600 hover:!text-white"
             onClick={logout}
