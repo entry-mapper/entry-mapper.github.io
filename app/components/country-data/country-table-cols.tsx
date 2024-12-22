@@ -75,6 +75,8 @@ export const getColumns = (
     title: "L1",
     dataIndex: "L1",
     key: "1",
+    width: 230,
+    fixed: true,
     render: (_, record) => {
       return (
         <Row>
@@ -92,10 +94,10 @@ export const getColumns = (
                 value: value.key,
                 label: value.label,
               }))}
-              style={{ width: "100%" }}
+              style={{ width: 200 }}
             />
           ) : (
-            <div className="p-3 w-1/8">{record.L1}</div>
+            <div className="p-3 w-[200px] truncate">{record.L1}</div>
           )}
         </Row>
       );
@@ -105,6 +107,7 @@ export const getColumns = (
     title: "L2",
     dataIndex: "L2",
     key: "2",
+    width: 230,
     render: (_, record) => {
       return (
         <Row>
@@ -112,7 +115,7 @@ export const getColumns = (
             <Select
               showSearch
               value={record.L1}
-              placeholder="Select a L1"
+              placeholder="Select a L2"
               filterOption={(input, option) =>
                 (option?.label ?? "")
                   .toLowerCase()
@@ -125,7 +128,7 @@ export const getColumns = (
             />
           ) : (
             <Popover content={<p>{record.L2}</p>}>
-              <div className="p-3 w-40 truncate">{record.L2}</div>
+              <div className="p-3 w-[225px] truncate">{record.L2}</div>
             </Popover>
           )}
         </Row>
@@ -136,6 +139,7 @@ export const getColumns = (
     title: "metric",
     dataIndex: "metric",
     key: "3",
+    width: 230,
     render: (_, record) => {
       return (
         <Row>
@@ -143,7 +147,7 @@ export const getColumns = (
             <Select
               showSearch
               value={record.L1}
-              placeholder="Select a L1"
+              placeholder="Select a metric"
               filterOption={(input, option) =>
                 (option?.label ?? "")
                   .toLowerCase()
@@ -155,7 +159,9 @@ export const getColumns = (
               }))}
             />
           ) : (
-            <div className="p-3">{record.metric}</div>
+            <Popover content={record.metric}>
+              <div className="p-3 w-[225px] truncate">{record.metric}</div>
+            </Popover>
           )}
         </Row>
       );
@@ -164,7 +170,8 @@ export const getColumns = (
   {
     title: "unit",
     dataIndex: "unit",
-    key: "3",
+    key: "4",
+    width: 230, 
     render: (_, record) => {
       return (
         <Row>
@@ -172,7 +179,7 @@ export const getColumns = (
             <Select
               showSearch
               value={record.L1}
-              placeholder="Select a L1"
+              placeholder="Select a unit"
               filterOption={(input, option) =>
                 (option?.label ?? "")
                   .toLowerCase()
@@ -184,7 +191,9 @@ export const getColumns = (
               }))}
             />
           ) : (
-            <div className="p-3">{record.unit}</div>
+            <Popover content={record.unit}>
+              <div className="w-[225px] truncate">{record.unit}</div>
+            </Popover>
           )}
         </Row>
       );
@@ -194,7 +203,7 @@ export const getColumns = (
     title: "value",
     dataIndex: "value",
     width: 120,
-    key: "4",
+    key: "5",
     render: (_, record) => {
       return (
         <Row>

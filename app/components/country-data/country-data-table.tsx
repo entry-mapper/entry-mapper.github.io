@@ -18,13 +18,12 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { Key } from "antd/es/table/interface";
-import { Popover } from "antd";
+
 import { useAuthContext } from "@/app/context/auth.context";
 import { CountryData } from "@/app/interfaces/country.interfaces";
 import { PatchCountryDataService } from "@/app/service/country-data-patch.service";
-import { json } from "stream/consumers";
 import { getColumns } from "./country-table-cols";
+import AddNewCountryData from "./new-country-data";
 
 interface DataType {
   key: number;
@@ -39,13 +38,14 @@ interface DataType {
 
 interface CountryDataTableProps {
   countryData: CountryData[] | undefined;
+  selectedCountry: number | null;
 }
 
 const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
-  const { logout } = useAuthContext();
   const [editingKey, setEditingKey] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<number | null>(null);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
+  const [addNewCountryData, setAddNewCountryData] = useState<boolean>(false);
 
   const updateDataSourceValue = (key: number, newValue: number) => {
     setDataSource((prevDataSource) =>
@@ -77,21 +77,29 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
     if (userString) {
       const user = JSON.parse(userString);
       userId = user.id;
-      console.log("User ID:", userId);
     }
 
     const token = localStorage.getItem("token");
+
     if (token && userId && editingKey && editValue) {
-      updateDataSourceValue(editingKey, editValue);
       // Uncomment this line once you confirm the service
-      // await PatchCountryDataService(token, editingKey, userId, editValue);
+      const res = await PatchCountryDataService(
+        token,
+        editingKey,
+        userId,
+        editValue.toString(10)
+      );
+      console.log(res);
+      if(res === true){
+        updateDataSourceValue(editingKey, editValue);
+      }
     }
   };
 
   const handleConfirmChange = () => {
     updateValue();
     setEditingKey(null);
-  }
+  };
 
   const regions = [
     {
@@ -122,20 +130,32 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
           </Typography.Text>
         </Row>
 
-        <div className="h-[75vh] overflow-scroll">
+        <div className="h-[70vh] w-[1495px] overflow-scroll mx-auto">
           <Table<DataType>
-            className="rounded-xl shadow mt-4"
+            className="rounded-xl shadow mt-4 w-[1495px]"
             pagination={false}
             columns={columns}
             dataSource={dataSource}
             rowHoverable={false}
+            tableLayout="fixed"
             rowClassName={(record) =>
               editingKey === record.key
                 ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl"
                 : "rounded-xl"
             }
-            scroll={{ x: "max-content" }}
           />
+        </div>
+        <div className="mt-2 w-[1500px] mx-auto rounded-md">
+          {addNewCountryData === false ? (
+            <Button
+              className="py-4 px-6 text-lg bg-gray-50"
+              onClick={() => setAddNewCountryData(true)}
+            >
+              Add Country Data
+            </Button>
+          ) : (
+            <AddNewCountryData setAddNewCountryData={setAddNewCountryData}></AddNewCountryData>
+          )}
         </div>
       </Col>
     </div>

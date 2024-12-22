@@ -40,9 +40,9 @@ export const http = {
   patch: async (url: string, body?: any, headers?: any): Promise<any> => {
     try {
       const response = await apiClient.patch(url, body, { headers });
-      return response.data;
+      return response;
     } catch (error) {
-      console.error('Error in PUT request:', error);
+      console.error('Error in PATCH request:', error);
       throw error;
     }
   },
