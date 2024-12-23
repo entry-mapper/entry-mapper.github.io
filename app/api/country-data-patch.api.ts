@@ -8,7 +8,6 @@ export const PatchCountryDataApi = async (
   user_id: number,
   value: string
 ): Promise<boolean> => {
-  console.log("country data patch api user_id:", user_id, token, countrydata_id);
   try {
     const response = await http.patch(
       `${BASE_URL}/country-data/${countrydata_id}`,
@@ -20,7 +19,6 @@ export const PatchCountryDataApi = async (
         Authorization: `Bearer ${token}`,
       }
     );
-    console.log(response);
     if(response.status === 200){
       return true
     }

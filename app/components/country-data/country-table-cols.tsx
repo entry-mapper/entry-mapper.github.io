@@ -33,7 +33,8 @@ export const getColumns = (
 ): TableColumnsType<DataType> => [
   {
     title: "Country Name",
-    width: 150,
+    //width: 140,
+    width:'10%',
     dataIndex: "countryName",
     key: "countryName",
     fixed: "left",
@@ -43,9 +44,11 @@ export const getColumns = (
   },
   {
     title: "Region",
-    width: 150,
+    //width: 140,
+    width:'10%',
     dataIndex: "region",
     key: "region",
+    // fixed: 'left',
     render: (_, record) => {
       return (
         <Row>
@@ -75,8 +78,9 @@ export const getColumns = (
     title: "L1",
     dataIndex: "L1",
     key: "1",
-    width: 230,
-    fixed: true,
+    //width: 190,
+    width:'15%',
+    // fixed: 'left',
     render: (_, record) => {
       return (
         <Row>
@@ -94,10 +98,9 @@ export const getColumns = (
                 value: value.key,
                 label: value.label,
               }))}
-              style={{ width: 200 }}
             />
           ) : (
-            <div className="p-3 w-[200px] truncate">{record.L1}</div>
+            <div className="p-3 w-[190px] truncate">{record.L1}</div>
           )}
         </Row>
       );
@@ -107,7 +110,9 @@ export const getColumns = (
     title: "L2",
     dataIndex: "L2",
     key: "2",
-    width: 230,
+    //width: 190,
+    width:'20%',
+    // fixed: 'left',
     render: (_, record) => {
       return (
         <Row>
@@ -128,7 +133,7 @@ export const getColumns = (
             />
           ) : (
             <Popover content={<p>{record.L2}</p>}>
-              <div className="p-3 w-[225px] truncate">{record.L2}</div>
+              <div className="p-3 w-[190px] truncate">{record.L2}</div>
             </Popover>
           )}
         </Row>
@@ -139,7 +144,9 @@ export const getColumns = (
     title: "metric",
     dataIndex: "metric",
     key: "3",
-    width: 230,
+    //width: 190,
+    width:'20%',
+    // fixed: 'left',
     render: (_, record) => {
       return (
         <Row>
@@ -160,7 +167,7 @@ export const getColumns = (
             />
           ) : (
             <Popover content={record.metric}>
-              <div className="p-3 w-[225px] truncate">{record.metric}</div>
+              <div className="p-3 w-[190px] truncate">{record.metric}</div>
             </Popover>
           )}
         </Row>
@@ -171,7 +178,9 @@ export const getColumns = (
     title: "unit",
     dataIndex: "unit",
     key: "4",
-    width: 230, 
+    //width: 190,
+    width:'10%', 
+    fixed: 'left',
     render: (_, record) => {
       return (
         <Row>
@@ -192,7 +201,7 @@ export const getColumns = (
             />
           ) : (
             <Popover content={record.unit}>
-              <div className="w-[225px] truncate">{record.unit}</div>
+              <div className="w-[190  px] truncate">{record.unit}</div>
             </Popover>
           )}
         </Row>
@@ -202,7 +211,8 @@ export const getColumns = (
   {
     title: "value",
     dataIndex: "value",
-    width: 120,
+    //width: 120,
+    width:'10%',
     key: "5",
     render: (_, record) => {
       return (
@@ -229,7 +239,8 @@ export const getColumns = (
     title: "Action",
     key: "operation",
     fixed: "right",
-    width: 140,
+    width:'15%',
+    //width: 140,
     render: (_, record) => {
       return (
         <Row className="gap-1 w-full">

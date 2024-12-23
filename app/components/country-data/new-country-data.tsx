@@ -42,7 +42,7 @@ const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({setAddNewCountryDa
   ];
 
   return (
-    <div className="grid grid-cols-[150px_150px_225px_225px_225px_225px_120px_140px] gap-1 h-full p-2 pt-4 rounded-md bg-slate-200">
+    <div className="grid grid-cols-[1fr_1fr_1.25fr_1.25fr_1.25fr_1.25fr_0.9fr_1fr] gap-1 h-full p-2 pt-4 rounded-md bg-slate-1.25fr">
       <div>
         <Typography className="font-bold">Country</Typography>
       </div>

@@ -82,14 +82,13 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
     const token = localStorage.getItem("token");
 
     if (token && userId && editingKey && editValue) {
-      // Uncomment this line once you confirm the service
+
       const res = await PatchCountryDataService(
         token,
         editingKey,
         userId,
         editValue.toString(10)
       );
-      console.log(res);
       if(res === true){
         updateDataSourceValue(editingKey, editValue);
       }
@@ -124,15 +123,9 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
   return (
     <div className="w-full flex items-center justify-center">
       <Col className="w-[90%] justify-center">
-        <Row className="w-full justify-center h-[20%]">
-          <Typography.Text className="text-[20px] underline underline-offset-2">
-            Country Data
-          </Typography.Text>
-        </Row>
-
-        <div className="h-[70vh] w-[1495px] overflow-scroll mx-auto">
+        <div className="h-[70vh] lg:w-[85vw] w-[1024px] overflow-scroll mx-auto">
           <Table<DataType>
-            className="rounded-xl shadow mt-4 w-[1495px]"
+            className="rounded-xl shadow mt-4 w-full"
             pagination={false}
             columns={columns}
             dataSource={dataSource}
@@ -145,10 +138,10 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
             }
           />
         </div>
-        <div className="mt-2 w-[1500px] mx-auto rounded-md">
+        <div className="mt-4 w-[85vw] mx-auto rounded-md mb-12">
           {addNewCountryData === false ? (
-            <Button
-              className="py-4 px-6 text-lg bg-gray-50"
+            <Button color="primary" variant="outlined"
+              className="py-4 px-8"
               onClick={() => setAddNewCountryData(true)}
             >
               Add Country Data
