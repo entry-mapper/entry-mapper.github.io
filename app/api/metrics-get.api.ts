@@ -14,8 +14,6 @@ export const GetMetricsApi = async (token: string): Promise<Metrics[]> => {
         metric_id: metric.id, 
         description: metric.description,
       }));
-
-    console.log(metrics);
     return metrics;
 
   } catch (error: any) {

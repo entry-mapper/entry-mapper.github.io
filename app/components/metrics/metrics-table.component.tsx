@@ -105,13 +105,6 @@ const MetricsTable: React.FC<MetricsDataTableProps> = ({ metrics }) => {
     handleConfirmChange
   );
 
-  // const dataSource: DataType[] = [
-  //     { key: '1', countryName: 'UK', region: "United Kingdom", L1: "Industry Size", L2: "Acommodation", metric: "Industry Turnover", unit: 'unit', value: 31 },
-  //     { key: '2', countryName: 'US', region: "United States", L1: "Industry Size", L2: "Acommodation", metric: "Industry Turnover", unit: 'unit', value: 32 },
-  // ];
-
-  console.log(dataSource);
-
   return (
     <div className="w-full flex items-center justify-center">
       <Col className="w-[90%] justify-center">
