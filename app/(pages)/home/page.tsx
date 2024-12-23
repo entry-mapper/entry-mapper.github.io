@@ -27,25 +27,24 @@ export default function Home() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (selectedCountry && token) {
-      const fetchCountries = async () => {
+      const fetchCountryData = async () => {
         const countryDataResponse: CountryData[] = await getCountryDataApi(
           token,
           selectedCountry
         );
         setCountryData(countryDataResponse);
       };
-      fetchCountries();
-      console.log(countryData);
+      fetchCountryData();
     }
   }, [selectedCountry]);
 
   if (!isLoading) {
     return (
-      <div className="space-y-6 w-full flex flex-col items-center">
+      <div className="space-y-3 w-full flex flex-col items-center">
         <Row className="w-full h-[100px] bg-zinc-600 justify-between items-center pl-[20px] pr-[20px]">
-          <div className="text-[30px] font-['Inter']">Admin Portal</div>
+          <div className="text-[30px]">Admin Portal</div>
           <Button
-            className="text-[15px] font-['Inter'] text-white bg-black hover:!bg-zinc-600 hover:!text-white"
+            className="text-[15px] px-5 py-4"
             onClick={logout}
           >
             Logout
@@ -55,7 +54,7 @@ export default function Home() {
           setSelectedCountry={setSelectedCountry}
           selectedCountry={selectedCountry}
         />
-        <CountryDataTable countryData={countryData}/>
+        <CountryDataTable countryData={countryData} selectedCountry={selectedCountry}/>
       </div>
     );
   }

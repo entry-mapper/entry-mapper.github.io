@@ -4,12 +4,12 @@ import { http } from "../utils/http";
 const BASE_URL = "https://dev.snrautos.co.uk";
 
 export const getCountryDataApi = async (token: string, id: number): Promise<CountryData[]> => {
-    console.log('country data api')
+    // console.log('country data api')
     try {
         const response = await http.get(`${BASE_URL}/country-data/country/${id}`, {
                 Authorization: `Bearer ${token}`, 
             },)
-        console.log(response);
+        // console.log(response);
         return response;
     } catch (error: any) {
         const errorMessageDefault = "An unknown error occured while fetching regions";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -18,12 +18,15 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { Key } from "antd/es/table/interface";
-import { Popover } from "antd";
+
 import { useAuthContext } from "@/app/context/auth.context";
 import { CountryData } from "@/app/interfaces/country.interfaces";
+import { PatchCountryDataService } from "@/app/service/country-data-patch.service";
+import { getColumns } from "./country-table-cols";
+import AddNewCountryData from "./new-country-data";
+
 interface DataType {
-  key: React.Key;
+  key: number;
   countryName: string;
   region: string;
   L1: string;
@@ -35,11 +38,69 @@ interface DataType {
 
 interface CountryDataTableProps {
   countryData: CountryData[] | undefined;
+  selectedCountry: number | null;
 }
 
 const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
-  const { logout } = useAuthContext();
-  const [editingKey, setEditingKey] = useState<Key | null>(null);
+  const [editingKey, setEditingKey] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState<number | null>(null);
+  const [dataSource, setDataSource] = useState<DataType[]>([]);
+  const [addNewCountryData, setAddNewCountryData] = useState<boolean>(false);
+
+  const updateDataSourceValue = (key: number, newValue: number) => {
+    setDataSource((prevDataSource) =>
+      prevDataSource.map((item) =>
+        item.key === key ? { ...item, value: newValue } : item
+      )
+    );
+  };
+
+  useEffect(() => {
+    if (countryData) {
+      const mappedData = countryData.map((data) => ({
+        key: data.id,
+        countryName: data.country_name,
+        region: data.region_name,
+        L1: data.super_category ?? "-",
+        L2: data.category ?? "-",
+        metric: data.metric,
+        unit: data.unit,
+        value: data.value ?? 0,
+      }));
+      setDataSource(mappedData);
+    }
+  }, [countryData]);
+
+  const updateValue = async () => {
+    const userString = localStorage.getItem("user");
+    let userId = null;
+    if (userString) {
+      const user = JSON.parse(userString);
+      userId = user.id;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (token && userId && editingKey && editValue) {
+      // Uncomment this line once you confirm the service
+      const res = await PatchCountryDataService(
+        token,
+        editingKey,
+        userId,
+        editValue.toString(10)
+      );
+      console.log(res);
+      if(res === true){
+        updateDataSourceValue(editingKey, editValue);
+      }
+    }
+  };
+
+  const handleConfirmChange = () => {
+    updateValue();
+    setEditingKey(null);
+  };
+
   const regions = [
     {
       key: "1",
@@ -47,244 +108,18 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
     },
   ];
 
-  const columns: TableColumnsType<DataType> = [
-    {
-      title: "Country Name",
-      width: 150,
-      dataIndex: "countryName",
-      key: "countryName",
-      fixed: "left",
-      render: (_, record) => {
-        return <div>{record.countryName}</div>;
-      },
-    },
-    {
-      title: "Region",
-      width: 150,
-      dataIndex: "region",
-      key: "region",
-      render: (_, record) => {
-        return (
-          <Row>
-            {record.key === editingKey ? (
-              <Select
-                showSearch
-                value={record.region}
-                placeholder="Select a region"
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={regions.map((value) => ({
-                  value: value.key,
-                  label: value.label,
-                }))}
-              />
-            ) : (
-              <div className="p-3">{record.region}</div>
-            )}
-          </Row>
-        );
-      },
-    },
-    {
-      title: "L1",
-      dataIndex: "L1",
-      key: "1",
-      render: (_, record) => {
-        return (
-          <Row>
-            {record.key === editingKey ? (
-              <Select
-                showSearch
-                value={record.L1}
-                placeholder="Select a L1"
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={regions.map((value) => ({
-                  value: value.key,
-                  label: value.label,
-                }))}
-              />
-            ) : (
-              <div className="p-3 w-1/8">{record.L1}</div>
-            )}
-          </Row>
-        );
-      },
-    },
-    {
-      title: "L2",
-      dataIndex: "L2",
-      key: "2",
-      render: (_, record) => {
-        return (
-          <Row>
-            {record.key === editingKey ? (
-              <Select
-                showSearch
-                value={record.L1}
-                placeholder="Select a L1"
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={regions.map((value) => ({
-                  value: value.key,
-                  label: value.label,
-                }))}
-              />
-            ) : (
-              <Popover content={<p>{record.L2}</p>}>
-                <div className="p-3 w-40 truncate">{record.L2}</div>
-              </Popover>
-            )}
-          </Row>
-        );
-      },
-    },
-    {
-      title: "metric",
-      dataIndex: "metric",
-      key: "3",
-      render: (_, record) => {
-        return (
-          <Row>
-            {record.key === editingKey ? (
-              <Select
-                showSearch
-                value={record.L1}
-                placeholder="Select a L1"
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={regions.map((value) => ({
-                  value: value.key,
-                  label: value.label,
-                }))}
-              />
-            ) : (
-              <div className="p-3">{record.metric}</div>
-            )}
-          </Row>
-        );
-      },
-    },
-    {
-      title: "unit",
-      dataIndex: "unit",
-      key: "3",
-      render: (_, record) => {
-        return (
-          <Row>
-            {record.key === editingKey ? (
-              <Select
-                showSearch
-                value={record.L1}
-                placeholder="Select a L1"
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={regions.map((value) => ({
-                  value: value.key,
-                  label: value.label,
-                }))}
-              />
-            ) : (
-              <div className="p-3">{record.unit}</div>
-            )}
-          </Row>
-        );
-      },
-    },
-    {
-      title: "value",
-      dataIndex: "value",
-      width: 120,
-      key: "4",
-      render: (_, record) => {
-        return (
-          <Row>
-            {editingKey === record.key ? (
-              <InputNumber
-                value={record.value}
-                onChange={(e) =>
-                  e?.valueOf()
-                    ? (record.value = JSON.parse(e.toString()))
-                    : null
-                }
-              ></InputNumber>
-            ) : (
-              <div>{record.value}</div>
-            )}
-          </Row>
-        );
-      },
-      sorter: (a, b) => a.value - b.value,
-    },
-    {
-      title: "Action",
-      key: "operation",
-      fixed: "right",
-      width: 140,
-      render: (_, record) => {
-        return (
-          <Row className="gap-1 w-full">
-            {editingKey === record.key ? (
-              <Row className="gap-1">
-                <Button className="w-[30px]">
-                  <CheckOutlined className="text-[#00ff00]"></CheckOutlined>
-                </Button>
-                <Button
-                  className="w-[30px]"
-                  onClick={() => setEditingKey(null)}
-                >
-                  <CloseOutlined className="text-[#ff1a1a]"></CloseOutlined>
-                </Button>
-              </Row>
-            ) : (
-              <Button
-                className="w-[30px]"
-                onClick={() => setEditingKey(record.key)}
-              >
-                <EditOutlined></EditOutlined>
-              </Button>
-            )}
-            <Button className="w-[30px]">
-              <DeleteOutlined></DeleteOutlined>
-            </Button>
-          </Row>
-        );
-      },
-    },
-  ];
+  const columns = getColumns(
+    editingKey,
+    setEditingKey,
+    setEditValue,
+    updateDataSourceValue,
+    handleConfirmChange
+  );
 
   // const dataSource: DataType[] = [
   //     { key: '1', countryName: 'UK', region: "United Kingdom", L1: "Industry Size", L2: "Acommodation", metric: "Industry Turnover", unit: 'unit', value: 31 },
   //     { key: '2', countryName: 'US', region: "United States", L1: "Industry Size", L2: "Acommodation", metric: "Industry Turnover", unit: 'unit', value: 32 },
   // ];
-
-  const dataSource: DataType[] | undefined = countryData?.map(
-    (data, index) => ({
-      key: (index + 1).toString(), // Generate a unique key for each entry
-      countryName: data.country_name,
-      region: data.region_name,
-      L1: data.super_category ?? "-", // Fallback to an empty string if null
-      L2: data.category ?? "-", // Fallback to an empty string if null
-      metric: data.metric,
-      unit: data.unit,
-      value: data.value ?? 0, // Fallback to 0 if value is null
-    })
-  );
 
   return (
     <div className="w-full flex items-center justify-center">
@@ -295,19 +130,33 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
           </Typography.Text>
         </Row>
 
-        <Table<DataType>
-          className="rounded-xl shadow overflow-hidden mt-4"
-          pagination={false}
-          columns={columns}
-          dataSource={dataSource}
-          rowHoverable={false}
-          rowClassName={(record) =>
-            editingKey === record.key
-              ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl"
-              : "rounded-xl"
-          }
-          scroll={{ x: "max-content" }}
-        />
+        <div className="h-[70vh] w-[1495px] overflow-scroll mx-auto">
+          <Table<DataType>
+            className="rounded-xl shadow mt-4 w-[1495px]"
+            pagination={false}
+            columns={columns}
+            dataSource={dataSource}
+            rowHoverable={false}
+            tableLayout="fixed"
+            rowClassName={(record) =>
+              editingKey === record.key
+                ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl"
+                : "rounded-xl"
+            }
+          />
+        </div>
+        <div className="mt-2 w-[1500px] mx-auto rounded-md">
+          {addNewCountryData === false ? (
+            <Button
+              className="py-4 px-6 text-lg bg-gray-50"
+              onClick={() => setAddNewCountryData(true)}
+            >
+              Add Country Data
+            </Button>
+          ) : (
+            <AddNewCountryData setAddNewCountryData={setAddNewCountryData}></AddNewCountryData>
+          )}
+        </div>
       </Col>
     </div>
   );

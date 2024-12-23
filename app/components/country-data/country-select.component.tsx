@@ -38,7 +38,6 @@ const CountrySelect: React.FC<CountrySelectProps> = ({setSelectedCountry, select
 
   const handleCountrySelect = (value: number) => {
     setSelectedCountry(value); 
-    console.log("Selected Country:", value); 
   };
 
   return (
