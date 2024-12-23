@@ -22,30 +22,26 @@ import {
 import { useAuthContext } from "@/app/context/auth.context";
 import { CountryData } from "@/app/interfaces/country.interfaces";
 import { PatchCountryDataService } from "@/app/service/country-data-patch.service";
-import { getColumns } from "./country-table-cols";
-import AddNewCountryData from "./new-country-data";
+import { getColumns } from "./metrics-table-cols.component";
+import { Metrics } from "@/app/interfaces/metrics.interface";
+// import AddNewCountryData from "./new-country-data";
 
 interface DataType {
   key: number;
-  countryName: string;
-  region: string;
-  L1: string;
-  L2: string;
-  metric: string;
-  unit: string;
-  value: number;
+  metricName: string;
+  metricDescription: string;
 }
 
-interface CountryDataTableProps {
-  countryData: CountryData[] | undefined;
-  selectedCountry: number | null;
+interface MetricsDataTableProps {
+  metrics: Metrics[] | undefined;
+  // selectedCountry: number | null;
 }
 
-const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
+const MetricsTable: React.FC<MetricsDataTableProps> = ({ metrics }) => {
   const [editingKey, setEditingKey] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<number | null>(null);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
-  const [addNewCountryData, setAddNewCountryData] = useState<boolean>(false);
+  // const [addNewCountryData, setAddNewCountryData] = useState<boolean>(false);
 
   const updateDataSourceValue = (key: number, newValue: number) => {
     setDataSource((prevDataSource) =>
@@ -56,20 +52,15 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
   };
 
   useEffect(() => {
-    if (countryData) {
-      const mappedData = countryData.map((data) => ({
-        key: data.id,
-        countryName: data.country_name,
-        region: data.region_name,
-        L1: data.super_category ?? "-",
-        L2: data.category ?? "-",
-        metric: data.metric,
-        unit: data.unit,
-        value: data.value ?? 0,
+    if (metrics) {
+      const mappedData = metrics.map((data) => ({
+        key: data.metric_id,
+        metricName: data.value,
+        metricDescription: data.description,
       }));
       setDataSource(mappedData);
     }
-  }, [countryData]);
+  }, [metrics]);
 
   const updateValue = async () => {
     const userString = localStorage.getItem("user");
@@ -119,10 +110,12 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
   //     { key: '2', countryName: 'US', region: "United States", L1: "Industry Size", L2: "Acommodation", metric: "Industry Turnover", unit: 'unit', value: 32 },
   // ];
 
+  console.log(dataSource);
+
   return (
     <div className="w-full flex items-center justify-center">
       <Col className="w-[90%] justify-center">
-        <div className="h-[70vh] lg:w-[85vw] w-[1024px] overflow-scroll mx-auto">
+        <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-scroll mx-auto">
           <Table<DataType>
             className="rounded-xl shadow mt-4 w-full"
             pagination={false}
@@ -137,7 +130,7 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
             }
           />
         </div>
-        <div className="mt-4 w-[85vw] mx-auto rounded-md mb-12">
+        {/* <div className="mt-4 w-[85vw] mx-auto rounded-md mb-12">
           {addNewCountryData === false ? (
             <Button color="primary" variant="outlined"
               className="py-4 px-8"
@@ -148,10 +141,10 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
           ) : (
             <AddNewCountryData setAddNewCountryData={setAddNewCountryData}></AddNewCountryData>
           )}
-        </div>
+        </div> */}
       </Col>
     </div>
   );
 };
 
-export default CountryDataTable;
+export default MetricsTable;
