@@ -8,6 +8,7 @@ import CountrySelect from "@/app/components/country-data/country-select.componen
 import { Row, Button } from "antd";
 import { CountryData } from "@/app/interfaces/country.interfaces";
 import { getCountryDataApi } from "@/app/api/country-data.api";
+import {Typography} from "antd";
 
 export default function Home() {
   const { isAuthenticated, logout } = useAuthContext();
@@ -49,11 +50,15 @@ export default function Home() {
           >
             Logout
           </Button>
-        </Row>
+        </Row>                  
+        <Typography.Text className="text-[20px] underline underline-offset-2">
+            Country Data
+          </Typography.Text>
         <CountrySelect
           setSelectedCountry={setSelectedCountry}
           selectedCountry={selectedCountry}
         />
+
         <CountryDataTable countryData={countryData} selectedCountry={selectedCountry}/>
       </div>
     );

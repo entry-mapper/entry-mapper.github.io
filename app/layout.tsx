@@ -30,7 +30,7 @@ export default function RootLayout({
       >
         <script>0</script>
         <AuthContextProvider>
-          <ConfigProvider
+          {/* <ConfigProvider
             theme={{
               token: {
                 colorTextBase: "#262626",    // Default text
@@ -39,11 +39,11 @@ export default function RootLayout({
                 colorTextPlaceholder: "#595959", // Muted text
               },
             }}
-          >
+          > */}
             <Layout className="h-screen items-center bg-transparent">
               {children}
             </Layout>
-          </ConfigProvider>
+          {/* </ConfigProvider> */}
         </AuthContextProvider>
       </body>
     </html>

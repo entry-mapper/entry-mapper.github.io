@@ -87,7 +87,6 @@ export const AuthContextProvider = ({ children }: AuthontextProviderProps) => {
 
     if (token && expiresIn) {
       const now = new Date();
-      // console.log('now var is', now.getTime());
       if (now.getTime() > expiresIn) {
         clearTokenDetailsFromlocalStorage();
         setIsAuthenticated(false);
