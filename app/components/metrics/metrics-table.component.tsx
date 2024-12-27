@@ -1,35 +1,26 @@
 import React, { useEffect, useState } from "react";
 import {
   Button,
-  Card,
   Col,
-  Dropdown,
-  InputNumber,
-  Layout,
-  Row,
-  Select,
   Table,
-  Typography,
 } from "antd";
-import type { MenuProps, TableColumnsType } from "antd";
-import {
-  CheckOutlined,
-  CloseOutlined,
-  DeleteOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
-
-import { useAuthContext } from "@/app/context/auth.context";
-import { CountryData } from "@/app/interfaces/country.interfaces";
-import { PatchCountryDataService } from "@/app/service/country-data-patch.service";
 import { getColumns } from "./metrics-table-cols.component";
 import { Metrics } from "@/app/interfaces/metrics.interface";
-// import AddNewCountryData from "./new-country-data";
+import { PatchMetricsApi } from "@/app/api/metrics/metrics-patch.api";
+import { MetricAdd } from "./metrics-add.component";
+import { AddMetricsApi } from "@/app/api/metrics/metrics-add.api";
 
 interface DataType {
   key: number;
   metricName: string;
   metricDescription: string;
+  metricUnit: string;
+}
+
+interface MetricFormData {
+  metricName: string | null;
+  metricDescription: string | null;
+  metricUnit: string | null;
 }
 
 interface MetricsDataTableProps {
@@ -39,17 +30,15 @@ interface MetricsDataTableProps {
 
 const MetricsTable: React.FC<MetricsDataTableProps> = ({ metrics }) => {
   const [editingKey, setEditingKey] = useState<number | null>(null);
-  const [editValue, setEditValue] = useState<number | null>(null);
-  const [dataSource, setDataSource] = useState<DataType[]>([]);
-  // const [addNewCountryData, setAddNewCountryData] = useState<boolean>(false);
 
-  const updateDataSourceValue = (key: number, newValue: number) => {
-    setDataSource((prevDataSource) =>
-      prevDataSource.map((item) =>
-        item.key === key ? { ...item, value: newValue } : item
-      )
-    );
-  };
+  const [formData, setFormData] = useState<MetricFormData>({
+    metricName: null,
+    metricDescription: null,
+    metricUnit: null,
+  });
+
+  const [dataSource, setDataSource] = useState<DataType[]>([]);
+  const [addNewMetric, setAddNewMetric] = useState<boolean>(false);
 
   useEffect(() => {
     if (metrics) {
@@ -57,58 +46,114 @@ const MetricsTable: React.FC<MetricsDataTableProps> = ({ metrics }) => {
         key: data.metric_id,
         metricName: data.value,
         metricDescription: data.description,
+        metricUnit: data.unit,
       }));
       setDataSource(mappedData);
     }
   }, [metrics]);
 
-  const updateValue = async () => {
-    const userString = localStorage.getItem("user");
-    let userId = null;
-    if (userString) {
-      const user = JSON.parse(userString);
-      userId = user.id;
-    }
-
+  const updateDataSourceValue = (
+    key: number,
+    action: string,
+    updatedData?: Partial<DataType>
+  ) => {
+  
+    setDataSource((prevDataSource) => {
+  
+      if (action === "del") {
+        return prevDataSource.filter((item) => item.key !== key);
+      } else if (action === "patch") {
+        return prevDataSource.map((item) =>
+          item.key === key
+            ? {
+                ...item,
+                metricName: updatedData?.metricName ?? item.metricName,
+                metricDescription:
+                  updatedData?.metricDescription ?? item.metricDescription,
+                metricUnit: updatedData?.metricUnit ?? item.metricUnit,
+              }
+            : item
+        );
+      } else if (action === "add") {
+        return [
+          ...prevDataSource,
+          {
+            key,
+            metricName: updatedData?.metricName || "Default Name",
+            metricDescription: updatedData?.metricDescription || "Default Description",
+            metricUnit: updatedData?.metricUnit || "Default Unit",
+          },
+        ];
+      }
+      return prevDataSource;
+    });
+  };
+  
+  
+  
+  const handleConfirmChange = async (
+    id: number,
+    name: string,
+    description: string,
+    unit: string
+  ) => {
+    // updateValue();
+    const value = {
+      metric: formData.metricName ? formData.metricName : name,
+      description: formData.metricDescription
+        ? formData.metricDescription
+        : description,
+      unit: formData.metricUnit ? formData.metricUnit : unit,
+    };
     const token = localStorage.getItem("token");
-
-    if (token && userId && editingKey && editValue) {
-      const res = await PatchCountryDataService(
-        token,
-        editingKey,
-        userId,
-        editValue.toString(10)
-      );
-      if(res === true){
-        updateDataSourceValue(editingKey, editValue);
+    if (token) {
+      const res = await PatchMetricsApi(token, id, value);
+      if (res) {
+        updateDataSourceValue(id, 'patch', {
+          metricName: res.value, // Use API response fields
+          metricDescription: res.description,
+          metricUnit: res.unit,
+        });
+        setFormData({metricName: null, metricDescription: null, metricUnit: null})
       }
     }
-  };
 
-  const handleConfirmChange = () => {
-    updateValue();
     setEditingKey(null);
   };
 
-  const regions = [
-    {
-      key: "1",
-      label: "UK",
-    },
-  ];
+  const handleNewAdd = async() => {
+    const token = localStorage.getItem("token");
+    if (token && formData.metricName && formData.metricDescription && formData.metricUnit) {
+      const value = {
+        metric: formData.metricName,
+        description: formData.metricDescription,
+        unit: formData.metricUnit
+      }
+      const res = await AddMetricsApi(token, value)
+      if (res) {
+        updateDataSourceValue(res.metric_id,'add',{
+          metricName: res.value, // Use API response fields
+          metricDescription: res.description,
+          metricUnit: res.unit,
+        });
+        setFormData({metricName: null, metricDescription: null, metricUnit: null})
+      }
+    }
+  }
 
   const columns = getColumns(
     editingKey,
     setEditingKey,
-    setEditValue,
+    formData,
+    setFormData,
+    handleConfirmChange,
     updateDataSourceValue,
-    handleConfirmChange
   );
 
   return (
     <div className="w-full flex items-center justify-center">
       <Col className="w-[90%] justify-center">
-        <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-scroll mx-auto">
+        <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
           <Table<DataType>
             className="rounded-xl shadow mt-4 w-full"
             pagination={false}
@@ -123,18 +168,18 @@ const MetricsTable: React.FC<MetricsDataTableProps> = ({ metrics }) => {
             }
           />
         </div>
-        {/* <div className="mt-4 w-[85vw] mx-auto rounded-md mb-12">
-          {addNewCountryData === false ? (
+        <div className="mt-4 w-[75vw] mx-auto rounded-md mb-12">
+          {addNewMetric === false ? (
             <Button color="primary" variant="outlined"
               className="py-4 px-8"
-              onClick={() => setAddNewCountryData(true)}
+              onClick={() => setAddNewMetric(true)}
             >
-              Add Country Data
+              Add New Metric
             </Button>
           ) : (
-            <AddNewCountryData setAddNewCountryData={setAddNewCountryData}></AddNewCountryData>
+            <MetricAdd setFormData={setFormData} formData={formData} handleSubmit={handleNewAdd} setAddNewMetric={setAddNewMetric}/>
           )}
-        </div> */}
+        </div>
       </Col>
     </div>
   );

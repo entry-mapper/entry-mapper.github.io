@@ -13,7 +13,7 @@ export default function App() {
     if (!isAuthenticated) {
       router.push("/login");
     } else {
-      router.push("/home");
+      router.push("/country-data");
     }
   }, [isAuthenticated, router]);
 }

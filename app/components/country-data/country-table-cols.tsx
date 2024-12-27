@@ -6,6 +6,7 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import { DelCountryDataService } from "@/app/service/country-data-delete.service";
 
 interface DataType {
   key: number;
@@ -261,7 +262,12 @@ export const getColumns = (
               <EditOutlined></EditOutlined>
             </Button>
           )}
-          <Button className="w-[30px]">
+          <Button className="w-[30px]" onClick={()=>{
+            const token = localStorage.getItem('token');
+            if (token){
+              DelCountryDataService(token, record.key)
+            }
+          }}>
             <DeleteOutlined></DeleteOutlined>
           </Button>
         </Row>

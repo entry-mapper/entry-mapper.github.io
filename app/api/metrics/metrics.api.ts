@@ -1,5 +1,5 @@
-import { CountryMetricValues, MetricCategories } from "../interfaces/metrics.interface";
-import { http } from "../utils/http";
+import { CountryMetricValues, MetricCategories } from "../../interfaces/metrics.interface";
+import { http } from "../../utils/http";
 
 const BASE_URL = "https://dev.snrautos.co.uk";
 

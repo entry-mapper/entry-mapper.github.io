@@ -20,7 +20,7 @@ export const http = {
   post: async (url: string, body?: any, headers?: any): Promise<any> => {
     try {
       const response = await apiClient.post(url, body, { headers });
-      return response.data;
+      return response;
     } catch (error) {
       console.error('Error in POST request:', error);
       throw error;
@@ -30,7 +30,7 @@ export const http = {
   put: async (url: string, body?: any, headers?: any): Promise<any> => {
     try {
       const response = await apiClient.put(url, body, { headers });
-      return response.data;
+      return response;
     } catch (error) {
       console.error('Error in PUT request:', error);
       throw error;
@@ -50,7 +50,7 @@ export const http = {
   del: async (url: string, headers?: any): Promise<any> => {
     try {
       const response = await apiClient.delete(url, { headers });
-      return response.data;
+      return response;
     } catch (error) {
       console.error('Error in DELETE request:', error);
       throw error;

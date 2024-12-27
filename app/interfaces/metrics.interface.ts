@@ -1,7 +1,8 @@
 export interface Metrics {
     value: string;
     metric_id: number;
-    description: string; 
+    description: string;
+    unit: string; 
 }
 
 export interface MetricCategories {

@@ -5,6 +5,7 @@ import { AuthContextProvider } from "./context/auth.context";
 import { ConfigProvider, theme } from "antd";
 import { Button, Row } from "antd";
 import { Layout } from "antd";
+import { NavBar } from "./components/nav-bar";
 
 // export const metadata: Metadata = {
 //   title: "Admin Portal",
@@ -40,6 +41,7 @@ export default function RootLayout({
               },
             }}
           > */}
+          <NavBar/>
             <Layout className="h-screen items-center bg-transparent">
               {children}
             </Layout>

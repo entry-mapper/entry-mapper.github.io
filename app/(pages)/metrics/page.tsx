@@ -35,13 +35,6 @@ export default function Home() {
   if (!isLoading) {
     return (
       <div className="space-y-3 w-full flex flex-col items-center">
-        <Row className="w-full h-[100px] bg-zinc-600 justify-between items-center pl-[20px] pr-[20px]">
-          <div className="text-[30px]">Admin Portal</div>
-          <Button className="text-[15px] px-5 py-4" onClick={logout}>
-            Logout
-          </Button>
-        </Row>
-
         <Typography.Text className="text-[20px] underline underline-offset-2">
           Metrics
         </Typography.Text>
