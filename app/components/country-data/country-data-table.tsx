@@ -24,6 +24,7 @@ import { CountryData } from "@/app/interfaces/country.interfaces";
 import { PatchCountryDataService } from "@/app/service/country-data-patch.service";
 import { getColumns } from "./country-table-cols";
 import AddNewCountryData from "./new-country-data";
+import { GetCategoriesService } from "@/app/service/categories-get.service";
 
 interface DataType {
   key: number;
@@ -99,13 +100,6 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
     setEditingKey(null);
   };
 
-  const regions = [
-    {
-      key: "1",
-      label: "UK",
-    },
-  ];
-
   const columns = getColumns(
     editingKey,
     setEditingKey,
@@ -114,15 +108,10 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
     handleConfirmChange
   );
 
-  // const dataSource: DataType[] = [
-  //     { key: '1', countryName: 'UK', region: "United Kingdom", L1: "Industry Size", L2: "Acommodation", metric: "Industry Turnover", unit: 'unit', value: 31 },
-  //     { key: '2', countryName: 'US', region: "United States", L1: "Industry Size", L2: "Acommodation", metric: "Industry Turnover", unit: 'unit', value: 32 },
-  // ];
-
   return (
     <div className="w-full flex items-center justify-center">
       <Col className="w-[90%] justify-center">
-        <div className="h-[70vh] lg:w-[85vw] w-[1024px] overflow-scroll mx-auto">
+        <div className="h-[70vh] lg:w-[85vw] w-[1024px] overflow-y-scroll mx-auto">
           <Table<DataType>
             className="rounded-xl shadow mt-4 w-full"
             pagination={false}

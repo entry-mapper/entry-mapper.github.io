@@ -38,7 +38,7 @@ export default function Login() {
         password: "",
       });
       setErr(null);
-      router.push("/home");
+      router.push("/country-data");
     }
   };
 
@@ -49,8 +49,8 @@ export default function Login() {
   }
 
   return (
-    <Card style={{ maxWidth: 500, margin: "auto", marginTop: 50, padding: 20 }}>
-      <div className="text-center">
+    <Card style={{ maxWidth: 800, margin: "auto", marginTop: 50, padding: 20 }}>
+      <div className="text-center md:w-96 w-72">
         <Title level={2}>Welcome Back!</Title>
         <Form layout="vertical" onFinish={handleLogin}>
           <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
