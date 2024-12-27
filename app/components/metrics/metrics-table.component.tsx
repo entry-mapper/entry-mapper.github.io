@@ -8,7 +8,7 @@ import { getColumns } from "./metrics-table-cols.component";
 import { Metrics } from "@/app/interfaces/metrics.interface";
 import { PatchMetricsApi } from "@/app/api/metrics/metrics-patch.api";
 import { MetricAdd } from "./metrics-add.component";
-import { AddMetricsApi } from "@/app/api/metrics/metrics-add.api";
+import { AddMetricsApi } from "@/app/api/metrics/metrics-post.api";
 
 interface DataType {
   key: number;
@@ -30,7 +30,7 @@ interface MetricsDataTableProps {
 
 const MetricsTable: React.FC<MetricsDataTableProps> = ({ metrics }) => {
   const [editingKey, setEditingKey] = useState<number | null>(null);
-
+  const [loading, setLoading] = useState<boolean>(true)
   const [formData, setFormData] = useState<MetricFormData>({
     metricName: null,
     metricDescription: null,
@@ -49,6 +49,7 @@ const MetricsTable: React.FC<MetricsDataTableProps> = ({ metrics }) => {
         metricUnit: data.unit,
       }));
       setDataSource(mappedData);
+      setLoading(false)
     }
   }, [metrics]);
 
@@ -161,6 +162,7 @@ const MetricsTable: React.FC<MetricsDataTableProps> = ({ metrics }) => {
             dataSource={dataSource}
             rowHoverable={false}
             tableLayout="fixed"
+            loading={loading}
             rowClassName={(record) =>
               editingKey === record.key
                 ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl"

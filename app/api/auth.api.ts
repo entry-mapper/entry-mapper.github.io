@@ -13,9 +13,9 @@ export const login = async (
         });
           
         const loginResponse: LoginResponse = {
-            expiresIn: response.expiresIn,
-            accessToken: response.accessToken,
-            user: response.user,
+            expiresIn: response.data.expiresIn,
+            accessToken: response.data.accessToken,
+            user: response.data.user,
         };
         return loginResponse;
     } catch (error: any) {

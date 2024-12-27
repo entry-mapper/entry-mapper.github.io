@@ -3,11 +3,10 @@
 import { useAuthContext } from "../../context/auth.context";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Row, Button } from "antd";
 import { Typography } from "antd";
 import { Metrics } from "@/app/interfaces/metrics.interface";
-import { GetMetricsService } from "@/app/service/metrics-get.service";
 import MetricsTable from "@/app/components/metrics/metrics-table.component";
+import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
 
 export default function Home() {
   const { isAuthenticated, logout } = useAuthContext();
@@ -25,7 +24,7 @@ export default function Home() {
     const token = localStorage.getItem("token");
     if (token) {
       const fetchMetrics = async () => {
-        const res: Metrics[] = await GetMetricsService(token);
+        const res: Metrics[] = await GetMetricsApi(token);
         setMetrics(res);
       };
       fetchMetrics();

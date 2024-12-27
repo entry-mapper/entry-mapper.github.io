@@ -7,7 +7,7 @@ import { useAuthContext } from "../context/auth.context";
 import { useRouter, usePathname } from "next/navigation";
 
 export const NavBar: React.FC = () => {
-  const { logout } = useAuthContext();
+  const { logout, isAuthenticated } = useAuthContext();
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
   const [activeKey, setActiveKey] = useState<string>("1");
@@ -57,17 +57,18 @@ export const NavBar: React.FC = () => {
   return (
     <Row className="w-full h-[100px] bg-zinc-400 justify-between items-center pl-[20px] pr-[20px] mb-8">
       <div className="text-[25px]">Admin Portal</div>
-      <Tabs
+      {isAuthenticated?<Tabs
         activeKey={activeKey}
         items={items}
         size="large"
         onChange={handleTabChange}
         centered
         animated={{ inkBar: true, tabPane: false }}
-      />
-      <Button className="text-[15px] px-5 py-4 ml-20" onClick={logout}>
+      />:null}
+      {isAuthenticated?<Button className="text-[15px] px-5 py-4 ml-20" onClick={logout}>
         Logout
-      </Button>
+      </Button>:null}
+      
     </Row>
   );
 };

@@ -6,7 +6,7 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { DelCountryDataService } from "@/app/service/country-data-delete.service";
+import { DelCountryDataApi } from "@/app/api/country-data/country-data-delete.api";
 
 interface DataType {
   key: number;
@@ -18,12 +18,6 @@ interface DataType {
   unit: string;
   value: number;
 }
-const regions = [
-  {
-    key: "1",
-    label: "UK",
-  },
-];
 
 export const getColumns = (
   editingKey: number | null,
@@ -34,7 +28,6 @@ export const getColumns = (
 ): TableColumnsType<DataType> => [
   {
     title: "Country Name",
-    //width: 140,
     width:'10%',
     dataIndex: "countryName",
     key: "countryName",
@@ -45,15 +38,13 @@ export const getColumns = (
   },
   {
     title: "Region",
-    //width: 140,
     width:'10%',
     dataIndex: "region",
     key: "region",
-    // fixed: 'left',
     render: (_, record) => {
       return (
         <Row>
-          {record.key === editingKey ? (
+          {/* {record.key === editingKey ? (
             <Select
               showSearch
               value={record.region}
@@ -70,7 +61,9 @@ export const getColumns = (
             />
           ) : (
             <div className="p-3">{record.region}</div>
-          )}
+          )} */}
+                      <div className="p-3">{record.region}</div>
+
         </Row>
       );
     },
@@ -79,13 +72,11 @@ export const getColumns = (
     title: "L1",
     dataIndex: "L1",
     key: "1",
-    //width: 190,
-    width:'15%',
-    // fixed: 'left',
+    width:'12.5%',
     render: (_, record) => {
       return (
         <Row>
-          {record.key === editingKey ? (
+          {/* {record.key === editingKey ? (
             <Select
               showSearch
               value={record.L1}
@@ -101,8 +92,13 @@ export const getColumns = (
               }))}
             />
           ) : (
-            <div className="p-3 w-[190px] truncate">{record.L1}</div>
-          )}
+            <Popover content={<p>{record.L2}</p>}>
+              <div className="p-3 w-full truncate">{record.L1}</div>
+            </Popover>
+          )} */}
+                      <Popover content={<p>{record.L2}</p>}>
+              <div className="p-3 w-full truncate">{record.L1}</div>
+            </Popover>
         </Row>
       );
     },
@@ -111,13 +107,11 @@ export const getColumns = (
     title: "L2",
     dataIndex: "L2",
     key: "2",
-    //width: 190,
     width:'20%',
-    // fixed: 'left',
     render: (_, record) => {
       return (
         <Row>
-          {record.key === editingKey ? (
+          {/* {record.key === editingKey ? (
             <Select
               showSearch
               value={record.L1}
@@ -134,9 +128,12 @@ export const getColumns = (
             />
           ) : (
             <Popover content={<p>{record.L2}</p>}>
-              <div className="p-3 w-[190px] truncate">{record.L2}</div>
+              <div className="p-3 w-full truncate">{record.L2}</div>
             </Popover>
-          )}
+          )} */}
+                      <Popover content={<p>{record.L2}</p>}>
+              <div className="p-3 w-full truncate">{record.L2}</div>
+            </Popover>
         </Row>
       );
     },
@@ -145,13 +142,12 @@ export const getColumns = (
     title: "metric",
     dataIndex: "metric",
     key: "3",
-    //width: 190,
     width:'20%',
     // fixed: 'left',
     render: (_, record) => {
       return (
         <Row>
-          {record.key === editingKey ? (
+          {/* {record.key === editingKey ? (
             <Select
               showSearch
               value={record.L1}
@@ -168,9 +164,12 @@ export const getColumns = (
             />
           ) : (
             <Popover content={record.metric}>
-              <div className="p-3 w-[190px] truncate">{record.metric}</div>
+              <div className="p-3 w-full truncate">{record.metric}</div>
             </Popover>
-          )}
+          )} */}
+                      <Popover content={record.metric}>
+              <div className="p-3 w-full truncate">{record.metric}</div>
+            </Popover>
         </Row>
       );
     },
@@ -179,13 +178,12 @@ export const getColumns = (
     title: "unit",
     dataIndex: "unit",
     key: "4",
-    //width: 190,
-    width:'10%', 
+    width:'7.5%', 
     fixed: 'left',
     render: (_, record) => {
       return (
         <Row>
-          {record.key === editingKey ? (
+          {/* {record.key === editingKey ? (
             <Select
               showSearch
               value={record.L1}
@@ -204,7 +202,10 @@ export const getColumns = (
             <Popover content={record.unit}>
               <div className="w-[190  px] truncate">{record.unit}</div>
             </Popover>
-          )}
+          )} */}
+                      <Popover content={record.unit}>
+              <div className="w-[190  px] truncate">{record.unit}</div>
+            </Popover>
         </Row>
       );
     },
@@ -212,8 +213,7 @@ export const getColumns = (
   {
     title: "value",
     dataIndex: "value",
-    //width: 120,
-    width:'10%',
+    width:'7.5%',
     key: "5",
     render: (_, record) => {
       return (
@@ -221,11 +221,6 @@ export const getColumns = (
           {editingKey === record.key ? (
             <InputNumber
               value={record.value}
-              // onChange={(e) =>
-              //   e?.valueOf()
-              //     ? (record.value = JSON.parse(e.toString()))
-              //     : null
-              // }
               onChange={(value) => setEditValue(value)}
             ></InputNumber>
           ) : (
@@ -240,8 +235,7 @@ export const getColumns = (
     title: "Action",
     key: "operation",
     fixed: "right",
-    width:'15%',
-    //width: 140,
+    width:'12.5%',
     render: (_, record) => {
       return (
         <Row className="gap-1 w-full">
@@ -265,7 +259,7 @@ export const getColumns = (
           <Button className="w-[30px]" onClick={()=>{
             const token = localStorage.getItem('token');
             if (token){
-              DelCountryDataService(token, record.key)
+              DelCountryDataApi(token, record.key)
             }
           }}>
             <DeleteOutlined></DeleteOutlined>
