@@ -3,28 +3,30 @@
 import { Select, InputNumber, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { Button } from "antd";
-import { GetCategoriesService } from "@/app/service/categories-get.service";
+import { GetCategoriesApi } from "@/app/api/categories-get.api";
 import { MetricCategories } from "@/app/interfaces/metrics.interface";
+import { AddCountryDataApi } from "@/app/api/country-data/country-data-post.api";
 
-interface FormData {
+interface CountryDataFormData {
   L1: number | null;
   L2: number | null;
-  metric: string | null;
-  unit: string | null;
+  metric_id: number | null;
   value: number | null;
 }
 
 interface AddNewCountryDataProps {
   setAddNewCountryData: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedCountry: number;
 }
+
 const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({
   setAddNewCountryData,
+  selectedCountry,
 }) => {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<CountryDataFormData>({
     L1: null,
     L2: null,
-    metric: null,
-    unit: null,
+    metric_id: null,
     value: null,
   });
 
@@ -37,9 +39,8 @@ const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({
     if (token) {
       const fetchCategories = async (): Promise<void> => {
         try {
-          const res: MetricCategories[] = await GetCategoriesService(token);
+          const res: MetricCategories[] = await GetCategoriesApi(token);
           setMetricCategories(res);
-          console.log(res);
         } catch (error) {
           console.error("Error fetching categories:", error);
         }
@@ -49,7 +50,6 @@ const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({
   }, []);
 
   const filterMetrics = () => {
-    console.log("l1 is", formData.L1);
     if (formData.L1) {
       const L1FilteredMetrics = metricCategories?.find(
         (category) => category.category_id === formData.L1
@@ -101,19 +101,62 @@ const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({
 
     return l2options;
   };
+  const findMetricUnit = (
+    categories: MetricCategories[],
+    metric_id: number
+  ): string | undefined => {
+    // Iterate through each category
+    for (const category of categories) {
+      // Check if the metric_id exists in the category's metrics
+      const metric = category.metrics.find((m) => m.metric_id === metric_id);
+
+      if (metric) {
+        // If found, return the unit
+        return metric.unit;
+      }
+      // If the category has sub_categories, search them as well
+      if (category.sub_categories) {
+        const subCategoryUnit = findMetricUnit(
+          category.sub_categories,
+          metric_id
+        );
+        if (subCategoryUnit) {
+          return subCategoryUnit;
+        }
+      }
+    }
+    return undefined;
+  };
 
   const handleSubmit = () => {
     //to do..
+    const token = localStorage.getItem("token");
+    const userString = localStorage.getItem("user");
+    let userId = null;
+    if (userString) {
+      const user = JSON.parse(userString);
+      userId = user.id;
+    }
+    if (
+      token &&
+      userId &&
+      formData.L2 &&
+      formData.metric_id &&
+      formData.value
+    ) {
+      AddCountryDataApi(token, {
+        country_id: selectedCountry,
+        super_category_id: formData.L1,
+        category_id: formData.L2,
+        metric_id: formData.metric_id,
+        value: formData.value,
+        user_id: userId,
+      });
+    }
     setAddNewCountryData(false);
   };
-  const regions = [
-    {
-      key: 0,
-      label: "uk",
-    },
-  ];
 
-  const handleChange = (key: keyof FormData, value: any) => {
+  const handleChange = (key: keyof CountryDataFormData, value: any) => {
     setFormData((prev) => ({
       ...prev,
       [key]: value,
@@ -121,7 +164,7 @@ const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-[1fr_1fr_1.25fr_1.25fr_1.25fr_1.25fr_0.9fr_1fr] gap-1 h-full p-2 pt-4 rounded-md bg-slate-1.25fr">
+    <div className="grid grid-cols-[1fr_1fr_1.25fr_2fr_2fr_0.75fr_0.75fr_1.25fr] gap-1 h-full p-2 pt-4 rounded-md bg-slate-1.25fr py-3 px-2 bg-stone-200">
       <div>
         <Typography className="font-bold">Country</Typography>
       </div>
@@ -137,7 +180,6 @@ const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({
             (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
           }
           options={metricCategories?.map((mc) => {
-            console.log(mc.category_id);
             if (mc.category_id) {
               return {
                 value: mc.category_id,
@@ -150,7 +192,7 @@ const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({
               };
             }
           })}
-          style={{ width: "95%" }}
+          style={{ width: "97.5%" }}
           onChange={(value) => handleChange("L1", value)}
         />
       </div>
@@ -164,37 +206,63 @@ const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({
           }
           options={filterL2()}
           disabled={formData.L1 === null}
-          style={{ width: "95%" }}
+          style={{ width: "97.5%" }}
           onChange={(value) => handleChange("L2", value)}
         />
       </div>
       <div id="metric">
         <Select
           showSearch
-          value={formData.metric}
+          value={formData.metric_id}
           placeholder="Select a Metric"
           filterOption={(input, option) =>
             (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
           }
           options={filterMetrics()}
           disabled={formData.L1 === null}
-          style={{ width: "95%" }}
-          onChange={(value) => handleChange("metric", value)}
+          style={{ width: "97.5%" }}
+          onChange={(value) => handleChange("metric_id", value)}
         />
       </div>
-      <div id="unit">
-        <p className="text-black">Unit</p>
+      <div id="unit" className="flex justify-center items-center">
+        <p className="text-gray-500">
+          {formData.metric_id && metricCategories
+            ? findMetricUnit(metricCategories, formData.metric_id)
+            : "select metric"}
+        </p>
       </div>
       <div id="value">
         <InputNumber
           value={formData.value}
           placeholder="Value"
           onChange={(value) => handleChange("value", value)}
+          style={{ width: "97.5%" }}
         ></InputNumber>
       </div>
-      <div>
-        <Button type="primary" className="px-6" onClick={handleSubmit}>
+      <div className="space-x-2">
+        <Button
+          type="primary"
+          className="px-6"
+          onClick={handleSubmit}
+          disabled={
+            formData.L1 === null ||
+            formData.L1 === undefined ||
+            formData.L2 === null ||
+            formData.L2 === undefined ||
+            formData.metric_id === null ||
+            formData.metric_id === undefined ||
+            formData.value === null ||
+            formData.value === undefined
+          }
+        >
           Submit
+        </Button>
+        <Button
+          type="default"
+          className="px-6"
+          onClick={() => setAddNewCountryData(false)}
+        >
+          Cancel
         </Button>
       </div>
     </div>

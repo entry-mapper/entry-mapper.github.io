@@ -5,11 +5,9 @@ import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CountryDataTable from "@/app/components/country-data/country-data-table";
 import CountrySelect from "@/app/components/country-data/country-select.component";
-import { Row, Button } from "antd";
 import { CountryData } from "@/app/interfaces/country.interfaces";
-import { getCountryDataApi } from "@/app/api/country-data.api";
+import { GetCountryDataApi } from "@/app/api/country-data/country-data-get.api";
 import {Typography} from "antd";
-import { GetCategoriesService } from "@/app/service/categories-get.service";
 
 export default function Home() {
   const { isAuthenticated, logout } = useAuthContext();
@@ -30,7 +28,7 @@ export default function Home() {
     const token = localStorage.getItem("token");
     if (selectedCountry && token) {
       const fetchCountryData = async () => {
-        const countryDataResponse: CountryData[] = await getCountryDataApi(
+        const countryDataResponse: CountryData[] = await GetCountryDataApi(
           token,
           selectedCountry
         );

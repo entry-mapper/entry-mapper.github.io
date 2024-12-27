@@ -1,4 +1,4 @@
-import { http } from "../utils/http";
+import { http } from "../../utils/http";
 
 const BASE_URL = "https://dev.snrautos.co.uk";
 

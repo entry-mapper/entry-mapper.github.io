@@ -15,7 +15,7 @@ export default function Login() {
   useEffect(() => {
     setIsLoading(true);
     if (isAuthenticated) {
-      redirect('/home');
+      redirect('/country-data');
     }
     setIsLoading(false);
   }, [isAuthenticated, router]);
@@ -49,8 +49,8 @@ export default function Login() {
   }
 
   return (
-    <Card style={{ maxWidth: 800, margin: "auto", marginTop: 50, padding: 20 }}>
-      <div className="text-center md:w-96 w-72">
+    <Card style={{margin: "auto", marginTop: 50, padding: 20 }}>
+      <div className="text-center md:w-80 w-64">
         <Title level={2}>Welcome Back!</Title>
         <Form layout="vertical" onFinish={handleLogin}>
           <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input your email!' }]}>

@@ -1,30 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Dropdown,
-  InputNumber,
-  Layout,
-  Row,
-  Select,
-  Table,
-  Typography,
-} from "antd";
-import type { MenuProps, TableColumnsType } from "antd";
-import {
-  CheckOutlined,
-  CloseOutlined,
-  DeleteOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
-
-import { useAuthContext } from "@/app/context/auth.context";
+import { Button, Col, Table } from "antd";
 import { CountryData } from "@/app/interfaces/country.interfaces";
-import { PatchCountryDataService } from "@/app/service/country-data-patch.service";
+import { PatchCountryDataApi } from "@/app/api/country-data/country-data-patch.api";
 import { getColumns } from "./country-table-cols";
 import AddNewCountryData from "./new-country-data";
-import { GetCategoriesService } from "@/app/service/categories-get.service";
 
 interface DataType {
   key: number;
@@ -42,11 +21,15 @@ interface CountryDataTableProps {
   selectedCountry: number | null;
 }
 
-const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
+const CountryDataTable: React.FC<CountryDataTableProps> = ({
+  countryData,
+  selectedCountry,
+}) => {
   const [editingKey, setEditingKey] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<number | null>(null);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [addNewCountryData, setAddNewCountryData] = useState<boolean>(false);
+  const [loading,setLoading] = useState<boolean>(false)
 
   const updateDataSourceValue = (key: number, newValue: number) => {
     setDataSource((prevDataSource) =>
@@ -55,6 +38,13 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
       )
     );
   };
+
+  useEffect(()=>{
+    if(selectedCountry){
+      setLoading(true)
+    }
+    
+  },[selectedCountry])
 
   useEffect(() => {
     if (countryData) {
@@ -69,6 +59,7 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
         value: data.value ?? 0,
       }));
       setDataSource(mappedData);
+      setLoading(false)
     }
   }, [countryData]);
 
@@ -83,13 +74,13 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
     const token = localStorage.getItem("token");
 
     if (token && userId && editingKey && editValue) {
-      const res = await PatchCountryDataService(
+      const res = await PatchCountryDataApi(
         token,
         editingKey,
         userId,
         editValue.toString(10)
       );
-      if(res === true){
+      if (res === true) {
         updateDataSourceValue(editingKey, editValue);
       }
     }
@@ -119,6 +110,14 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
             dataSource={dataSource}
             rowHoverable={false}
             tableLayout="fixed"
+            loading={loading}
+            locale={{
+              emptyText: (
+                <div className="h-[55vh]">
+                  <p className="text-lg text-gray-400">Select Country to View its country data</p>
+                </div>
+              ),
+            }}
             rowClassName={(record) =>
               editingKey === record.key
                 ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl"
@@ -127,16 +126,20 @@ const CountryDataTable: React.FC<CountryDataTableProps> = ({ countryData }) => {
           />
         </div>
         <div className="mt-4 w-[85vw] mx-auto rounded-md mb-12">
-          {addNewCountryData === false ? (
-            <Button color="primary" variant="outlined"
-              className="py-4 px-8"
-              onClick={() => setAddNewCountryData(true)}
-            >
-              Add Country Data
-            </Button>
-          ) : (
-            <AddNewCountryData setAddNewCountryData={setAddNewCountryData}></AddNewCountryData>
-          )}
+          {selectedCountry ? (
+            addNewCountryData === false ? (
+              <Button
+                color="primary"
+                variant="outlined"
+                className="py-4 px-8"
+                onClick={() => setAddNewCountryData(true)}
+              >
+                Add Country Data
+              </Button>
+            ) : (
+              <AddNewCountryData setAddNewCountryData={setAddNewCountryData} selectedCountry={selectedCountry}/>
+            )
+          ) : null}
         </div>
       </Col>
     </div>
