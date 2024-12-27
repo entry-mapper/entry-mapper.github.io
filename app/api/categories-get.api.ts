@@ -1,14 +1,17 @@
 import { http } from "../utils/http";
 import { MetricCategories } from "../interfaces/metrics.interface";
+import { ICategory } from "../interfaces/categories.interface";
 
 const BASE_URL = "https://dev.snrautos.co.uk";
 
-export const GetCategoriesApi = async (
+export const getCategoriesNested = async (
   token: string
 ): Promise<MetricCategories[]> => {
   try {
     const response = await http.get(`${BASE_URL}/categories`, {
       Authorization: `Bearer ${token}`,
+    }, {
+      q: 'nested'
     });
     const metricCategories: MetricCategories[] = response?.map(
       (category: any) => {
@@ -51,3 +54,32 @@ export const GetCategoriesApi = async (
     throw new Error(errorMessage);
   }
 };
+
+export const getCategories = async (token: string) => {
+  try {
+    const response = await http.get(`${BASE_URL}/categories`, {
+      Authorization: `Bearer ${token}`,
+    });
+    return response?.map((entry: any) => {
+      return {
+        category_id: entry.id,
+        category_name: entry.category_name,
+        parent_id: entry.parent_id,
+        parent_category_name: entry.parent_category_name,
+        description: entry.description
+      }
+    })
+  } catch (error: any) {
+    const errorMessageDefault =
+      "An unknown error occured while fetching regions";
+    let errorMessage: string = "";
+    if (error.response) {
+      errorMessage = error.response.data.message;
+    } else if (error.request) {
+      errorMessage = "The request was made but no response was received";
+    } else {
+      errorMessage = errorMessageDefault;
+    }
+    throw new Error(errorMessage);
+  }
+}

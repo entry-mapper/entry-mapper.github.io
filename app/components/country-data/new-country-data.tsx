@@ -3,7 +3,7 @@
 import { Select, InputNumber, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { Button } from "antd";
-import { GetCategoriesApi } from "@/app/api/categories-get.api";
+import { getCategoriesNested } from "@/app/api/categories-get.api";
 import { MetricCategories } from "@/app/interfaces/metrics.interface";
 import { AddCountryDataApi } from "@/app/api/country-data/country-data-post.api";
 
@@ -39,7 +39,7 @@ const AddNewCountryData: React.FC<AddNewCountryDataProps> = ({
     if (token) {
       const fetchCategories = async (): Promise<void> => {
         try {
-          const res: MetricCategories[] = await GetCategoriesApi(token);
+          const res: MetricCategories[] = await getCategoriesNested(token);
           setMetricCategories(res);
         } catch (error) {
           console.error("Error fetching categories:", error);
