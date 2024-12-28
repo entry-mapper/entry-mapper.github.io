@@ -1,9 +1,9 @@
-import { CountryData } from "../../interfaces/country.interfaces";
+import { ICountryData } from "../../interfaces/country.interfaces";
 import { http } from "../../utils/http";
 
 const BASE_URL = "https://dev.snrautos.co.uk";
 
-export const GetCountryDataApi = async (token: string, id: number): Promise<CountryData[]> => {
+export const GetCountryDataApi = async (token: string, id: number): Promise<ICountryData[]> => {
     try {
         const response = await http.get(`${BASE_URL}/country-data/country/${id}`, {
                 Authorization: `Bearer ${token}`, 

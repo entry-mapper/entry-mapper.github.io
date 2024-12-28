@@ -1,6 +1,5 @@
-import { http } from "../utils/http";
-import { MetricCategories } from "../interfaces/metrics.interface";
-import { ICategory } from "../interfaces/categories.interface";
+import { MetricCategories } from "@/app/interfaces/metrics.interface";
+import { http } from "@/app/utils/http";
 
 const BASE_URL = "https://dev.snrautos.co.uk";
 
@@ -67,6 +66,34 @@ export const getCategories = async (token: string) => {
         parent_id: entry.parent_id,
         parent_category_name: entry.parent_category_name,
         description: entry.description
+      }
+    })
+  } catch (error: any) {
+    const errorMessageDefault =
+      "An unknown error occured while fetching regions";
+    let errorMessage: string = "";
+    if (error.response) {
+      errorMessage = error.response.data.message;
+    } else if (error.request) {
+      errorMessage = "The request was made but no response was received";
+    } else {
+      errorMessage = errorMessageDefault;
+    }
+    throw new Error(errorMessage);
+  }
+}
+
+export const getMetricCategories = async (token: string) => {
+  try {
+    const response = await http.get(`${BASE_URL}/metric-categories`, {
+      Authorization: `Bearer ${token}`,
+    });
+    return response?.map((entry: any) => {
+      return {
+        id: entry.id,
+        metric: entry.metric,
+        category: entry.category,
+        super_category: entry.super_category,
       }
     })
   } catch (error: any) {
