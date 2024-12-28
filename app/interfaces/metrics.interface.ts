@@ -13,6 +13,22 @@ export interface MetricCategories {
     sub_categories?: MetricCategories[];
 }
 
+export interface GetMetricCategories {
+    id: number;
+    metric: {
+        id: number;
+        value: string;
+    };
+    category: {
+        id: number;
+        value: string;
+    };
+    super_category: {
+        id: number;
+        value: string;
+    };
+}
+
 export interface MatrixData { 
     x: string; 
     y: string; 

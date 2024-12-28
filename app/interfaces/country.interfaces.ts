@@ -8,13 +8,13 @@ export interface Country {
     } | null
 }
 
-export interface CountryData {
+export interface ICountryData {
     id: number;
     country_name: string;
     region_name: string;
     metric: string;
-    category: string | null;
+    category: string;
     super_category: string;
     unit: string;
-    value: number | null;
+    value: number;
 }

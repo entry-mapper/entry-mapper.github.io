@@ -4,7 +4,7 @@ const BASE_URL = "https://dev.snrautos.co.uk";
 
 export const DelCountryDataApi = async (token: string, id: number): Promise<boolean> => {
     try {
-        const response = await http.del(`${BASE_URL}/country-data/country/${id}`, {
+        const response = await http.del(`${BASE_URL}/country-data/${id}`, {
                 Authorization: `Bearer ${token}`, 
             },)
         if(response.status === 200) {

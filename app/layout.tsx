@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preload" href="/styles/globals.css" as="style" />
+        {/* <link rel="preload" href="/styles/globals.css" as="style" /> */}
       </head>
       <body
         className="bg-cover bg-no-repeat"

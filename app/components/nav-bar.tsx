@@ -55,7 +55,7 @@ export const NavBar: React.FC = () => {
   ];
 
   return (
-    <Row className="w-full h-[100px] bg-zinc-400 justify-between items-center pl-[20px] pr-[20px] mb-8">
+    <Row className="w-full h-[100px] justify-between items-center pl-[20px] pr-[20px] mb-8">
       <div className="text-[25px]">Admin Portal</div>
       {isAuthenticated?<Tabs
         activeKey={activeKey}
