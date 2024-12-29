@@ -4,10 +4,8 @@ const BASE_URL = "https://dev.snrautos.co.uk";
 
 interface CountryDataPostApiPayload {
   country_id: number;
-  super_category_id: number | null;
-  category_id: number;
-  metric_id: number;
-  value: number;
+  metric_category_id: number;
+  value: string;
   user_id: number
 }
   

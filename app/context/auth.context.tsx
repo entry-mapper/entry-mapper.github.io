@@ -11,6 +11,7 @@ import React, {
 import { useRouter } from "next/navigation";
 import { LoginForm, LoginResponse, LoginSuccessResponse, User } from "../interfaces/auth.interfaces";
 import * as loginApi from "../api/auth.api";
+import { Alert } from "antd";
 
 interface IAuthContextProps {
   user: User | null;
@@ -18,6 +19,8 @@ interface IAuthContextProps {
   login: (formData: LoginForm) => Promise<LoginResponse>;
   logout: () => void;
   checkLogin: () => void;
+  errorToast: (value: string) => void;
+  infoToast: (value: string) => void;
 }
 
 const AuthContext = createContext<IAuthContextProps>({} as IAuthContextProps);
@@ -52,6 +55,22 @@ export const AuthContextProvider = ({ children }: AuthontextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+	const [errorAlert, setErrorAlert] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
+	const [infoMessage, setInfoMessage] = useState("");
+	const [infoAlert, setInfoAlert] = useState(false);
+
+	const errorToast = (value: string) => {
+		setAlertMessage(value);
+		setErrorAlert(true);
+		setTimeout(() => setErrorAlert(false), 5000);
+	}
+
+	const infoToast = (value: string) => {
+		setInfoMessage(value);
+		setInfoAlert(true);
+		setTimeout(() => setInfoAlert(false), 5000);
+	}
 
   // Login function
   const login = async (formData: LoginForm) => {
@@ -105,8 +124,37 @@ export const AuthContextProvider = ({ children }: AuthontextProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logout, checkLogin }}
+      value={{ user, isAuthenticated, login, logout, checkLogin, errorToast, infoToast }}
     >
+			<div>
+				{
+					errorAlert &&
+					<div className="flex flex-row w-full justify-center">
+						<Alert
+							className="fixed flex flex-row items-center justify-center top-[32px] w-[300px] z-50"
+							message={alertMessage}
+							type="error"
+							showIcon
+							closable
+							afterClose={() => setErrorAlert(false)}
+						/>
+					</div>
+				}
+				{
+					infoAlert &&
+					<div className="flex flex-row w-full justify-center">
+						<Alert
+							className="fixed flex flex-row items-center justify-center top-[32px] w-[300px] z-50"
+							message={infoMessage}
+							type="info"
+							showIcon
+							closable
+							afterClose={() => setInfoAlert(false)}
+						/>
+					</div>
+				}
+
+			</div>
       {!loading ? 
       children : 
       <div></div> //TODO: add a fancy loading icon

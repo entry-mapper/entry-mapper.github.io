@@ -3,14 +3,16 @@
 import { getCountriesApi } from "@/app/api/countries.api";
 import { GetCountryDataApi } from "@/app/api/country-data/country-data-get.api";
 import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
-import { Button, Col, Input, InputNumber, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
+import { Button, Col, InputNumber, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
 import { redirect, useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/auth.context";
-import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { render } from "react-dom";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { PatchCountryDataApi } from "@/app/api/country-data/country-data-patch.api";
 import { DelCountryDataApi } from "@/app/api/country-data/country-data-delete.api";
+import { GetMetricCategories } from "@/app/interfaces/metrics.interface";
+import { getMetricCategories } from "@/app/api/categories/categories-get.api";
+import { AddCountryDataApi } from "@/app/api/country-data/country-data-post.api";
 interface ICountryOptions {
   value: number;
   country: Country;
@@ -23,6 +25,11 @@ interface ICountryTableData extends ICountryData {
   region: string;
 }
 
+interface IMetricCategoryOptions {
+  value: string;
+  metricCategory: GetMetricCategories;
+}
+
 export default function Home() {
   const { isAuthenticated, logout } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
@@ -32,31 +39,48 @@ export default function Home() {
   const [tableData, setTableData] = useState<ICountryTableData[]>();
   const [countries, setCountries] = useState<ICountryOptions[]>([]);
   const [editingKey, setEditingKey] = useState<number | null>(null);
-  const [metricValue, setMetricValue] = useState<string | number | null>("");
+  const [metricValue, setMetricValue] = useState<string | null>("");
   const [columns, setColumns] = useState<TableColumnsType<ICountryTableData>>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [countryDataIdToBeDeleted, setCountryDataIdToBeDeleted] = useState<number | null>(null);
+  const [selectedMetricCategory, setSelectedMetricCategory] = useState<GetMetricCategories>();
+  const [metricCategories, setMetricCategories] = useState<GetMetricCategories[]>();
+
+  const fetchCountries = async () => {
+    const token: string | null = localStorage.getItem("token");
+    if (token) {
+      try {
+        const countriesResponse: Country[] = await getCountriesApi(token);
+        const options = countriesResponse.map((country) => ({
+          value: country.id,
+          country: country,
+          label: country.country_name,
+        }));
+        setCountries(options);
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    }
+  };
+
+  const fetchMetricCategories = async () => {
+    const token: string | null = localStorage.getItem("token");
+    if (token) {
+      try {
+        const metricCategoriesResponse: GetMetricCategories[] = await getMetricCategories(token);
+        console.log(metricCategoriesResponse);
+        setMetricCategories(metricCategoriesResponse);
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    }
+  };
 
   useEffect(() => {
-    const token: string | null = localStorage.getItem("token");
-    const fetchCountries = async () => {
-      if (token) {
-        try {
-          const countriesResponse: Country[] = await getCountriesApi(token);
-          const options = countriesResponse.map((country) => ({
-            value: country.id,
-            country: country,
-            label: country.country_name,
-          }));
-          setCountries(options);
-        } catch (error) {
-          console.error("Error fetching countries:", error);
-        }
-      }
-    };
     fetchCountries();
+    fetchMetricCategories();
     const columns = [
       {
         title: 'Country',
@@ -159,6 +183,41 @@ export default function Home() {
     setSelectedCountryId(value?.country.id);
   };
 
+  const handleAdd = async () => {
+    try {
+      const userString = localStorage.getItem("user");
+      let userId = null;
+      if (userString) {
+        const user = JSON.parse(userString);
+        userId = user.id;
+      }
+
+      const token = localStorage.getItem("token");
+
+      if (token && userId && metricValue && selectedMetricCategory && selectedCountry) {
+        const payload = {
+          country_id: selectedCountry.id,
+          metric_category_id: selectedMetricCategory.id,
+          value: metricValue,
+          user_id: userId
+        }
+        const res = await AddCountryDataApi(
+          token,
+          payload
+        );
+        if (res === true) {
+          await fetchCountryData();
+        }
+      } else {
+        console.log("select required fields")
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+    setIsAddModalOpen(false);
+    setMetricValue("");
+  }
+
   const handleEdit = async () => {
     try {
       const userString = localStorage.getItem("user");
@@ -175,7 +234,7 @@ export default function Home() {
           token,
           editingKey,
           userId,
-          metricValue.toString(10)
+          metricValue.toString()
         );
         if (res === true) {
           await fetchCountryData();
@@ -225,15 +284,32 @@ export default function Home() {
         setIsAddModalOpen(false)
         setMetricValue("");
         setEditingKey(null);
-      }} okText="Save">
+      }} okText="Save" onOk={handleAdd}>
         <Col>
-          <Typography.Text>Value: </Typography.Text>
-          <InputNumber
-            value={metricValue}
-            onChange={(event: any) => {
-              setMetricValue(JSON.stringify(event))
-            }}
-          ></InputNumber>
+            <Row className="mt-3">
+            <Select
+                showSearch
+                placeholder="Select a Metric"
+                style={{ width: 350 }}
+                onSelect={(_, rec) => setSelectedMetricCategory(rec.metricCategory)}
+                options={metricCategories?.map((e) => {
+                  return {
+                    value: e.category.id ? `${e.super_category.value}->${e.category.value}->${e.metric.value}` : `${e.super_category.value}->${e.metric.value}`,
+                    metricCategory: e
+                  }
+                }) ?? []}
+              />
+            </Row>
+            <Row className="mt-3">
+              <InputNumber
+                className="w-full"
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Value: </Typography.Text>}
+                value={metricValue}
+                onChange={(event: any) => {
+                  setMetricValue(JSON.stringify(event))
+                }}
+              ></InputNumber>
+            </Row>
         </Col>
       </Modal>
 
@@ -258,7 +334,7 @@ export default function Home() {
         onSelect={(_, rec) => handleCountrySelect(rec)}
         options={countries}
       />
-      <Button onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
+      <Button className={`${selectedCountry ? 'visible' : 'hidden'}`} onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
       <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
         <Table<ICountryTableData>
           className="rounded-xl shadow mt-4 w-full"

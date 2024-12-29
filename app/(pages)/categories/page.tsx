@@ -3,10 +3,13 @@
 import { useAuthContext } from "../../context/auth.context";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button, Input, Row, Table, TableColumnsType, Typography } from "antd";
-import { ICategory } from "@/app/interfaces/categories.interface";
+import { Button, Col, Input, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
+import { ICategory, IPatchCategory } from "@/app/interfaces/categories.interface";
 import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { getCategories } from "@/app/api/categories/categories-get.api";
+import { patchCategories } from "@/app/api/categories/categories-patch.api";
+import { postCategories } from "@/app/api/categories/categories-post.api";
+import { delCategories } from "@/app/api/categories/categories-del.api";
 
 interface DataType {
   key: number;
@@ -20,16 +23,22 @@ interface FormData {
   parent_id: number | null;
   description: string | null;
   category_name: string | null;
+  category_type?: string | null;
 }
 
 export default function Categories() {
-  const { isAuthenticated, logout } = useAuthContext();
+  const { isAuthenticated, logout, errorToast, infoToast } = useAuthContext();
   const [editingKey, setEditingKey] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [columns, setColumns] = useState<TableColumnsType<DataType>>();
   const router = useRouter();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [idToBeDeleted, setIdToBeDeleted] = useState<number | null>(null);
   const [formData, setFormData] = useState<FormData>({
     category_name: null,
+    category_type: null,
     parent_id: null,
     description: null
   });
@@ -136,7 +145,7 @@ export default function Categories() {
                   </Button>
                   <Button className="w-[30px]" onClick={() => {
                     setEditingKey(null)
-                    setFormData({ parent_id: null, category_name: null, description: null })
+                    setFormData({ parent_id: null, category_name: null, description: null, category_type: null })
                   }}>
                     <CloseOutlined className="text-[#ff1a1a]"></CloseOutlined>
                   </Button>
@@ -144,12 +153,24 @@ export default function Categories() {
               ) : (
                 <Button
                   className="w-[30px]"
-                  onClick={() => setEditingKey(record.key)}
+                  onClick={() => {
+                    setFormData({
+                      category_name: record.category_name,
+                      description: record.description,
+                      parent_id: record.parent_category_id
+                    })
+                    setIsEditModalOpen(true);
+                    setEditingKey(record.key)
+                  }}
                 >
                   <EditOutlined></EditOutlined>
                 </Button>
               )}
-              <Button className="w-[30px]">
+              <Button className="w-[30px]"
+                onClick={async () => {
+                  setIdToBeDeleted(record.key)
+                  setIsDeleteModalOpen(true);
+                }}>
                 <DeleteOutlined></DeleteOutlined>
               </Button>
             </Row>
@@ -170,13 +191,227 @@ export default function Categories() {
     fetchCategories();
   }, [isAuthenticated, router]);
 
+  const handleAdd = async () => {
+    try {
+      const userString = localStorage.getItem("user");
+      let userId = null;
+      if (userString) {
+        const user = JSON.parse(userString);
+        userId = user.id;
+      }
+
+      const token = localStorage.getItem("token");
+
+      if (token && userId && formData?.category_name) {
+        const res = await postCategories(
+          token,
+          {
+            category_name: formData?.category_name,
+            description: formData?.description ?? "",
+            parent_id: formData?.parent_id ?? 0,
+            category_type: formData?.category_type ?? ""
+          },
+        );
+        await fetchCategories();
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+    setIsAddModalOpen(false);
+  }
+
+  const handleEdit = async () => {
+    try {
+      const userString = localStorage.getItem("user");
+      let userId = null;
+      if (userString) {
+        const user = JSON.parse(userString);
+        userId = user.id;
+      }
+
+      const token = localStorage.getItem("token");
+
+      if (token && userId && editingKey) {
+        const res = await patchCategories(
+          token,
+          {
+            category_id: editingKey,
+            category_name: formData?.category_name ?? "",
+            description: formData?.description ?? "",
+            parent_id: formData?.parent_id ?? 0,
+          },
+        );
+        if (res) {
+          await fetchCategories();
+        }
+        setIsEditModalOpen(false);
+        setEditingKey(null);
+      } else {
+        errorToast("Please fill required fields.")
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token && idToBeDeleted) {
+        const response = await delCategories(token, idToBeDeleted);
+        if (response) {
+          await fetchCategories();
+        }
+      }
+    } catch (error: any) {
+
+    }
+    setIdToBeDeleted(null);
+    setIsDeleteModalOpen(false);
+  }
+
   if (!isLoading) {
     return (
       <div className="space-y-3 w-full flex flex-col items-center">
+        {/* Edit Modal */}
+        <Modal title="Edit Record" open={isEditModalOpen} destroyOnClose onCancel={() => {
+          setIsEditModalOpen(false)
+          setFormData({
+            category_name: null,
+            parent_id: null,
+            description: null,
+            category_type: null
+          });
+          setEditingKey(null);
+        }} okText="Save" onOk={handleEdit}>
+          <Col>
+            <Row className="mt-3">
+              <Input
+                prefix={<div><span className="text-[#ed0006] text-xs font-medium font-inter leading-[18px]">*</span><Typography.Text className="text-gray-700 opacity-[40%]">Category Name: </Typography.Text></div>}
+                value={formData?.category_name ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category_name: e.target.value,
+                  }))
+                }
+              ></Input>
+            </Row>
+            <Row className="mt-3">
+              <Input
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Category Type: </Typography.Text>}
+                value={formData?.category_type ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category_type: e.target.value,
+                  }))
+                }
+              ></Input>
+            </Row>
+            <Row className="mt-3">
+              <Input
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Description: </Typography.Text>}
+                value={formData?.description ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))}          
+                ></Input>
+            </Row>
+            <Row className="mt-3">
+            <Select
+                className="w-full"
+                showSearch
+                placeholder="Select a parent category"
+                onSelect={(_, rec) => setFormData((prev) => ({...prev, parent_id: rec.id}))}
+                options={dataSource?.map((e) => {
+                  return {
+                    value: e.category_name,
+                    id: e.key
+                  }
+                }) ?? []}
+              />
+            </Row>
+          </Col>
+        </Modal>
+
+        {/* Add Modal */}
+        <Modal title="Add Record" open={isAddModalOpen} destroyOnClose onCancel={() => {
+          setIsAddModalOpen(false)
+          setFormData({
+            category_name: null,
+            parent_id: null,
+            description: null,
+            category_type: null
+          });
+          setEditingKey(null);
+        }} okText="Save" onOk={handleAdd}>
+          <Col>
+          <Row className="mt-3">
+              <Input
+                prefix={<div><span className="text-[#ed0006] text-xs font-medium font-inter leading-[18px]">*</span><Typography.Text className="text-gray-700 opacity-[40%]">Category Name: </Typography.Text></div>}
+                value={formData?.category_name ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category_name: e.target.value,
+                  }))
+                }
+              ></Input>
+            </Row>
+            <Row className="mt-3">
+              <Input
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Category Type: </Typography.Text>}
+                value={formData?.category_type ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category_type: e.target.value,
+                  }))
+                }
+              ></Input>
+            </Row>
+            <Row className="mt-3">
+              <Input
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Description: </Typography.Text>}
+                value={formData?.description ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))}          
+                ></Input>
+            </Row>
+            <Row className="mt-3">
+            <Select
+                className="w-full"
+                showSearch
+                placeholder="Select a parent category"
+                onSelect={(_, rec) => setFormData((prev) => ({...prev, parent_id: rec.id}))}
+                options={dataSource?.map((e) => {
+                  return {
+                    value: e.category_name,
+                    id: e.key
+                  }
+                }) ?? []}
+              />
+            </Row>
+          </Col>
+        </Modal>
+
+        {/* Delete Modal */}
+        <Modal title="Delete Record" open={isDeleteModalOpen} destroyOnClose onCancel={() => {
+          setIsDeleteModalOpen(false)
+        }} okText="Confirm" onOk={handleDelete} okButtonProps={{ style: { backgroundColor: 'red' } }}>
+          <Typography.Text>Are you sure you want to delete this?</Typography.Text>
+        </Modal>
         <Typography.Text className="text-[20px] underline underline-offset-2">
           Categories
         </Typography.Text>
 
+        <Button onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
         <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
           <Table<DataType>
             className="rounded-xl shadow mt-4 w-full"
