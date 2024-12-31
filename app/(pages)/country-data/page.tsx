@@ -72,7 +72,6 @@ export default function Home() {
     if (token) {
       try {
         const metricCategoriesResponse: GetMetricCategories[] = await getMetricCategories(token);
-        console.log(metricCategoriesResponse);
         setMetricCategories(metricCategoriesResponse);
       } catch (error) {
         console.error("Error fetching countries:", error);
