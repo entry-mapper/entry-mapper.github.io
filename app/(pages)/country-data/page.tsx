@@ -325,6 +325,7 @@ export default function Home() {
       <Typography.Text className="text-[20px] underline underline-offset-2">
         Country Data
       </Typography.Text>
+      <Row className="w-full justify-center">
       <Select
         showSearch
         placeholder="Select a Country"
@@ -336,9 +337,10 @@ export default function Home() {
         onSelect={(_, rec) => handleCountrySelect(rec)}
         options={countries}
       />
+        <Button className={`${selectedCountry ? 'visible ml-2' : 'hidden'}`} onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
+      </Row>
       <Row className="w-full justify-center">
-          <Button className={`${selectedCountry ? 'visible' : 'hidden'}`} onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
-          <Button className={`${selectedCountry ? 'visible ml-2' : 'hidden'}`} onClick={async () => {
+          <Button className={`visible ml-2`} onClick={async () => {
             const token = localStorage.getItem('token');
             if (token) {
               const response = await getTemplate(token);
@@ -358,7 +360,7 @@ export default function Home() {
               URL.revokeObjectURL(url);
             }
             }}>+ Download Bulk Upload Template</Button>
-            <BulkAddButton visible={selectedCountry ? true : false}></BulkAddButton>
+            <BulkAddButton visible={true}></BulkAddButton>
           {/* <Button className={`${selectedCountry ? 'visible ml-2' : 'hidden'}`} onClick={() => setIsAddModalOpen(true)}>+ Bulk Add </Button> */}
       </Row>
       <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
