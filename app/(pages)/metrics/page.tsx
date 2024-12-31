@@ -91,6 +91,7 @@ export default function MetricsComponent() {
         width: 140,
         shouldCellUpdate: () => false,
         render: (_: any, record: DataType) => {
+          console.log(record);
           return (
             <Row className='gap-1 w-full' key={record.key}>
               <Button className='w-[30px]' onClick={() => {

@@ -13,6 +13,8 @@ import { DelCountryDataApi } from "@/app/api/country-data/country-data-delete.ap
 import { GetMetricCategories } from "@/app/interfaces/metrics.interface";
 import { getMetricCategories } from "@/app/api/categories/categories-get.api";
 import { AddCountryDataApi } from "@/app/api/country-data/country-data-post.api";
+import { getTemplate } from "@/app/api/metrics/data-service.api";
+import BulkAddButton from "@/app/components/bulk-add-button.component";
 interface ICountryOptions {
   value: number;
   country: Country;
@@ -334,7 +336,31 @@ export default function Home() {
         onSelect={(_, rec) => handleCountrySelect(rec)}
         options={countries}
       />
-      <Button className={`${selectedCountry ? 'visible' : 'hidden'}`} onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
+      <Row className="w-full justify-center">
+          <Button className={`${selectedCountry ? 'visible' : 'hidden'}`} onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
+          <Button className={`${selectedCountry ? 'visible ml-2' : 'hidden'}`} onClick={async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+              const response = await getTemplate(token);
+              // Create a blob from the response
+              const blob = new Blob([response.data], { type: 'text/csv' });
+              const url = URL.createObjectURL(blob);
+
+              // Create a temporary link to trigger the download
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'template.csv'; // Set the filename for the download
+              document.body.appendChild(link);
+              link.click();
+
+              // Clean up
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+            }
+            }}>+ Download Bulk Upload Template</Button>
+            <BulkAddButton visible={selectedCountry ? true : false}></BulkAddButton>
+          {/* <Button className={`${selectedCountry ? 'visible ml-2' : 'hidden'}`} onClick={() => setIsAddModalOpen(true)}>+ Bulk Add </Button> */}
+      </Row>
       <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
         <Table<ICountryTableData>
           className="rounded-xl shadow mt-4 w-full"
