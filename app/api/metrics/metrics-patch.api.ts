@@ -57,7 +57,7 @@ export const patchMetricCategories = async (
 ): Promise<void> => {
   try {
     const response = await http.patch(
-      `${BASE_URL}/metrics/${metric_category_id}`, value,
+      `${BASE_URL}/metric-categories/${metric_category_id}`, value,
       {
         Authorization: `Bearer ${token}`,
       }

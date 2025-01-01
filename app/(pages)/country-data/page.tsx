@@ -156,6 +156,7 @@ export default function Home() {
   }, [isAuthenticated, router]);
 
   const fetchCountryData = async () => {
+    setIsLoading(true);
     const token = localStorage.getItem("token");
     if (selectedCountryId && token) {
       const countryDataResponse: ICountryData[] = await GetCountryDataApi(
@@ -173,6 +174,7 @@ export default function Home() {
       tableData.sort((a, b) => a.metric.length - b.metric.length);
       setTableData(tableData);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {

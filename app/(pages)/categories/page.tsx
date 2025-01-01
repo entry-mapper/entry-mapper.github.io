@@ -63,132 +63,137 @@ export default function Categories() {
   }
 
   useEffect(() => {
-    const columns: TableColumnsType<DataType> = [
-      {
-        title: "Category Name",
-        dataIndex: "category_name",
-        key: "category_name",
-        width: "25%",
-        fixed: "left",
-        render: (_, record) => {
-          return (
-            <Row>
-              {record.key === editingKey ? (
-                <Input placeholder="Enter Category Name"
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, category_name: e.target.value }))
-                  }
-                />
-              ) : (
-                <div className="p-3 text-black">{record.category_name}</div>
-              )}
-            </Row>
-          )
-        },
-      },
-      {
-        title: "Description",
-        dataIndex: "description",
-        key: "description",
-        width: "25%",
-        fixed: "left",
-        render: (_, record) => {
-          return (
-            <Row>
-              {record.key === editingKey ? (
-                <Input placeholder="Enter Category Description"
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, description: e.target.value }))
-                  }
-                />
-              ) : (
-                <div className="p-3 text-black">{record.description}</div>
-              )}
-            </Row>
-          )
-        },
-      },
-      {
-        title: "Parent Category Name",
-        dataIndex: "parent_category_name",
-        key: "parent_category_name",
-        width: "25%",
-        fixed: "left",
-        render: (_, record) => {
-          return (
-            <Row>
-              {record.key === editingKey ? (
-                <Input placeholder="Enter Parent Category Id"
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, parent_category_name: e.target.value }))
-                  }
-                />
-              ) : (
-                <div className="p-3 text-black">{record.parent_category_name}</div>
-              )}
-            </Row>
-          )
-        },
-      },
-      {
-        title: "Action",
-        key: "operation",
-        width: "20%",
-        fixed: "right",
-        render: (_, record) => {
-          return (
-            <Row className="gap-1 w-full">
-              {editingKey === record.key ? (
-                <Row className="gap-1">
-                  <Button className="w-[30px]">
-                    <CheckOutlined className="text-[#00ff00]"></CheckOutlined>
-                  </Button>
-                  <Button className="w-[30px]" onClick={() => {
-                    setEditingKey(null)
-                    setFormData({ parent_id: null, category_name: null, description: null, category_type: null })
-                  }}>
-                    <CloseOutlined className="text-[#ff1a1a]"></CloseOutlined>
-                  </Button>
-                </Row>
-              ) : (
-                <Button
-                  className="w-[30px]"
-                  onClick={() => {
-                    setFormData({
-                      category_name: record.category_name,
-                      description: record.description,
-                      parent_id: record.parent_category_id
-                    })
-                    setIsEditModalOpen(true);
-                    setEditingKey(record.key)
-                  }}
-                >
-                  <EditOutlined></EditOutlined>
-                </Button>
-              )}
-              <Button className="w-[30px]"
-                onClick={async () => {
-                  setIdToBeDeleted(record.key)
-                  setIsDeleteModalOpen(true);
-                }}>
-                <DeleteOutlined></DeleteOutlined>
-              </Button>
-            </Row>
-          );
-        },
-      },
-    ]
-    setColumns(columns);
-  }, [])
-
-  useEffect(() => {
-    setIsLoading(true);
     if (!isAuthenticated) {
       redirect("/login");
     }
-    setIsLoading(false);
 
-    fetchCategories();
+    const initialize = async () => {
+      setIsLoading(true);
+      try {
+        await fetchCategories();
+        const columns: TableColumnsType<DataType> = [
+          {
+            title: "Category Name",
+            dataIndex: "category_name",
+            key: "category_name",
+            width: "25%",
+            fixed: "left",
+            render: (_, record) => {
+              return (
+                <Row>
+                  {record.key === editingKey ? (
+                    <Input placeholder="Enter Category Name"
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, category_name: e.target.value }))
+                      }
+                    />
+                  ) : (
+                    <div className="p-3 text-black">{record.category_name}</div>
+                  )}
+                </Row>
+              )
+            },
+          },
+          {
+            title: "Description",
+            dataIndex: "description",
+            key: "description",
+            width: "25%",
+            fixed: "left",
+            render: (_, record) => {
+              return (
+                <Row>
+                  {record.key === editingKey ? (
+                    <Input placeholder="Enter Category Description"
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, description: e.target.value }))
+                      }
+                    />
+                  ) : (
+                    <div className="p-3 text-black">{record.description}</div>
+                  )}
+                </Row>
+              )
+            },
+          },
+          {
+            title: "Parent Category Name",
+            dataIndex: "parent_category_name",
+            key: "parent_category_name",
+            width: "25%",
+            fixed: "left",
+            render: (_, record) => {
+              return (
+                <Row>
+                  {record.key === editingKey ? (
+                    <Input placeholder="Enter Parent Category Id"
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, parent_category_name: e.target.value }))
+                      }
+                    />
+                  ) : (
+                    <div className="p-3 text-black">{record.parent_category_name}</div>
+                  )}
+                </Row>
+              )
+            },
+          },
+          {
+            title: "Action",
+            key: "operation",
+            width: "20%",
+            fixed: "right",
+            render: (_, record) => {
+              return (
+                <Row className="gap-1 w-full">
+                  {editingKey === record.key ? (
+                    <Row className="gap-1">
+                      <Button className="w-[30px]">
+                        <CheckOutlined className="text-[#00ff00]"></CheckOutlined>
+                      </Button>
+                      <Button className="w-[30px]" onClick={() => {
+                        setEditingKey(null)
+                        setFormData({ parent_id: null, category_name: null, description: null, category_type: null })
+                      }}>
+                        <CloseOutlined className="text-[#ff1a1a]"></CloseOutlined>
+                      </Button>
+                    </Row>
+                  ) : (
+                    <Button
+                      className="w-[30px]"
+                      onClick={() => {
+                        setFormData({
+                          category_name: record.category_name,
+                          description: record.description,
+                          parent_id: record.parent_category_id
+                        })
+                        setIsEditModalOpen(true);
+                        setEditingKey(record.key)
+                      }}
+                    >
+                      <EditOutlined></EditOutlined>
+                    </Button>
+                  )}
+                  <Button className="w-[30px]"
+                    onClick={async () => {
+                      setIdToBeDeleted(record.key)
+                      setIsDeleteModalOpen(true);
+                    }}>
+                    <DeleteOutlined></DeleteOutlined>
+                  </Button>
+                </Row>
+              );
+            },
+          },
+        ]
+        setColumns(columns);
+      } catch (error) {
+        console.error("Initialization error:", error);
+      } finally {
+        setIsLoading(false); // End loading state once everything is done
+      }
+    }
+    initialize();
   }, [isAuthenticated, router]);
 
   const handleAdd = async () => {
@@ -270,7 +275,6 @@ export default function Categories() {
     setIsDeleteModalOpen(false);
   }
 
-  if (!isLoading) {
     return (
       <div className="space-y-3 w-full flex flex-col items-center">
         {/* Edit Modal */}
@@ -430,6 +434,4 @@ export default function Categories() {
         </div>
       </div>
     );
-  }
-  return <></>;
 }
