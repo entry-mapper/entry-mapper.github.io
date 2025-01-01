@@ -57,66 +57,76 @@ export default function MetricsComponent() {
   }
 
   useEffect(() => {
-    setIsLoading(true);
     if (!isAuthenticated) {
       redirect("/login");
     }
-    setIsLoading(false);
-    fetchMetrics();
+    const initialize = async () => {
+      try {
+        await fetchMetrics();
+        setIsLoading(true);
+        const columns = [
+          {
+            title: "Metric Name",
+            dataIndex: "metricName",
+            key: "metricName",
+            width: "25%",
+          },
+          {
+            title: "Metric Description",
+            dataIndex: "metricDescription",
+            width: "40%",
+            key: "metricDescription",
+          },
+          {
+            title: "Unit",
+            dataIndex: "metricUnit",
+            width: "15%",
+            key: "metricDescription",
+          },
+          {
+            title: 'Action',
+            key: 'operation',
+            width: 140,
+            shouldCellUpdate: () => false,
+            render: (_: any, record: DataType) => {
+              console.log(record);
+              return (
+                <Row className='gap-1 w-full' key={record.key}>
+                  <Button className='w-[30px]' onClick={() => {
+                    setIsEditModalOpen(true);
+                    setEditingKey(record.key);
+                    setFormData({
+                      metricDescription: record.metricDescription,
+                      metricName: record.metricName,
+                      metricUnit: record.metricUnit
+                    })
+                  }}>
+                    <EditOutlined></EditOutlined>
+                  </Button>
+                  <Button className='w-[30px]' onClick={async () => {
+                    setIdToBeDeleted(record.key)
+                    setIsDeleteModalOpen(true);
+                  }}>
+                    <DeleteOutlined></DeleteOutlined>
+                  </Button>
+                </Row>
+              )
+            },
+          }
+        ];
+        setColumns(columns);
+        setIsLoading(false);
+
+      } catch (error) {
+        console.error("Initialization error:", error);
+      } finally {
+        setIsLoading(false); // End loading state once everything is done
+      }
+    }
+    initialize();
   }, [isAuthenticated, router]);
 
   useEffect(() => {
-    const columns = [
-      {
-        title: "Metric Name",
-        dataIndex: "metricName",
-        key: "metricName",
-        width: "25%",
-      },
-      {
-        title: "Metric Description",
-        dataIndex: "metricDescription",
-        width: "40%",
-        key: "metricDescription",
-      },
-      {
-        title: "Unit",
-        dataIndex: "metricUnit",
-        width: "15%",
-        key: "metricDescription",
-      },
-      {
-        title: 'Action',
-        key: 'operation',
-        width: 140,
-        shouldCellUpdate: () => false,
-        render: (_: any, record: DataType) => {
-          console.log(record);
-          return (
-            <Row className='gap-1 w-full' key={record.key}>
-              <Button className='w-[30px]' onClick={() => {
-                setIsEditModalOpen(true);
-                setEditingKey(record.key);
-                setFormData({
-                  metricDescription: record.metricDescription,
-                  metricName: record.metricName,
-                  metricUnit: record.metricUnit
-                })
-              }}>
-                <EditOutlined></EditOutlined>
-              </Button>
-              <Button className='w-[30px]' onClick={async () => {
-                setIdToBeDeleted(record.key)
-                setIsDeleteModalOpen(true);
-              }}>
-                <DeleteOutlined></DeleteOutlined>
-              </Button>
-            </Row>
-          )
-        },
-      }
-    ];
-    setColumns(columns);
   }, [])
 
   const handleAdd = async () => {
@@ -130,7 +140,7 @@ export default function MetricsComponent() {
 
       const token = localStorage.getItem("token");
 
-      if (token && userId && formData?.metricName && formData?.metricDescription && formData?.metricUnit ) {
+      if (token && userId && formData?.metricName && formData?.metricDescription && formData?.metricUnit) {
         const res = await AddMetricsApi(
           token,
           {
@@ -160,7 +170,7 @@ export default function MetricsComponent() {
 
       const token = localStorage.getItem("token");
 
-      if (token && userId && editingKey && formData?.metricName && formData?.metricDescription && formData?.metricUnit ) {
+      if (token && userId && editingKey && formData?.metricName && formData?.metricDescription && formData?.metricUnit) {
         const res = await PatchMetricsApi(
           token,
           editingKey,
@@ -196,136 +206,133 @@ export default function MetricsComponent() {
     setIsDeleteModalOpen(false);
   }
 
-  if (!isLoading) {
-    return (
-      <div className="space-y-3 w-full flex flex-col items-center">
-        {/* Edit Modal */}
-        <Modal title="Edit Record" open={isEditModalOpen} destroyOnClose onCancel={() => {
-          setIsEditModalOpen(false)
-          setFormData({
-            metricName: null,
-            metricDescription: null,
-            metricUnit: null,
-          });
-          setEditingKey(null);
-        }} okText="Save" onOk={handleEdit}>
-          <Col>
-            <Row className="mt-3">
-              <Input
-                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Name: </Typography.Text>}
-                value={formData?.metricName ?? ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    metricName: e.target.value,
-                  }))
-                }
-              ></Input>
-            </Row>
-            <Row className="mt-3">
-              <Input
-                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Description: </Typography.Text>}
-                value={formData?.metricDescription ?? ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    metricDescription: e.target.value,
-                  }))}          
-                ></Input>
-            </Row>
-            <Row className="mt-3">
-              <Input
-                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Unit: </Typography.Text>}
-                value={formData?.metricUnit ?? ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    metricUnit: e.target.value,
-                  }))}
-                ></Input>
-            </Row>
-          </Col>
-        </Modal>
+  return (
+    <div className="space-y-3 w-full flex flex-col items-center">
+      {/* Edit Modal */}
+      <Modal title="Edit Record" open={isEditModalOpen} destroyOnClose onCancel={() => {
+        setIsEditModalOpen(false)
+        setFormData({
+          metricName: null,
+          metricDescription: null,
+          metricUnit: null,
+        });
+        setEditingKey(null);
+      }} okText="Save" onOk={handleEdit}>
+        <Col>
+          <Row className="mt-3">
+            <Input
+              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Name: </Typography.Text>}
+              value={formData?.metricName ?? ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  metricName: e.target.value,
+                }))
+              }
+            ></Input>
+          </Row>
+          <Row className="mt-3">
+            <Input
+              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Description: </Typography.Text>}
+              value={formData?.metricDescription ?? ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  metricDescription: e.target.value,
+                }))}
+            ></Input>
+          </Row>
+          <Row className="mt-3">
+            <Input
+              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Unit: </Typography.Text>}
+              value={formData?.metricUnit ?? ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  metricUnit: e.target.value,
+                }))}
+            ></Input>
+          </Row>
+        </Col>
+      </Modal>
 
-        {/* Add Modal */}
-        <Modal title="Add Record" open={isAddModalOpen} destroyOnClose onCancel={() => {
-          setIsAddModalOpen(false)
-          setFormData({
-            metricName: null,
-            metricDescription: null,
-            metricUnit: null,
-          });
-          setEditingKey(null);
-        }} okText="Save" onOk={handleAdd}>
-          <Col>
-            <Row className="mt-3">
-              <Input
-                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Name: </Typography.Text>}
-                value={formData?.metricName ?? ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    metricName: e.target.value,
-                  }))
-                }
-              ></Input>
-            </Row>
-            <Row className="mt-3">
-              <Input
-                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Description: </Typography.Text>}
-                value={formData?.metricDescription ?? ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    metricDescription: e.target.value,
-                  }))}          
-                ></Input>
-            </Row>
-            <Row className="mt-3">
-              <Input
-                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Unit: </Typography.Text>}
-                value={formData?.metricUnit ?? ""}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    metricUnit: e.target.value,
-                  }))}
-                ></Input>
-            </Row>
-          </Col>
-        </Modal>
+      {/* Add Modal */}
+      <Modal title="Add Record" open={isAddModalOpen} destroyOnClose onCancel={() => {
+        setIsAddModalOpen(false)
+        setFormData({
+          metricName: null,
+          metricDescription: null,
+          metricUnit: null,
+        });
+        setEditingKey(null);
+      }} okText="Save" onOk={handleAdd}>
+        <Col>
+          <Row className="mt-3">
+            <Input
+              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Name: </Typography.Text>}
+              value={formData?.metricName ?? ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  metricName: e.target.value,
+                }))
+              }
+            ></Input>
+          </Row>
+          <Row className="mt-3">
+            <Input
+              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Description: </Typography.Text>}
+              value={formData?.metricDescription ?? ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  metricDescription: e.target.value,
+                }))}
+            ></Input>
+          </Row>
+          <Row className="mt-3">
+            <Input
+              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric Unit: </Typography.Text>}
+              value={formData?.metricUnit ?? ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  metricUnit: e.target.value,
+                }))}
+            ></Input>
+          </Row>
+        </Col>
+      </Modal>
 
-        {/* Delete Modal */}
-        <Modal title="Delete Record" open={isDeleteModalOpen} destroyOnClose onCancel={() => {
-          setIsDeleteModalOpen(false)
-        }} okText="Confirm" onOk={handleDelete} okButtonProps={{ style: { backgroundColor: 'red' } }}>
-          <Typography.Text>Are you sure you want to delete this?</Typography.Text>
-        </Modal>
+      {/* Delete Modal */}
+      <Modal title="Delete Record" open={isDeleteModalOpen} destroyOnClose onCancel={() => {
+        setIsDeleteModalOpen(false)
+      }} okText="Confirm" onOk={handleDelete} okButtonProps={{ style: { backgroundColor: 'red' } }}>
+        <Typography.Text>Are you sure you want to delete this?</Typography.Text>
+      </Modal>
 
-        <Typography.Text className="text-[20px] underline underline-offset-2">
-          Metrics
-        </Typography.Text>
+      <Typography.Text className="text-[20px] underline underline-offset-2">
+        Metrics
+      </Typography.Text>
 
-        <Button onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
-        <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
-          <Table<DataType>
-            className="rounded-xl shadow mt-4 w-full"
-            pagination={false}
-            columns={columns}
-            dataSource={tableData}
-            rowHoverable={false}
-            tableLayout="fixed"
-            loading={isLoading}
-            rowClassName={(record) =>
-              editingKey === record.key
-                ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl"
-                : "rounded-xl"
-            }
-          />
-        </div>
-
+      <Button onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
+      <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
+        <Table<DataType>
+          className="rounded-xl shadow mt-4 w-full"
+          pagination={false}
+          columns={columns}
+          dataSource={tableData}
+          rowHoverable={false}
+          tableLayout="fixed"
+          loading={isLoading}
+          rowClassName={(record) =>
+            editingKey === record.key
+              ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl"
+              : "rounded-xl"
+          }
+        />
       </div>
-    );
-  }
-  return <></>;
+
+    </div>
+  );
 }

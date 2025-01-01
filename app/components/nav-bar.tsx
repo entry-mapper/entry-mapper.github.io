@@ -17,6 +17,7 @@ export const NavBar: React.FC = () => {
     "/country-data": "1",
     "/metrics": "2",
     "/categories": "3",
+    "/metric-categories": "4",
   };
 
   // Set the active tab key based on the current URL
@@ -31,6 +32,7 @@ export const NavBar: React.FC = () => {
       "1": "/country-data",
       "2": "/metrics",
       "3": "/categories",
+      "4": "/metric-categories",
     };
 
     const url = keyToUrlMap[key];
@@ -51,6 +53,10 @@ export const NavBar: React.FC = () => {
     {
       key: "3",
       label: "Categories",
+    },
+    {
+      key: "4",
+      label: "Metric Mappings",
     },
   ];
 

@@ -49,3 +49,37 @@ export const PatchMetricsApi = async (
     throw new Error(errorMessage);
   }
 };
+
+export const patchMetricCategories = async (
+  token: string,
+  metric_category_id: number,
+  value: {metric_id: number, category_id: number, description: string}
+): Promise<void> => {
+  try {
+    const response = await http.patch(
+      `${BASE_URL}/metric-categories/${metric_category_id}`, value,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );    
+    response;
+
+
+  } catch (error: any) {
+    const errorMessageDefault =
+      "An unknown error occured while patching metrics";
+    let errorMessage: string = "";
+
+    if (error.response) {
+      // The request was made and the server responded with a status code that falls out of the range of 2xx
+      errorMessage = error.response.data.message;
+    } else if (error.request) {
+      // The request was made but no response was received
+      errorMessage = "The request was made but no response was received";
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      errorMessage = errorMessageDefault;
+    }
+    throw new Error(errorMessage);
+  }
+};
