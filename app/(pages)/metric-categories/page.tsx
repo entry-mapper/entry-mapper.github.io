@@ -196,13 +196,13 @@ export default function MetricCategoriesComponent() {
 
       const token = localStorage.getItem("token");
       console.log(formData)
-      if (token && userId && formData?.metric?.id && formData?.description && formData?.category?.id ) {
+      if (token && userId && formData?.metric?.id && formData?.category?.id ) {
         const res = await addMetricCategory(
           token,
           {
             metric_id: formData.metric.id,
             category_id: formData.category.id,
-            description: formData.description
+            description: formData.description ?? ""
           },
         );
         setFormData({
@@ -220,6 +220,7 @@ export default function MetricCategoriesComponent() {
       }
     } catch (error: any) {
       console.log(error);
+      errorToast(`${error.message ? error.message : JSON.stringify(error)}`)
     }
   }
 

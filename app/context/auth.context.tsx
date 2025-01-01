@@ -131,7 +131,7 @@ export const AuthContextProvider = ({ children }: AuthontextProviderProps) => {
 					errorAlert &&
 					<div className="flex flex-row w-full justify-center">
 						<Alert
-							className="fixed flex flex-row items-center justify-center top-[32px] w-[300px] z-50"
+							className="z-[9999] fixed flex flex-row items-center justify-center top-[32px] w-[300px] z-50"
 							message={alertMessage}
 							type="error"
 							showIcon
