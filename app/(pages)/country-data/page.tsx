@@ -1,9 +1,9 @@
 "use client";
 
 import { getCountriesApi } from "@/app/api/countries.api";
-import { GetCountryDataApi } from "@/app/api/country-data/country-data-get.api";
+import { GetCountryDataApi, getCountryDataByMetric } from "@/app/api/country-data/country-data-get.api";
 import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
-import { Button, Col, InputNumber, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
+import { Button, Col, InputNumber, message, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/auth.context";
@@ -33,10 +33,11 @@ interface IMetricCategoryOptions {
 }
 
 export default function Home() {
-  const { isAuthenticated, logout } = useAuthContext();
+  const { isAuthenticated, logout, errorToast } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null); // State to hold selected country
   const [selectedCountryId, setSelectedCountryId] = useState<number | null>(null); // State to hold selected country
+  const [selectedMetricCategory, setSelectedMetricCategory] = useState<GetMetricCategories>();
   const router = useRouter();
   const [tableData, setTableData] = useState<ICountryTableData[]>();
   const [countries, setCountries] = useState<ICountryOptions[]>([]);
@@ -47,7 +48,8 @@ export default function Home() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [countryDataIdToBeDeleted, setCountryDataIdToBeDeleted] = useState<number | null>(null);
-  const [selectedMetricCategory, setSelectedMetricCategory] = useState<GetMetricCategories>();
+  const [selectedMetricCategoryToAdd, setSelectedMetricCategoryToAdd] = useState<GetMetricCategories>();
+  const [selectedCountryToAdd, setSelectedCountryToAdd] = useState<Country>();
   const [metricCategories, setMetricCategories] = useState<GetMetricCategories[]>();
 
   const fetchCountries = async () => {
@@ -174,12 +176,28 @@ export default function Home() {
       tableData.sort((a, b) => a.metric.length - b.metric.length);
       setTableData(tableData);
     }
+    if (selectedMetricCategory && token) {
+      const countryDataResponse: ICountryData[] = await getCountryDataByMetric(
+        token,
+        selectedMetricCategory.id
+      );
+      const tableData = countryDataResponse.map((entry: ICountryData) => {
+        return {
+          ...entry,
+          key: JSON.stringify(entry.id),
+          country: entry?.country_name ?? "",
+          region: entry?.region_name ?? ""
+        }
+      })
+      tableData.sort((a, b) => a.metric.length - b.metric.length);
+      setTableData(tableData);      
+    }
     setIsLoading(false);
   };
 
   useEffect(() => {
     fetchCountryData();
-  }, [selectedCountryId]);
+  }, [selectedCountryId, selectedMetricCategory]);
 
   const handleCountrySelect = (value: any) => {
     setSelectedCountry(value?.country);
@@ -197,10 +215,10 @@ export default function Home() {
 
       const token = localStorage.getItem("token");
 
-      if (token && userId && metricValue && selectedMetricCategory && selectedCountry) {
+      if (token && userId && metricValue && selectedMetricCategoryToAdd && selectedCountryToAdd) {
         const payload = {
-          country_id: selectedCountry.id,
-          metric_category_id: selectedMetricCategory.id,
+          country_id: selectedCountryToAdd.id,
+          metric_category_id: selectedMetricCategoryToAdd.id,
           value: metricValue,
           user_id: userId
         }
@@ -212,10 +230,10 @@ export default function Home() {
           await fetchCountryData();
         }
       } else {
-        console.log("select required fields")
+        errorToast("select required fields")
       }
     } catch (error: any) {
-      console.log(error);
+      errorToast(error?.message);
     }
     setIsAddModalOpen(false);
     setMetricValue("");
@@ -291,10 +309,22 @@ export default function Home() {
         <Col>
             <Row className="mt-3">
             <Select
+              showSearch
+              placeholder="Select a Country"
+              filterOption={(input, option) =>
+                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+              }
+              style={{ width: 350 }}
+              value={selectedCountryToAdd?.country_name}
+              onSelect={(_, rec) => setSelectedCountryToAdd(rec.country)}
+              options={countries}
+            />
+            <Select
+                className="mt-3"
                 showSearch
                 placeholder="Select a Metric"
                 style={{ width: 350 }}
-                onSelect={(_, rec) => setSelectedMetricCategory(rec.metricCategory)}
+                onSelect={(_, rec) => setSelectedMetricCategoryToAdd(rec.metricCategory)}
                 options={metricCategories?.map((e) => {
                   return {
                     value: e.category.id ? `${e.super_category.value}->${e.category.value}->${e.metric.value}` : `${e.super_category.value}->${e.metric.value}`,
@@ -329,16 +359,36 @@ export default function Home() {
       <Row className="w-full justify-center">
       <Select
         showSearch
-        placeholder="Select a Country"
+        placeholder="Filter By Country"
         filterOption={(input, option) =>
           (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
         }
         style={{ width: 350 }}
         value={selectedCountry?.country_name}
-        onSelect={(_, rec) => handleCountrySelect(rec)}
+        onSelect={(_, rec) => {
+          setSelectedMetricCategory(undefined);
+          handleCountrySelect(rec);
+        }}
         options={countries}
       />
-        <Button className={`${selectedCountry ? 'visible ml-2' : 'hidden'}`} onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
+      <div className="ml-3 mr-3 text-[15px] font-bold">Or</div>
+      <Select
+          className="ml-1"
+          showSearch
+          placeholder="Filter By Metric"
+          style={{ width: 350 }}
+          value={selectedMetricCategory?.category.id ? `${selectedMetricCategory.super_category.value}->${selectedMetricCategory.category.value}->${selectedMetricCategory.metric.value}` : selectedMetricCategory ? `${selectedMetricCategory.super_category.value}->${selectedMetricCategory.metric.value}` : undefined}
+          onSelect={(_, rec) => {
+            setSelectedMetricCategory(rec.metricCategory)
+            setSelectedCountry(null);
+          }}
+          options={metricCategories?.map((e) => {
+            return {
+              value: e.category.id ? `${e.super_category.value}->${e.category.value}->${e.metric.value}` : `${e.super_category.value}->${e.metric.value}`,
+              metricCategory: e
+            }
+          }) ?? []}
+        />
       </Row>
       <Row className="w-full justify-center">
           <Button className={`visible ml-2`} onClick={async () => {
@@ -348,21 +398,21 @@ export default function Home() {
               // Create a blob from the response
               const blob = new Blob([response.data], { type: 'text/csv' });
               const url = URL.createObjectURL(blob);
-
+              
               // Create a temporary link to trigger the download
               const link = document.createElement('a');
               link.href = url;
               link.download = 'template.csv'; // Set the filename for the download
               document.body.appendChild(link);
               link.click();
-
+              
               // Clean up
               document.body.removeChild(link);
               URL.revokeObjectURL(url);
             }
-            }}>+ Download Bulk Upload Template</Button>
+          }}>+ Download Bulk Upload Template</Button>
             <BulkAddButton visible={true}></BulkAddButton>
-          {/* <Button className={`${selectedCountry ? 'visible ml-2' : 'hidden'}`} onClick={() => setIsAddModalOpen(true)}>+ Bulk Add </Button> */}
+          <Button className="ml-2" onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
       </Row>
       <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
         <Table<ICountryTableData>
