@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Button, Col, Input, Modal, Row, Select, Spin, Table, TableColumnsType, Typography } from "antd";
 import { GetMetricCategories, Metrics } from "@/app/interfaces/metrics.interface";
 import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, SortAscendingOutlined } from "@ant-design/icons";
 import { patchMetricCategories, PatchMetricsApi } from "@/app/api/metrics/metrics-patch.api";
 import { deleteMetricCategory, DelMetricsApi } from "@/app/api/metrics/metrics-del.component";
 import { addMetricCategory, AddMetricsApi } from "@/app/api/metrics/metrics-post.api";
@@ -17,7 +17,8 @@ interface DataType {
   key: number;
   metric: {id: number, value: string};
   description: string;
-  category: {id: number, value: string};
+  l1: {id: number, value: string};
+  l2: {id: number, value: string};
 }
 
 interface MetricFormData {
@@ -83,7 +84,8 @@ export default function MetricCategoriesComponent() {
           return {
             key: e.id,
             metric: {id: e.metric.id, value: e.metric.value},
-            category: {id: e.category.id ? e.category.id : e.super_category.id, value: e.category.id? e.category.value : e.super_category.value},
+            l2: {id: e?.category.id, value: e.category?.value},
+            l1: {id: e?.super_category.id, value: e.super_category?.value},
             description: e.description
           }
         })
@@ -122,12 +124,31 @@ export default function MetricCategoriesComponent() {
             ),
           },
           {
-            title: "Category",
-            dataIndex: "category",
+            title: "L1",
+            dataIndex: "l1",
             width: "35%",
-            key: "category",
+            key: "l1",
+            sorter: (a: any, b: any) => {
+              console.log(a.l1?.value.length);
+              return a.l1?.value.localeCompare(b.l1?.value)
+            },
             render: (_: any, record: DataType) => (
-              <Typography.Text>{record.category.value}</Typography.Text>
+              <Typography.Text>{record.l1.value}</Typography.Text>
+            ),
+          },
+          {
+            title: "L2",
+            dataIndex: "l2",
+            width: "35%",
+            key: "l2",
+            sorter: (a: any, b: any) => {
+              if (a.l2?.value && b.l2?.value) {
+                return a.l2?.value.localeCompare(b.l2?.value)
+              }
+              return false;
+            },
+            render: (_: any, record: DataType) => (
+              <Typography.Text>{record.l2.value}</Typography.Text>
             ),
           },
           {
@@ -153,7 +174,7 @@ export default function MetricCategoriesComponent() {
                     setEditingKey(record.key);
                     setFormData({
                       metric: record.metric,
-                      category: record.category,
+                      category: record?.l2.id ? record.l2 : record.l1,
                       description: record.description,
                     });
                   }}
