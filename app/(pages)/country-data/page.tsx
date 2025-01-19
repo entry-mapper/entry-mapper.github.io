@@ -391,7 +391,7 @@ export default function Home() {
         />
       </Row>
       <Row className="w-full justify-center">
-          <Button className={`visible ml-2`} onClick={async () => {
+          {/* <Button className={`visible ml-2`} onClick={async () => {
             const token = localStorage.getItem('token');
             if (token) {
               const response = await getTemplate(token);
@@ -410,7 +410,7 @@ export default function Home() {
               document.body.removeChild(link);
               URL.revokeObjectURL(url);
             }
-          }}>+ Download Bulk Upload Template</Button>
+          }}>+ Download Bulk Upload Template</Button> */}
             <BulkAddButton visible={true}></BulkAddButton>
           <Button className="ml-2" onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
       </Row>
