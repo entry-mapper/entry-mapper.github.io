@@ -13,7 +13,7 @@ interface FormData {
 export const PatchMetricsApi = async (
   token: string,
   metric_id: number,
-  value: {metric: string, description: string, unit: string}
+  value: {metric?: string, description?: string, unit?: string}
 ): Promise<Metrics> => {
   try {
     const response = await http.patch(

@@ -23,9 +23,15 @@ interface MetricFormData {
   metricUnit: string | null;
 }
 
+interface Payload {
+  metric?: string;
+  description?: string;
+  unit?: string;
+}
+
 export default function MetricsComponent() {
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuthContext();
+  const { isAuthenticated, logout, errorToast } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<DataType[]>();
   const [columns, setColumns] = useState<TableColumnsType<DataType>>();
@@ -170,19 +176,30 @@ export default function MetricsComponent() {
 
       const token = localStorage.getItem("token");
 
-      if (token && userId && editingKey && formData?.metricName && formData?.metricDescription && formData?.metricUnit) {
+      if (token && userId && editingKey && (formData?.metricName || formData?.metricDescription || formData?.metricUnit)) {
+        const payload: Payload = {}
+
+        // Add fields only if they exist
+        if (formData?.metricName) {
+          payload.metric = formData.metricName;
+        }
+        if (formData?.metricDescription) {
+            payload.description = formData.metricDescription;
+        }
+        if (formData?.metricUnit) {
+            payload.unit = formData.metricUnit;
+        }
+
         const res = await PatchMetricsApi(
           token,
           editingKey,
-          {
-            metric: formData.metricName,
-            description: formData.metricDescription,
-            unit: formData.metricUnit
-          },
+          payload
         );
         if (res) {
           await fetchMetrics();
         }
+      } else {
+        errorToast("Have you filled all the fields?")
       }
     } catch (error: any) {
       console.log(error);
