@@ -17,6 +17,7 @@ interface DataType {
   key: number;
   metric: {id: number, value: string};
   description: string;
+  label: string;
   l1: {id: number, value: string};
   l2: {id: number, value: string};
 }
@@ -24,6 +25,7 @@ interface DataType {
 interface MetricFormData {
   metric: {id: number, value: string} | null;
   description: string | null;
+  label: string | null;
   category: {id: number, value: string} | null;
 }
 
@@ -43,6 +45,7 @@ export default function MetricCategoriesComponent() {
     metric: null,
     description: null,
     category: null,
+    label: null
   });
   const [categories, setCategories] = useState<ICategory[]>();
   const [metrics, setMetrics] = useState<Metrics[]>();
@@ -78,7 +81,6 @@ export default function MetricCategoriesComponent() {
     if (token) {
       try {
         const metricCategoriesResponse: GetMetricCategories[] = await getMetricCategories(token);
-        console.log(metricCategoriesResponse)
         setMetricCategories(metricCategoriesResponse);
         const newTableData: DataType[] = metricCategoriesResponse.map((e: GetMetricCategories) => {
           return {
@@ -86,7 +88,8 @@ export default function MetricCategoriesComponent() {
             metric: {id: e.metric.id, value: e.metric.value},
             l2: {id: e?.category.id, value: e.category?.value},
             l1: {id: e?.super_category.id, value: e.super_category?.value},
-            description: e.description
+            description: e.description,
+            label: e.label,
           }
         })
         setTableData(newTableData)
@@ -139,7 +142,7 @@ export default function MetricCategoriesComponent() {
           {
             title: "L2",
             dataIndex: "l2",
-            width: "35%",
+            width: "25%",
             key: "l2",
             sorter: (a: any, b: any) => {
               if (a.l2?.value && b.l2?.value) {
@@ -161,6 +164,15 @@ export default function MetricCategoriesComponent() {
             ),
           },
           {
+            title: "Label",
+            dataIndex: "label",
+            width: "10%",
+            key: "label",
+            render: (_: any, record: DataType) => (
+              <Typography.Text>{record.label}</Typography.Text>
+            ),
+          },
+          {
             title: "Action",
             key: "operation",
             width: 140,
@@ -176,6 +188,7 @@ export default function MetricCategoriesComponent() {
                       metric: record.metric,
                       category: record?.l2.id ? record.l2 : record.l1,
                       description: record.description,
+                      label: record.label
                     });
                   }}
                 >
@@ -230,6 +243,7 @@ export default function MetricCategoriesComponent() {
           metric: null,
           description: null,
           category: null,
+          label: null
         });
         if (res) {
           await fetchMetricCategories();
@@ -256,20 +270,22 @@ export default function MetricCategoriesComponent() {
 
       const token = localStorage.getItem("token");
 
-      if (token && userId && editingKey && formData?.metric && formData?.description && formData?.category) {
+      if (token && userId && editingKey && formData?.metric && formData?.description && formData?.category && formData?.label) {
         const res = await patchMetricCategories(
           token,
           editingKey, // metric_category_id
           {
             metric_id: formData.metric.id,
             description: formData.description,
-            category_id: formData.category.id
+            category_id: formData.category.id,
+            label: formData.label
           },
         );
         setFormData({
           metric: null,
           description: null,
           category: null,
+          label: null
         });
         await fetchMetricCategories();        
       }
@@ -304,6 +320,7 @@ export default function MetricCategoriesComponent() {
             metric: null,
             description: null,
             category: null,
+            label: null
           });
           setEditingKey(null);
         }} okText="Save" onOk={handleEdit}>
@@ -351,6 +368,17 @@ export default function MetricCategoriesComponent() {
                 }) ?? []}
               />
             </Row>
+            <Row className="mt-3">
+            <Select
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Label: </Typography.Text>}
+                className="w-full"
+                showSearch
+                placeholder="Select a label"
+                value={formData?.label}
+                onSelect={(_, rec) => setFormData((prev) => ({...prev, label: rec.id}))}
+                options={[{value: 'eu', id: 'eu'}, {value: 'non_eu', id: 'non_eu'},]}
+              />
+            </Row>
           </Col>
         </Modal>
 
@@ -361,6 +389,7 @@ export default function MetricCategoriesComponent() {
             metric: null,
             description: null,
             category: null,
+            label: null
           });
           setEditingKey(null);
         }} okText="Save" onOk={handleAdd}>
@@ -402,6 +431,15 @@ export default function MetricCategoriesComponent() {
                     id: e.category_id
                   }
                 }) ?? []}
+              />
+            </Row>
+            <Row className="mt-3">
+            <Select
+                className="w-full"
+                showSearch
+                placeholder="Select a label"
+                onSelect={(_, rec) => setFormData((prev) => ({...prev, label: rec.id}))}
+                options={[{value: 'eu', id: 'eu'}, {value: 'non_eu', id: 'non_eu'},]}
               />
             </Row>
           </Col>

@@ -53,7 +53,7 @@ export const PatchMetricsApi = async (
 export const patchMetricCategories = async (
   token: string,
   metric_category_id: number,
-  value: {metric_id: number, category_id: number, description: string}
+  value: {metric_id: number, category_id: number, description: string, label: string}
 ): Promise<void> => {
   try {
     const response = await http.patch(

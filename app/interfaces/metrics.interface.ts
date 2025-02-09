@@ -27,7 +27,8 @@ export interface GetMetricCategories {
         id: number;
         value: string;
     };
-    description: string
+    description: string;
+    label: string;
 }
 
 export interface MatrixData { 
