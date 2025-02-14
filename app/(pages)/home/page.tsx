@@ -85,7 +85,7 @@ export default function Home() {
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             }
-            }}>+ Download DB as CSV</Button>
+            }}>Download DB as CSV</Button>
             <BulkAddButton visible={true}></BulkAddButton>
             <Button className={`visible ml-2`} danger={true} onClick={() => setIsModalOpen(true)}>Reset</Button>
       </Row>
