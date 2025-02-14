@@ -6,7 +6,7 @@ import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/auth.context";
 import { GetMetricCategories } from "@/app/interfaces/metrics.interface";
-import { getEntireDb } from "@/app/api/metrics/data-service.api";
+import { getEntireDb, resetDatabase } from "@/app/api/metrics/data-service.api";
 import BulkAddButton from "@/app/components/bulk-add-button.component";
 interface ICountryOptions {
   value: number;
@@ -26,15 +26,44 @@ interface IMetricCategoryOptions {
 }
 
 export default function Home() {
-  const { isAuthenticated, logout, errorToast } = useAuthContext();
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOk = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const response = await resetDatabase(token);
+        message.success(JSON.stringify(response.data?.message || response))
+        setIsModalOpen(false);
+      } catch (e: any) {
+        message.error(JSON.stringify(e))
+      }
+  }
+}
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  }
 
   return (
     <div className="space-y-3 w-full flex flex-col items-center">
       <Typography.Text className="text-[20px] underline underline-offset-2">
         Home
       </Typography.Text>
+      <Modal
+        className="text-red-500"
+        title="Warning"
+        open={isModalOpen}
+        okButtonProps={{
+          danger: true
+        }}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Destroy!"
+        cancelText="Cancel"
+      >
+        This action will delete all metrics, categories, and their mappings from the database. Are you sure you want to proceed?
+      </Modal>
 
       <Row className="w-full justify-center">
             <Button className={`visible ml-2`} onClick={async () => {
@@ -58,6 +87,7 @@ export default function Home() {
             }
             }}>+ Download DB as CSV</Button>
             <BulkAddButton visible={true}></BulkAddButton>
+            <Button className={`visible ml-2`} danger={true} onClick={() => setIsModalOpen(true)}>Reset</Button>
       </Row>
     </div>
   );

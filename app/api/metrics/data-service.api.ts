@@ -45,6 +45,27 @@ export const getEntireDb = async (token: string) => {
   }
 };
 
+export const resetDatabase = async (token: string) => {
+  try {
+    const response = await http.del(`${BASE_URL}/data-service/reset`, {
+      Authorization: `Bearer ${token}`,
+    });
+    return response;
+  } catch (error: any) {
+    const errorMessageDefault = "An unknown error occured while reseting db";
+    let errorMessage: string = "";
+
+    if (error.response) {
+      errorMessage = error.response.data.message;
+    } else if (error.request) {
+      errorMessage = "The request was made but no response was received";
+    } else {
+      errorMessage = errorMessageDefault;
+    }
+    throw new Error(errorMessage);
+  }
+};
+
 export const postBulkUploadData = async (token: string, formData: FormData) => {
     try {
       const response = await http.post(`${BASE_URL}/data-service/upload`, formData, {
