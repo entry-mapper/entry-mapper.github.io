@@ -96,6 +96,8 @@ export const getMetricCategories = async (token: string) => {
         super_category: entry.super_category?.id ? entry.super_category: entry.category,
         description: entry.description,
         label: entry.label,
+        code: entry.code,
+        source: entry.source,
       }
     })
   } catch (error: any) {

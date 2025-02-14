@@ -18,6 +18,8 @@ interface DataType {
   metric: {id: number, value: string};
   description: string;
   label: string;
+  code: string;
+  source: string;
   l1: {id: number, value: string};
   l2: {id: number, value: string};
 }
@@ -26,6 +28,8 @@ interface MetricFormData {
   metric: {id: number, value: string} | null;
   description: string | null;
   label: string | null;
+  code: string | null;
+  source: string | null;
   category: {id: number, value: string} | null;
 }
 
@@ -45,7 +49,9 @@ export default function MetricCategoriesComponent() {
     metric: null,
     description: null,
     category: null,
-    label: null
+    label: null,
+    code: null,
+    source: null,
   });
   const [categories, setCategories] = useState<ICategory[]>();
   const [metrics, setMetrics] = useState<Metrics[]>();
@@ -90,6 +96,8 @@ export default function MetricCategoriesComponent() {
             l1: {id: e?.super_category.id, value: e.super_category?.value},
             description: e.description,
             label: e.label,
+            code: e.code,
+            source: e.source,
           }
         })
         setTableData(newTableData)
@@ -178,6 +186,26 @@ export default function MetricCategoriesComponent() {
             ),
           },
           {
+            title: "Code",
+            dataIndex: "code",
+            width: "10%",
+            key: "code",
+            shouldCellUpdate: () => false,
+            render: (_: any, record: DataType) => (
+              <Typography.Text>{record.code}</Typography.Text>
+            ),
+          },
+          {
+            title: "Source",
+            dataIndex: "source",
+            width: "10%",
+            key: "source",
+            shouldCellUpdate: () => false,
+            render: (_: any, record: DataType) => (
+              <Typography.Text>{record.source}</Typography.Text>
+            ),
+          },
+          {
             title: "Action",
             key: "operation",
             width: 140,
@@ -193,7 +221,9 @@ export default function MetricCategoriesComponent() {
                       metric: record.metric,
                       category: record?.l2.id ? record.l2 : record.l1,
                       description: record.description,
-                      label: record.label
+                      label: record.label,
+                      code: record.code,
+                      source: record.source,
                     });
                   }}
                 >
@@ -248,7 +278,9 @@ export default function MetricCategoriesComponent() {
           metric: null,
           description: null,
           category: null,
-          label: null
+          label: null,
+          code: null,
+          source: null,
         });
         if (res) {
           await fetchMetricCategories();
@@ -275,7 +307,7 @@ export default function MetricCategoriesComponent() {
 
       const token = localStorage.getItem("token");
 
-      if (token && userId && editingKey && formData?.metric && formData?.description && formData?.category && formData?.label) {
+      if (token && userId && editingKey && formData?.metric && formData?.description && formData?.category && formData?.label && formData?.code && formData?.source) {
         const res = await patchMetricCategories(
           token,
           editingKey, // metric_category_id
@@ -283,14 +315,18 @@ export default function MetricCategoriesComponent() {
             metric_id: formData.metric.id,
             description: formData.description,
             category_id: formData.category.id,
-            label: formData.label
+            label: formData.label,
+            code: formData.code,
+            source: formData.source,
           },
         );
         setFormData({
           metric: null,
           description: null,
           category: null,
-          label: null
+          label: null,
+          code: null,
+          source: null,
         });
         await fetchMetricCategories();        
       }
@@ -325,7 +361,9 @@ export default function MetricCategoriesComponent() {
             metric: null,
             description: null,
             category: null,
-            label: null
+            label: null,
+            code: null,
+            source: null,
           });
           setEditingKey(null);
         }} okText="Save" onOk={handleEdit}>
@@ -338,6 +376,28 @@ export default function MetricCategoriesComponent() {
                   setFormData((prev) => ({
                     ...prev,
                     description: e.target.value,
+                  }))}          
+                ></Input>
+            </Row>
+            <Row className="mt-3">
+              <Input
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Code: </Typography.Text>}
+                value={formData?.code ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    code: e.target.value,
+                  }))}          
+                ></Input>
+            </Row>
+            <Row className="mt-3">
+              <Input
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Source: </Typography.Text>}
+                value={formData?.source ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    source: e.target.value,
                   }))}          
                 ></Input>
             </Row>
@@ -394,7 +454,9 @@ export default function MetricCategoriesComponent() {
             metric: null,
             description: null,
             category: null,
-            label: null
+            label: null,
+            code: null,
+            source: null,
           });
           setEditingKey(null);
         }} okText="Save" onOk={handleAdd}>
@@ -407,6 +469,28 @@ export default function MetricCategoriesComponent() {
                   setFormData((prev) => ({
                     ...prev,
                     description: e.target.value,
+                  }))}          
+                ></Input>
+            </Row>
+            <Row className="mt-3">
+              <Input
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Code: </Typography.Text>}
+                value={formData?.code ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    code: e.target.value,
+                  }))}          
+                ></Input>
+            </Row>
+            <Row className="mt-3">
+              <Input
+                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Source: </Typography.Text>}
+                value={formData?.source ?? ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    source: e.target.value,
                   }))}          
                 ></Input>
             </Row>

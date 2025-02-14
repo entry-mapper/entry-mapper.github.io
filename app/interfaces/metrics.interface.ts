@@ -29,6 +29,8 @@ export interface GetMetricCategories {
     };
     description: string;
     label: string;
+    code: string;
+    source: string;
 }
 
 export interface MatrixData { 
