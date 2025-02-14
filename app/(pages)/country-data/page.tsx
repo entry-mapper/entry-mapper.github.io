@@ -32,7 +32,7 @@ interface IMetricCategoryOptions {
   metricCategory: GetMetricCategories;
 }
 
-export default function Home() {
+export default function CountryData() {
   const { isAuthenticated, logout, errorToast } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null); // State to hold selected country
@@ -411,7 +411,7 @@ export default function Home() {
               URL.revokeObjectURL(url);
             }
           }}>+ Download Bulk Upload Template</Button> */}
-            <BulkAddButton visible={true}></BulkAddButton>
+            {/* <BulkAddButton visible={true}></BulkAddButton> */}
           <Button className="ml-2" onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
       </Row>
       <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">

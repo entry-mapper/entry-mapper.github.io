@@ -14,10 +14,11 @@ export const NavBar: React.FC = () => {
 
   // Map URLs to tab keys
   const urlToKeyMap: { [key: string]: string } = {
-    "/country-data": "1",
-    "/metrics": "2",
-    "/categories": "3",
-    "/metric-categories": "4",
+    "/home": "1",
+    "/country-data": "2",
+    "/metrics": "3",
+    "/categories": "4",
+    "/metric-categories": "5",
   };
 
   // Set the active tab key based on the current URL
@@ -29,10 +30,11 @@ export const NavBar: React.FC = () => {
   const handleTabChange = (key: string) => {
     // Navigate to the appropriate route based on the tab key
     const keyToUrlMap: { [key: string]: string } = {
-      "1": "/country-data",
-      "2": "/metrics",
-      "3": "/categories",
-      "4": "/metric-categories",
+      "1": "/home",
+      "2": "/country-data",
+      "3": "/metrics",
+      "4": "/categories",
+      "5": "/metric-categories",
     };
 
     const url = keyToUrlMap[key];
@@ -44,18 +46,22 @@ export const NavBar: React.FC = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "Country Data",
+      label: "Home",
     },
     {
       key: "2",
-      label: "Metrics",
+      label: "Country Data",
     },
     {
       key: "3",
-      label: "Categories",
+      label: "Metrics",
     },
     {
       key: "4",
+      label: "Categories",
+    },
+    {
+      key: "5",
       label: "Metric Mappings",
     },
   ];
