@@ -17,13 +17,19 @@ const BulkAddModal: React.FC<{ visible: boolean }> = ({ visible }) => {
   };
 
   const handleFileChange = (file: File) => {
+    const MAX_SIZE = 0.5 * 1024 * 1024; // 0.5MB
+
+    if (file.size > MAX_SIZE) {
+      message.error('File is too large. Please select a file under 500KBs.');
+      return false; // Reject file if it's too large
+    }
     setFile(file);
     return false; // Prevent default upload behavior
   };
 
   const handleUpload = async () => {
     if (!file) {
-      message.error('Please select a file before confirming.');
+      message.error('Please select a file under 500KBs before confirming.');
       return;
     }
 
@@ -77,7 +83,7 @@ const BulkAddModal: React.FC<{ visible: boolean }> = ({ visible }) => {
           accept=".csv"
           maxCount={1}
         >
-          <Button icon={<UploadOutlined />}>Select CSV File</Button>
+          <Button icon={<UploadOutlined />}>Select CSV File - Max 500KBs</Button>
         </Upload>
       </Modal>
     </Row>

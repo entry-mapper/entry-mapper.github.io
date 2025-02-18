@@ -98,7 +98,6 @@ export default function MetricCategoriesComponent() {
       dataIndex: "metricName",
       key: "metricName",
       width: "25%",
-      shouldCellUpdate: () => false,
       render: (_: any, record: DataType) => (
         <Typography.Text>{record.metric.value}</Typography.Text>
       ),
@@ -108,7 +107,6 @@ export default function MetricCategoriesComponent() {
       dataIndex: "l1",
       width: "35%",
       key: "l1",
-      shouldCellUpdate: () => false,
       sorter: (a: any, b: any) => {
         console.log(a.l1?.value.length);
         return a.l1?.value.localeCompare(b.l1?.value)
@@ -122,7 +120,6 @@ export default function MetricCategoriesComponent() {
       dataIndex: "l2",
       width: "25%",
       key: "l2",
-      shouldCellUpdate: () => false,
       sorter: (a: any, b: any) => {
         if (a.l2?.value && b.l2?.value) {
           return a.l2?.value.localeCompare(b.l2?.value)
@@ -138,7 +135,6 @@ export default function MetricCategoriesComponent() {
       dataIndex: "description",
       width: "20%",
       key: "description",
-      shouldCellUpdate: () => false,
       render: (_: any, record: DataType) => (
         <Typography.Text>{record.description}</Typography.Text>
       ),
@@ -148,7 +144,6 @@ export default function MetricCategoriesComponent() {
       dataIndex: "label",
       width: "10%",
       key: "label",
-      shouldCellUpdate: () => false,
       render: (_: any, record: DataType) => (
         <Typography.Text>{record.label}</Typography.Text>
       ),
@@ -158,7 +153,6 @@ export default function MetricCategoriesComponent() {
       dataIndex: "code",
       width: "10%",
       key: "code",
-      shouldCellUpdate: () => false,
       render: (_: any, record: DataType) => (
         <Typography.Text>{record.code}</Typography.Text>
       ),
@@ -168,7 +162,6 @@ export default function MetricCategoriesComponent() {
       dataIndex: "source",
       width: "10%",
       key: "source",
-      shouldCellUpdate: () => false,
       render: (_: any, record: DataType) => (
         <Typography.Text>{record.source}</Typography.Text>
       ),
@@ -177,7 +170,6 @@ export default function MetricCategoriesComponent() {
       title: "Action",
       key: "operation",
       width: 140,
-      shouldCellUpdate: () => false,
       render: (_: any, record: DataType) => (
         <Row className="gap-1 w-full" key={record.key}>
           <Button
@@ -265,7 +257,6 @@ export default function MetricCategoriesComponent() {
   useEffect(() => {
     if (!isAuthenticated) {
       redirect("/login");
-      return; // Stop further execution if redirecting
     }
   
     const initialize = async () => {
