@@ -2,7 +2,7 @@
 
 import { useAuthContext } from "../../context/auth.context";
 import { redirect, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button, Col, Input, Modal, Row, Select, Spin, Table, TableColumnsType, Typography } from "antd";
 import { GetMetricCategories, Metrics } from "@/app/interfaces/metrics.interface";
 import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
@@ -12,6 +12,7 @@ import { deleteMetricCategory, DelMetricsApi } from "@/app/api/metrics/metrics-d
 import { addMetricCategory, AddMetricsApi } from "@/app/api/metrics/metrics-post.api";
 import { ICategory } from "@/app/interfaces/categories.interface";
 import { getCategories, getMetricCategories } from "@/app/api/categories/categories-get.api";
+import React from "react";
 
 interface DataType {
   key: number;
@@ -33,12 +34,47 @@ interface MetricFormData {
   category: {id: number, value: string} | null;
 }
 
+const MemoizedTable = React.memo(
+  ({
+    data,
+    columns,
+    editingKey,
+    isLoading,
+  }: {
+    data: DataType[] | undefined;
+    columns: TableColumnsType<DataType>;
+    editingKey: number | null;
+    isLoading: boolean;
+  }) => {
+    return (
+      <Table<DataType>
+        className="rounded-xl shadow mt-4 w-full"
+        pagination={false}
+        columns={columns}
+        dataSource={data}
+        rowHoverable={false}
+        tableLayout="fixed"
+        loading={isLoading}
+        rowClassName={(record) =>
+          editingKey === record.key
+            ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl"
+            : "rounded-xl"
+        }
+      />
+    );
+  },
+  (prevProps, nextProps) =>
+    prevProps.data === nextProps.data &&
+    prevProps.columns === nextProps.columns &&
+    prevProps.editingKey === nextProps.editingKey &&
+    prevProps.isLoading === nextProps.isLoading
+);
+
 export default function MetricCategoriesComponent() {
   const router = useRouter();
   const { isAuthenticated, logout, errorToast, infoToast } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<DataType[]>();
-  const [columns, setColumns] = useState<TableColumnsType<DataType>>();
   const [editingKey, setEditingKey] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -55,6 +91,125 @@ export default function MetricCategoriesComponent() {
   });
   const [categories, setCategories] = useState<ICategory[]>();
   const [metrics, setMetrics] = useState<Metrics[]>();
+
+  const columns = useMemo<TableColumnsType<DataType>>(() => [
+    {
+      title: "Metric Name",
+      dataIndex: "metricName",
+      key: "metricName",
+      width: "25%",
+      shouldCellUpdate: () => false,
+      render: (_: any, record: DataType) => (
+        <Typography.Text>{record.metric.value}</Typography.Text>
+      ),
+    },
+    {
+      title: "L1",
+      dataIndex: "l1",
+      width: "35%",
+      key: "l1",
+      shouldCellUpdate: () => false,
+      sorter: (a: any, b: any) => {
+        console.log(a.l1?.value.length);
+        return a.l1?.value.localeCompare(b.l1?.value)
+      },
+      render: (_: any, record: DataType) => (
+        <Typography.Text>{record.l1.value}</Typography.Text>
+      ),
+    },
+    {
+      title: "L2",
+      dataIndex: "l2",
+      width: "25%",
+      key: "l2",
+      shouldCellUpdate: () => false,
+      sorter: (a: any, b: any) => {
+        if (a.l2?.value && b.l2?.value) {
+          return a.l2?.value.localeCompare(b.l2?.value)
+        }
+        return false;
+      },
+      render: (_: any, record: DataType) => (
+        <Typography.Text>{record.l2.value}</Typography.Text>
+      ),
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      width: "20%",
+      key: "description",
+      shouldCellUpdate: () => false,
+      render: (_: any, record: DataType) => (
+        <Typography.Text>{record.description}</Typography.Text>
+      ),
+    },
+    {
+      title: "Label",
+      dataIndex: "label",
+      width: "10%",
+      key: "label",
+      shouldCellUpdate: () => false,
+      render: (_: any, record: DataType) => (
+        <Typography.Text>{record.label}</Typography.Text>
+      ),
+    },
+    {
+      title: "Code",
+      dataIndex: "code",
+      width: "10%",
+      key: "code",
+      shouldCellUpdate: () => false,
+      render: (_: any, record: DataType) => (
+        <Typography.Text>{record.code}</Typography.Text>
+      ),
+    },
+    {
+      title: "Source",
+      dataIndex: "source",
+      width: "10%",
+      key: "source",
+      shouldCellUpdate: () => false,
+      render: (_: any, record: DataType) => (
+        <Typography.Text>{record.source}</Typography.Text>
+      ),
+    },
+    {
+      title: "Action",
+      key: "operation",
+      width: 140,
+      shouldCellUpdate: () => false,
+      render: (_: any, record: DataType) => (
+        <Row className="gap-1 w-full" key={record.key}>
+          <Button
+            className="w-[30px]"
+            onClick={() => {
+              setIsEditModalOpen(true);
+              setEditingKey(record.key);
+              setFormData({
+                metric: record.metric,
+                category: record?.l2.id ? record.l2 : record.l1,
+                description: record.description,
+                label: record.label,
+                code: record.code,
+                source: record.source,
+              });
+            }}
+          >
+            <EditOutlined />
+          </Button>
+          <Button
+            className="w-[30px]"
+            onClick={() => {
+              setIdToBeDeleted(record.key);
+              setIsDeleteModalOpen(true);
+            }}
+          >
+            <DeleteOutlined />
+          </Button>
+        </Row>
+      ),
+    },
+  ], []);
 
   const fetchCategories = async () => {
     const token = localStorage.getItem("token");
@@ -121,129 +276,7 @@ export default function MetricCategoriesComponent() {
           fetchMetricCategories(),
           fetchMetrics(),
           fetchCategories(),
-        ]);
-  
-        // Set up columns after data is fetched
-        const columns = [
-          {
-            title: "Metric Name",
-            dataIndex: "metricName",
-            key: "metricName",
-            width: "25%",
-            shouldCellUpdate: () => false,
-            render: (_: any, record: DataType) => (
-              <Typography.Text>{record.metric.value}</Typography.Text>
-            ),
-          },
-          {
-            title: "L1",
-            dataIndex: "l1",
-            width: "35%",
-            key: "l1",
-            shouldCellUpdate: () => false,
-            sorter: (a: any, b: any) => {
-              console.log(a.l1?.value.length);
-              return a.l1?.value.localeCompare(b.l1?.value)
-            },
-            render: (_: any, record: DataType) => (
-              <Typography.Text>{record.l1.value}</Typography.Text>
-            ),
-          },
-          {
-            title: "L2",
-            dataIndex: "l2",
-            width: "25%",
-            key: "l2",
-            shouldCellUpdate: () => false,
-            sorter: (a: any, b: any) => {
-              if (a.l2?.value && b.l2?.value) {
-                return a.l2?.value.localeCompare(b.l2?.value)
-              }
-              return false;
-            },
-            render: (_: any, record: DataType) => (
-              <Typography.Text>{record.l2.value}</Typography.Text>
-            ),
-          },
-          {
-            title: "Description",
-            dataIndex: "description",
-            width: "20%",
-            key: "description",
-            shouldCellUpdate: () => false,
-            render: (_: any, record: DataType) => (
-              <Typography.Text>{record.description}</Typography.Text>
-            ),
-          },
-          {
-            title: "Label",
-            dataIndex: "label",
-            width: "10%",
-            key: "label",
-            shouldCellUpdate: () => false,
-            render: (_: any, record: DataType) => (
-              <Typography.Text>{record.label}</Typography.Text>
-            ),
-          },
-          {
-            title: "Code",
-            dataIndex: "code",
-            width: "10%",
-            key: "code",
-            shouldCellUpdate: () => false,
-            render: (_: any, record: DataType) => (
-              <Typography.Text>{record.code}</Typography.Text>
-            ),
-          },
-          {
-            title: "Source",
-            dataIndex: "source",
-            width: "10%",
-            key: "source",
-            shouldCellUpdate: () => false,
-            render: (_: any, record: DataType) => (
-              <Typography.Text>{record.source}</Typography.Text>
-            ),
-          },
-          {
-            title: "Action",
-            key: "operation",
-            width: 140,
-            shouldCellUpdate: () => false,
-            render: (_: any, record: DataType) => (
-              <Row className="gap-1 w-full" key={record.key}>
-                <Button
-                  className="w-[30px]"
-                  onClick={() => {
-                    setIsEditModalOpen(true);
-                    setEditingKey(record.key);
-                    setFormData({
-                      metric: record.metric,
-                      category: record?.l2.id ? record.l2 : record.l1,
-                      description: record.description,
-                      label: record.label,
-                      code: record.code,
-                      source: record.source,
-                    });
-                  }}
-                >
-                  <EditOutlined />
-                </Button>
-                <Button
-                  className="w-[30px]"
-                  onClick={() => {
-                    setIdToBeDeleted(record.key);
-                    setIsDeleteModalOpen(true);
-                  }}
-                >
-                  <DeleteOutlined />
-                </Button>
-              </Row>
-            ),
-          },
-        ];
-  
-        setColumns(columns); // Set columns only after all data fetching
+        ]);  
       } catch (error) {
         console.error("Initialization error:", error);
       } finally {
@@ -307,7 +340,7 @@ export default function MetricCategoriesComponent() {
 
       const token = localStorage.getItem("token");
 
-      if (token && userId && editingKey && formData?.metric && formData?.description && formData?.category && formData?.label && formData?.code && formData?.source) {
+      if (token && userId && editingKey && formData?.metric && formData?.category) {
         const res = await patchMetricCategories(
           token,
           editingKey, // metric_category_id
@@ -547,22 +580,13 @@ export default function MetricCategoriesComponent() {
 
         <Button onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
         <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
-          <Table<DataType>
-            className="rounded-xl shadow mt-4 w-full"
-            pagination={false}
+          <MemoizedTable
+            data={tableData}
             columns={columns}
-            dataSource={tableData}
-            rowHoverable={false}
-            tableLayout="fixed"
-            loading={isLoading}
-            rowClassName={(record) =>
-              editingKey === record.key
-                ? "shadow-inner bg-[#ffffcc] hover:!bg-[#ffffcc] rounded-xl"
-                : "rounded-xl"
-            }
+            editingKey={editingKey}
+            isLoading={isLoading}
           />
         </div>
-
       </div>
     );
 }

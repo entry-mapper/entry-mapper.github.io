@@ -3,12 +3,12 @@ import { http } from "@/app/utils/http";
 
 const BASE_URL = "https://dev.snrautos.co.uk";
 
-export const postCategories = async (token: string, patchCategory: IPostCategory) => {
+export const postCategories = async (token: string, postCategory: IPostCategory) => {
   try {
     const response = await http.post(`${BASE_URL}/categories`, {
-        "category_name": patchCategory.category_name,
-        "parent_id": patchCategory.parent_id,
-        "description": patchCategory.description
+        "category_name": postCategory.category_name,
+        "parent_id": postCategory.parent_id,
+        "description": postCategory.description
     }, {
       Authorization: `Bearer ${token}`,
     });

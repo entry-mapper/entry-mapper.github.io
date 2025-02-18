@@ -9,14 +9,14 @@ export interface ICategory {
 export interface IPatchCategory {
     category_id: number;
     category_name?: string;
-    category_type?: string;
-    description?: string;
-    parent_id?: number;
+    category_type?: string | null;
+    description?: string | null;
+    parent_id?: number | null;
 }
 
 export interface IPostCategory {
     category_name: string;
-    category_type?: string;
-    description: string;
-    parent_id: number;
+    category_type?: string | null;
+    description: string | null;
+    parent_id: number | null;
 }
