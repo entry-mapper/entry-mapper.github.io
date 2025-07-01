@@ -1,7 +1,8 @@
 import { CountryMetricValues, MetricCategories } from "../../interfaces/metrics.interface";
 import { http } from "../../utils/http";
+import { BASE_URL } from "../../utils/config";
 
-const BASE_URL = "https://dev.snrautos.co.uk";
+//const BASE_URL = process.env.API_URL;
 
 export const getAvailableMetrics = async (token: string): Promise<MetricCategories[]> => {
     try {

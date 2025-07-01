@@ -1,7 +1,8 @@
 import { http } from "../../utils/http";
 import { Metrics } from "../../interfaces/metrics.interface";
+import { BASE_URL } from "@/app/utils/config";
 
-const BASE_URL = "https://dev.snrautos.co.uk";
+//const BASE_URL =process.env.API_URL;
 
 export const getTemplate = async (token: string) => {
   try {

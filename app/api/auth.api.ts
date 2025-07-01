@@ -1,7 +1,8 @@
 import { http } from "../utils/http";
 import { LoginForm, LoginResponse } from "../interfaces/auth.interfaces";
+import { BASE_URL } from "../utils/config";
 
-const BASE_URL= "https://dev.snrautos.co.uk";
+//const BASE_URL= process.env.API_URL; //" ";
 
 export const login = async (
     credentials: LoginForm
