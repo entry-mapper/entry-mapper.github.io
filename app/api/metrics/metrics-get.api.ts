@@ -1,7 +1,6 @@
 import { http } from "../../utils/http";
 import { Metrics } from "../../interfaces/metrics.interface";
-
-const BASE_URL = "https://dev.snrautos.co.uk";
+import { BASE_URL } from "@/app/utils/config";
 
 export const GetMetricsApi = async (token: string): Promise<Metrics[]> => {
   try {

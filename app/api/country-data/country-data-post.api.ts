@@ -1,6 +1,5 @@
 import { http } from "../../utils/http";
-
-const BASE_URL = "https://dev.snrautos.co.uk";
+import { BASE_URL } from "@/app/utils/config";
 
 interface CountryDataPostApiPayload {
   country_id: number;

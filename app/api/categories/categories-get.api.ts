@@ -1,7 +1,6 @@
 import { MetricCategories } from "@/app/interfaces/metrics.interface";
 import { http } from "@/app/utils/http";
-
-const BASE_URL = "https://dev.snrautos.co.uk";
+import { BASE_URL } from "@/app/utils/config";
 
 export const getCategoriesNested = async (
   token: string

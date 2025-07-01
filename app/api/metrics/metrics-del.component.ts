@@ -1,6 +1,5 @@
+import { BASE_URL } from "@/app/utils/config";
 import { http } from "../../utils/http";
-
-const BASE_URL = "https://dev.snrautos.co.uk";
 
 export const DelMetricsApi = async (token: string, id: number): Promise<boolean> => {
     try {

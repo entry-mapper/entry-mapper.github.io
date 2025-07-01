@@ -1,7 +1,6 @@
 import { Country } from "../interfaces/country.interfaces";
 import { http } from "../utils/http";
-
-const BASE_URL = "https://dev.snrautos.co.uk";
+import { BASE_URL } from "../utils/config";
 
 export const getCountriesApi = async (token: string): Promise<Country[]> => {
     try {

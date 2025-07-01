@@ -1,7 +1,6 @@
 import { ICountryData } from "../../interfaces/country.interfaces";
 import { http } from "../../utils/http";
-
-const BASE_URL = "https://dev.snrautos.co.uk";
+import { BASE_URL } from "../../utils/config";
 
 export const GetCountryDataApi = async (token: string, id: number): Promise<ICountryData[]> => {
     try {
