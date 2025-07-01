@@ -2,8 +2,6 @@ import { MetricCategories } from "@/app/interfaces/metrics.interface";
 import { http } from "@/app/utils/http";
 import { BASE_URL } from "@/app/utils/config";
 
-// const BASE_URL = process.env.API_URL;
-
 export const getCategoriesNested = async (
   token: string
 ): Promise<MetricCategories[]> => {

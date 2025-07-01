@@ -3,8 +3,6 @@ import { MetricCategories } from "@/app/interfaces/metrics.interface";
 import { http } from "@/app/utils/http";
 import { BASE_URL } from "@/app/utils/config";
 
-//const BASE_URL = process.env.API_URL;
-
 export const patchCategories = async (token: string, patchCategory: IPatchCategory) => {
   try {
     const response = await http.patch(`${BASE_URL}/categories/${patchCategory.category_id}`, {

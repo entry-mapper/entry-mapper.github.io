@@ -2,7 +2,6 @@ import { describe } from "node:test";
 import { Metrics } from "../../interfaces/metrics.interface";
 import { http } from "../../utils/http";
 import { BASE_URL } from "@/app/utils/config";
-//const BASE_URL = process.env.API_URL;
 
 interface FormData {
     metricName: string | null,

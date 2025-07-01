@@ -2,8 +2,6 @@ import { Country } from "../interfaces/country.interfaces";
 import { http } from "../utils/http";
 import { BASE_URL } from "../utils/config";
 
-//const BASE_URL = process.env.API_URL;
-
 export const getCountriesApi = async (token: string): Promise<Country[]> => {
     try {
         const response = await http.get(`${BASE_URL}/countries`, {

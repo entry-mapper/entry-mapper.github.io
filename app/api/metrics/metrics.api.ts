@@ -2,8 +2,6 @@ import { CountryMetricValues, MetricCategories } from "../../interfaces/metrics.
 import { http } from "../../utils/http";
 import { BASE_URL } from "../../utils/config";
 
-//const BASE_URL = process.env.API_URL;
-
 export const getAvailableMetrics = async (token: string): Promise<MetricCategories[]> => {
     try {
         const response = await http.get(`${BASE_URL}/categories`, {

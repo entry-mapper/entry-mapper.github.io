@@ -1,9 +1,6 @@
 import { BASE_URL } from "@/app/utils/config";
 import { http } from "../../utils/http";
 
-
-//const BASE_URL = process.env.API_URL;
-
 export const DelMetricsApi = async (token: string, id: number): Promise<boolean> => {
     try {
         const response = await http.del(`${BASE_URL}/metrics/${id}`, {

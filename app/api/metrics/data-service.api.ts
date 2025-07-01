@@ -2,8 +2,6 @@ import { http } from "../../utils/http";
 import { Metrics } from "../../interfaces/metrics.interface";
 import { BASE_URL } from "@/app/utils/config";
 
-//const BASE_URL =process.env.API_URL;
-
 export const getTemplate = async (token: string) => {
   try {
     const response = await http.get(`${BASE_URL}/data-service/template`, {
