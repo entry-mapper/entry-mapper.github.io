@@ -5,7 +5,8 @@ import { useRouter, redirect } from "next/navigation";
 import { Button, Col, Input, Modal, Row, Table, TableColumnsType, Typography } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-import { useAuthContext } from "../../context/auth.context";
+// import { useAuthContext } from "../../context/auth.context";
+import { useAppDispatch,useAppSelector } from "@/app/redux/hook";
 import { Metrics } from "@/app/interfaces/metrics.interface";
 import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
 import { PatchMetricsApi } from "@/app/api/metrics/metrics-patch.api";
@@ -69,7 +70,9 @@ const MemoizedTable = React.memo(
 
 export default function MetricsComponent() {
   const router = useRouter();
-  const { isAuthenticated, errorToast } = useAuthContext();
+  // const { isAuthenticated, errorToast } = useAuthContext();
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const [isLoading, setIsLoading] = useState(true);
   const [tableData, setTableData] = useState<DataType[]>();
   const [editingKey, setEditingKey] = useState<number | null>(null);
@@ -234,7 +237,7 @@ export default function MetricsComponent() {
           await fetchMetrics();
         }
       } else {
-        errorToast("Have you filled all the fields?");
+        dispatch(setErrorToast("Have you filled all the fields?"));
       }
     } catch (error: any) {
       console.error(error);
