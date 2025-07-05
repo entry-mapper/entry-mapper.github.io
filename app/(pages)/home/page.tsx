@@ -4,10 +4,10 @@ import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
 import { Button, Col, InputNumber, message, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-// import { useAuthContext } from "../../context/auth.context";
-// import { GetMetricCategories } from "@/app/interfaces/metrics.interface";
+import { GetMetricCategories } from "@/app/interfaces/metrics.interface";
 import { getEntireDb, resetDatabase } from "@/app/api/metrics/data-service.api";
 import BulkAddButton from "@/app/components/bulk-add-button.component";
+
 interface ICountryOptions {
   value: number;
   country: Country;

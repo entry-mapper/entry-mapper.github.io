@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-// import { useAuthContext } from "../../context/auth.context";
 import { login } from "@/app/redux/authSlice"; // ✅ ADD THIS LINE
 import { useAppSelector,useAppDispatch } from "@/app/redux/hook";
 import { LoginForm, LoginResponse } from "../../interfaces/auth.interfaces";
@@ -10,7 +9,6 @@ import { Typography, Card, Form, Input, Button, message } from "antd";
 const { Title, Paragraph } = Typography;
 
 export default function Login() {
-  // const { login, isAuthenticated } = useAuthContext();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +29,6 @@ export default function Login() {
   });
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    // const response: LoginResponse = await login(formData);
   const response: LoginResponse = await dispatch(login(formData)).unwrap();
 
     if ("error" in response) {

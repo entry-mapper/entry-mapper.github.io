@@ -4,8 +4,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useRouter, redirect } from "next/navigation";
 import { Button, Col, Input, Modal, Row, Table, TableColumnsType, Typography } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-
-// import { useAuthContext } from "../../context/auth.context";
+import { setErrorToast } from "@/app/redux/authSlice";
 import { useAppDispatch,useAppSelector } from "@/app/redux/hook";
 import { Metrics } from "@/app/interfaces/metrics.interface";
 import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
@@ -70,7 +69,6 @@ const MemoizedTable = React.memo(
 
 export default function MetricsComponent() {
   const router = useRouter();
-  // const { isAuthenticated, errorToast } = useAuthContext();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const [isLoading, setIsLoading] = useState(true);

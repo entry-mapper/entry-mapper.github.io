@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { Row, Button, Modal, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { postBulkUploadData } from '../api/metrics/data-service.api';
-// import { useAuthContext } from '../context/auth.context';
 import { useAppSelector } from '../redux/hook'; 
 
 const BulkAddModal: React.FC<{ visible: boolean }> = ({ visible }) => {
-  // const { user } = useAuthContext();
   const user = useAppSelector((state) => state.auth.user); // Assuming user is stored in auth slice
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);

@@ -3,14 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, Row, Button } from "antd";
 import type { TabsProps } from "antd";
-// import { useAuthContext } from "../context/auth.context";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch,useAppSelector } from "../redux/hook";
 import { logout } from "../redux/authSlice";
 
 
 export const NavBar: React.FC = () => {
-  // const { logout, isAuthenticated } = useAuthContext();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const router = useRouter();

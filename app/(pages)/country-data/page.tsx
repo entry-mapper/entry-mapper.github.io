@@ -6,7 +6,7 @@ import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
 import { Button, Col, InputNumber, message, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-// import { useAuthContext } from "../../context/auth.context";
+import { setErrorToast } from "@/app/redux/authSlice";
 import { useAppSelector,useAppDispatch } from "@/app/redux/hook";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { PatchCountryDataApi } from "@/app/api/country-data/country-data-patch.api";
@@ -34,7 +34,6 @@ interface IMetricCategoryOptions {
 }
 
 export default function CountryData() {
-  // const { isAuthenticated, errorToast } = useAuthContext();
   const dispatch= useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const [isLoading, setIsLoading] = useState(true);
@@ -236,7 +235,7 @@ export default function CountryData() {
         dispatch(setErrorToast("select required fields"));
       }
     } catch (error: any) {
-      errorToast(error?.message);
+       dispatch(setErrorToast(error?.message));
     }
     setIsAddModalOpen(false);
     setMetricValue("");

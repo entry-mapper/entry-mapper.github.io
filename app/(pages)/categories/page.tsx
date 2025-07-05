@@ -1,6 +1,6 @@
 "use client";
 
-// import { useAuthContext } from "../../context/auth.context";
+import { setErrorToast } from "@/app/redux/authSlice";
 import { useAppSelector, useAppDispatch } from "@/app/redux/hook";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
@@ -66,7 +66,6 @@ const MemoizedTable = React.memo(
 export default function Categories() {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  // const { isAuthenticated, errorToast, infoToast } = useAuthContext();
   const [editingKey, setEditingKey] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
