@@ -309,7 +309,7 @@ export default function MetricCategoriesComponent() {
         });
         if (res) {
           await fetchMetricCategories();
-          message.error("Updated!");
+        message.success('Updated successfully!');
         }
         setIsAddModalOpen(false);
       } else {
