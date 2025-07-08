@@ -1,10 +1,9 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/app/redux/hook";
-import { setInfoToast,setErrorToast } from "@/app/redux/authSlice";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { Button, Col, Input, Modal, Row, Select, Spin, Table, TableColumnsType, Typography } from "antd";
+import { Button, Col, Input, message, Modal, Row, Select, Spin, Table, TableColumnsType, Typography } from "antd";
 import { GetMetricCategories, Metrics } from "@/app/interfaces/metrics.interface";
 import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
 import { DeleteOutlined, EditOutlined, SortAscendingOutlined } from "@ant-design/icons";
@@ -310,15 +309,16 @@ export default function MetricCategoriesComponent() {
         });
         if (res) {
           await fetchMetricCategories();
-          dispatch(setInfoToast("Updated!"));
+          message.error("Updated!");
         }
         setIsAddModalOpen(false);
       } else {
-        dispatch(setErrorToast("Please fill the required fields"));
+message.error("Please fill the required fields");
       }
     } catch (error: any) {
       console.log(error);
-      dispatch(setErrorToast(`${error.message ? error.message : JSON.stringify(error)}`));
+    message.error(`${error.message ? error.message : JSON.stringify(error)}`);
+
     }
   }
 

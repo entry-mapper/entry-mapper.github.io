@@ -92,22 +92,6 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
-    setErrorToast: (state, action: PayloadAction<string>) => {
-      state.alertMessage = action.payload;
-      state.errorAlert = true;
-    },
-    clearErrorToast: (state) => {
-      state.errorAlert = false;
-      state.alertMessage = '';
-    },
-    setInfoToast: (state, action: PayloadAction<string>) => {
-      state.infoMessage = action.payload;
-      state.infoAlert = true;
-    },
-    clearInfoToast: (state) => {
-      state.infoAlert = false;
-      state.infoMessage = '';
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -150,5 +134,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setErrorToast, clearErrorToast, setInfoToast, clearInfoToast } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

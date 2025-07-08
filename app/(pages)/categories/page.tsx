@@ -1,6 +1,6 @@
 "use client";
 
-import { setErrorToast } from "@/app/redux/authSlice";
+import { message } from "antd";
 import { useAppSelector, useAppDispatch } from "@/app/redux/hook";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
@@ -290,7 +290,7 @@ export default function Categories() {
         setIsEditModalOpen(false);
         setEditingKey(null);
       } else {
-        dispatch(setErrorToast("Please fill required fields."));
+        message.error("Please fill required fields.");
       }
     } catch (error: any) {
       console.log(error);

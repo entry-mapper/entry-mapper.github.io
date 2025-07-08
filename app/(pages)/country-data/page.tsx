@@ -6,7 +6,6 @@ import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
 import { Button, Col, InputNumber, message, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { setErrorToast } from "@/app/redux/authSlice";
 import { useAppSelector,useAppDispatch } from "@/app/redux/hook";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { PatchCountryDataApi } from "@/app/api/country-data/country-data-patch.api";
@@ -232,10 +231,11 @@ export default function CountryData() {
           await fetchCountryData();
         }
       } else {
-        dispatch(setErrorToast("select required fields"));
+message.error("select required fields");
       }
     } catch (error: any) {
-       dispatch(setErrorToast(error?.message));
+    
+message.error(error?.message);
     }
     setIsAddModalOpen(false);
     setMetricValue("");
