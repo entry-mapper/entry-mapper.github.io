@@ -1,6 +1,7 @@
 "use client";
 
-import { useAuthContext } from "../../context/auth.context";
+import { message } from "antd";
+import { useAppSelector, useAppDispatch } from "@/app/redux/hook";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { Button, Col, Input, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
@@ -63,7 +64,8 @@ const MemoizedTable = React.memo(
 );
 
 export default function Categories() {
-  const { isAuthenticated, logout, errorToast, infoToast } = useAuthContext();
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const [editingKey, setEditingKey] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -252,7 +254,7 @@ export default function Categories() {
             parent_id: formData?.parent_id,
             category_type: formData?.category_type
           }
-);
+        );
         await fetchCategories();
       }
     } catch (error: any) {
@@ -288,7 +290,7 @@ export default function Categories() {
         setIsEditModalOpen(false);
         setEditingKey(null);
       } else {
-        errorToast("Please fill required fields.")
+        message.error("Please fill required fields.");
       }
     } catch (error: any) {
       console.log(error);

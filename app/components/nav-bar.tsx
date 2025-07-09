@@ -3,11 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, Row, Button } from "antd";
 import type { TabsProps } from "antd";
-import { useAuthContext } from "../context/auth.context";
 import { useRouter, usePathname } from "next/navigation";
+import { useAppDispatch,useAppSelector } from "../redux/hook";
+import { logout } from "../redux/authSlice";
+
 
 export const NavBar: React.FC = () => {
-  const { logout, isAuthenticated } = useAuthContext();
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
   const [activeKey, setActiveKey] = useState<string>("1");
@@ -77,9 +80,10 @@ export const NavBar: React.FC = () => {
         centered
         animated={{ inkBar: true, tabPane: false }}
       />:null}
-      {isAuthenticated?<Button className="text-[15px] px-5 py-4 ml-20" onClick={logout}>
+      {isAuthenticated ? <Button className="text-[15px] px-5 py-4 ml-20" onClick={() => dispatch(logout())}>
         Logout
-      </Button>:null}
+      </Button> : null}
+      {/* <Button className="text-[15px] px-5 py-4 ml-20" onClick={() => logout()}>Logout</Button> */}
       
     </Row>
   );
