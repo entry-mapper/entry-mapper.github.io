@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter, redirect } from "next/navigation";
-import { Button, Col, Input, Modal, Row, Table, TableColumnsType, Typography, message } from "antd";
+import {  Col, Input, Modal, Row, Table, TableColumnsType, Typography, message } from "antd";
+
+import Button from "@/app/components/Button";
+
+
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useAppDispatch,useAppSelector } from "@/app/redux/hook";
 import { Metrics } from "@/app/interfaces/metrics.interface";

@@ -3,7 +3,11 @@
 import { useAppDispatch, useAppSelector } from "@/app/redux/hook";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { Button, Col, Input, message, Modal, Row, Select, Spin, Table, TableColumnsType, Typography } from "antd";
+import {  Col, Input, message, Modal, Row, Select, Spin, Table, TableColumnsType, Typography } from "antd";
+
+import Button from "@/app/components/Button";
+
+
 import { GetMetricCategories, Metrics } from "@/app/interfaces/metrics.interface";
 import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
 import { DeleteOutlined, EditOutlined, SortAscendingOutlined } from "@ant-design/icons";

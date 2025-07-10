@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useEffect, useState } from "react";
-import { Tabs, Row, Button } from "antd";
+import { Tabs, Row } from "antd";
+import Button from "./Button";
 import type { TabsProps } from "antd";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch,useAppSelector } from "../redux/hook";
