@@ -4,7 +4,8 @@ import { login } from "@/app/redux/authSlice"; // ✅ ADD THIS LINE
 import { useAppSelector,useAppDispatch } from "@/app/redux/hook";
 import { LoginForm, LoginResponse } from "../../interfaces/auth.interfaces";
 import { redirect, useRouter } from "next/navigation";
-import { Typography, Card, Form, Input } from "antd";
+import {  Card, Form, Input } from "antd";
+import { Typography } from "@/app/components/UI/Typography";
 import { message } from "@/app/components/UI/Message"; 
 import Button from "@/app/components/UI/Button";
 
