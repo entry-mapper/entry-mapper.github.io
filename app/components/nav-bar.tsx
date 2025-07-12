@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Tabs, Row } from "antd";
-import Button from "./Button";
+import Button from "./UI/Button";
 import type { TabsProps } from "antd";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch,useAppSelector } from "../redux/hook";

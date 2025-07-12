@@ -3,8 +3,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter, redirect } from "next/navigation";
 import {  Col, Input, Modal, Row, Table, TableColumnsType, Typography } from "antd";
-import { message } from "@/app/components/Message";
-import Button from "@/app/components/Button";
+import { message } from "@/app/components/UI/Message";
+import Button from "@/app/components/UI/Button";
 
 
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";

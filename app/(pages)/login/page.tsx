@@ -5,8 +5,8 @@ import { useAppSelector,useAppDispatch } from "@/app/redux/hook";
 import { LoginForm, LoginResponse } from "../../interfaces/auth.interfaces";
 import { redirect, useRouter } from "next/navigation";
 import { Typography, Card, Form, Input } from "antd";
-import { message } from "@/app/components/Message"; 
-import Button from "@/app/components/Button";
+import { message } from "@/app/components/UI/Message"; 
+import Button from "@/app/components/UI/Button";
 
 
 const { Title, Paragraph } = Typography;

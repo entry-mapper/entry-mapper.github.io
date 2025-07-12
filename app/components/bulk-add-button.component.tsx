@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Modal, Upload  } from 'antd';
-import { message } from '@/app/components/Message';
-import Button from './Button';
+import { message } from '@/app/components/UI/Message';
+import Button from './UI/Button';
 import { UploadOutlined } from '@ant-design/icons';
 import { postBulkUploadData } from '../api/metrics/data-service.api';
 import { useAppSelector } from '../redux/hook'; 
