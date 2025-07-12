@@ -1,11 +1,11 @@
 "use client";
 
-import { message } from "antd";
 import { useAppSelector, useAppDispatch } from "@/app/redux/hook";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import {  Col, Input, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
 import Button from "@/app/components/Button";
+import { message } from "@/app/components/Message";
 import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { getCategories } from "@/app/api/categories/categories-get.api";
 import { patchCategories } from "@/app/api/categories/categories-patch.api";

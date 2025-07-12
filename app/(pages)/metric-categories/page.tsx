@@ -3,8 +3,8 @@
 import { useAppDispatch, useAppSelector } from "@/app/redux/hook";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import {  Col, Input, message, Modal, Row, Select, Spin, Table, TableColumnsType, Typography } from "antd";
-
+import {  Col, Input, Modal, Row, Select, Spin, Table, TableColumnsType, Typography } from "antd";
+import { message } from "@/app/components/Message";
 import Button from "@/app/components/Button";
 
 
