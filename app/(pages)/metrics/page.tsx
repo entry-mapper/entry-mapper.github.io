@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter, redirect } from "next/navigation";
-import {  Col, Input, Modal, Row, Table, TableColumnsType, Typography } from "antd";
+import {  Col, Input, Row, Table, TableColumnsType, Typography } from "antd";
+import Modal from "@/app/components/UI/Modal";
 import { message } from "@/app/components/UI/Message";
 import Button from "@/app/components/UI/Button";
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
-import {  Col, InputNumber, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
+import {  Col, InputNumber,  Row, Select, Table, TableColumnsType, Typography } from "antd";
+import Modal from "@/app/components/UI/Modal";
 import { message } from "@/app/components/UI/Message";
 import Button from "@/app/components/UI/Button";
 import { redirect, useRouter } from "next/navigation";
