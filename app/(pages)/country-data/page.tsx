@@ -3,7 +3,11 @@
 import { getCountriesApi } from "@/app/api/countries.api";
 import { GetCountryDataApi, getCountryDataByMetric } from "@/app/api/country-data/country-data-get.api";
 import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
-import { Button, Col, InputNumber, message, Modal, Row, Select, Table, TableColumnsType, Typography } from "antd";
+import { Col, InputNumber, Row, Select, Table, TableColumnsType} from "antd";
+import { Typography } from "@/app/components/UI/Typography";
+import Modal from "@/app/components/UI/Modal";
+import Button from "@/app/components/UI/Button";
+import { message } from "@/app/components/UI/Message";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAppSelector,useAppDispatch } from "@/app/redux/hook";
