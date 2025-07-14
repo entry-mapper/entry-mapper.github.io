@@ -3,10 +3,8 @@
 import { getCountriesApi } from "@/app/api/countries.api";
 import { GetCountryDataApi, getCountryDataByMetric } from "@/app/api/country-data/country-data-get.api";
 import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
-import { Col, Row, Table, TableColumnsType} from "antd";
-import Select from "@/app/components/UI/Select";
+import { Col, InputNumber, Row, Select, Table, TableColumnsType} from "antd";
 import { Typography } from "@/app/components/UI/Typography";
-import InputNumber from "@/app/components/UI/InputNumber";
 import Modal from "@/app/components/UI/Modal";
 import Button from "@/app/components/UI/Button";
 import { message } from "@/app/components/UI/Message";
