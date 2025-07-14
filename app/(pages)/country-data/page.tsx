@@ -300,8 +300,8 @@ message.error(error?.message);
         <Col>
           <Typography.Text>Value: </Typography.Text>
           <InputNumber
-            value={metricValue}
-            onChange={setMetricValue}
+            value={metricValue ? parseFloat(metricValue) : null}
+            onChange={(value) => setMetricValue(value !== null ? value.toString() : null)}
           ></InputNumber>
         </Col>
       </Modal>
