@@ -3,7 +3,10 @@
 import { useAppDispatch, useAppSelector } from "@/app/redux/hook";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import {  Col, Input, Row, Select, Spin, Table, TableColumnsType} from "antd";
+import {  Col, Input, Row, Spin, Table, TableColumnsType} from "antd";
+import { Select } from "antd";
+// import Select from "@/app/components/UI/Select";
+import CustomSelect from "@/app/components/UI/Select";
 import { Typography } from "@/app/components/UI/Typography";
 import Modal from "@/app/components/UI/Modal";
 import { message } from "@/app/components/UI/Message";

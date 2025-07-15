@@ -3,14 +3,16 @@
 import { getCountriesApi } from "@/app/api/countries.api";
 import { GetCountryDataApi, getCountryDataByMetric } from "@/app/api/country-data/country-data-get.api";
 import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
-import { Col, InputNumber, Row, Select, Table, TableColumnsType} from "antd";
+import { Col, Row, Table, TableColumnsType } from "antd";
+// import Select from "@/app/components/UI/Select";
+import CustomSelect from "@/app/components/UI/Select";
 import { Typography } from "@/app/components/UI/Typography";
 import Modal from "@/app/components/UI/Modal";
 import Button from "@/app/components/UI/Button";
 import { message } from "@/app/components/UI/Message";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useAppSelector,useAppDispatch } from "@/app/redux/hook";
+import { useAppSelector, useAppDispatch } from "@/app/redux/hook";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { PatchCountryDataApi } from "@/app/api/country-data/country-data-patch.api";
 import { DelCountryDataApi } from "@/app/api/country-data/country-data-delete.api";
@@ -37,7 +39,7 @@ interface IMetricCategoryOptions {
 }
 
 export default function CountryData() {
-  const dispatch= useAppDispatch();
+  const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null); // State to hold selected country
@@ -195,7 +197,7 @@ export default function CountryData() {
         }
       })
       tableData.sort((a, b) => a.metric.length - b.metric.length);
-      setTableData(tableData);      
+      setTableData(tableData);
     }
     setIsLoading(false);
   };
@@ -235,11 +237,11 @@ export default function CountryData() {
           await fetchCountryData();
         }
       } else {
-message.error("select required fields");
+        message.error("select required fields");
       }
     } catch (error: any) {
-    
-message.error(error?.message);
+
+      message.error(error?.message);
     }
     setIsAddModalOpen(false);
     setMetricValue("");
@@ -313,42 +315,52 @@ message.error(error?.message);
         setEditingKey(null);
       }} okText="Save" onOk={handleAdd}>
         <Col>
-            <Row className="mt-3">
-            <Select
+          <Row className="mt-3">
+            <CustomSelect
               showSearch
               placeholder="Select a Country"
-              filterOption={(input, option) =>
-                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-              }
-              style={{ width: 350 }}
+              filterOption={(input, option) => {
+                const label = option?.label;
+                if (typeof label === "string") {
+                  return label.toLowerCase().includes(input.toLowerCase());
+                }
+                return false;
+              }}
+              customStyle={{ width: 350 }} // instead of `style`
               value={selectedCountryToAdd?.country_name}
               onSelect={(_, rec) => setSelectedCountryToAdd(rec.country)}
               options={countries}
+              analytics={{ eventName: "Country Selected" }} // optional tracking
             />
-            <Select
-                className="mt-3"
-                showSearch
-                placeholder="Select a Metric"
-                style={{ width: 350 }}
-                onSelect={(_, rec) => setSelectedMetricCategoryToAdd(rec.metricCategory)}
-                options={metricCategories?.map((e) => {
-                  return {
-                    value: e.category.id ? `${e.super_category.value}->${e.category.value}->${e.metric.value}` : `${e.super_category.value}->${e.metric.value}`,
-                    metricCategory: e
-                  }
-                }) ?? []}
-              />
-            </Row>
-            <Row className="mt-3">
-              <InputNumber
-                className="w-full"
-                prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Value: </Typography.Text>}
-                value={metricValue}
-                onChange={(event: any) => {
-                  setMetricValue(JSON.stringify(event))
-                }}
-              ></InputNumber>
-            </Row>
+
+            <CustomSelect
+              className="mt-3"
+              showSearch
+              placeholder="Select a Metric"
+              customStyle={{ width: 350 }}
+              onSelect={(_, rec) => setSelectedMetricCategoryToAdd(rec.metricCategory)}
+              options={
+                metricCategories?.map((e) => ({
+                  value: e.category.id
+                    ? `${e.super_category.value}->${e.category.value}->${e.metric.value}`
+                    : `${e.super_category.value}->${e.metric.value}`,
+                  metricCategory: e,
+                })) ?? []
+              }
+              analytics={{ eventName: "Metric Selected" }} // optional
+            />
+
+          </Row>
+          <Row className="mt-3">
+            <InputNumber
+              className="w-full"
+              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Value: </Typography.Text>}
+              value={metricValue}
+              onChange={(event: any) => {
+                setMetricValue(JSON.stringify(event))
+              }}
+            ></InputNumber>
+          </Row>
         </Col>
       </Modal>
 
@@ -363,41 +375,57 @@ message.error(error?.message);
         Country Data
       </Typography.Text>
       <Row className="w-full justify-center">
-      <Select
-        showSearch
-        placeholder="Filter By Country"
-        filterOption={(input, option) =>
-          (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-        }
-        style={{ width: 350 }}
-        value={selectedCountry?.country_name}
-        onSelect={(_, rec) => {
-          setSelectedMetricCategory(undefined);
-          handleCountrySelect(rec);
-        }}
-        options={countries}
-      />
-      <div className="ml-3 mr-3 text-[15px] font-bold">Or</div>
-      <Select
+        <CustomSelect
+          showSearch
+          placeholder="Filter By Country"
+          filterOption={(input, option) => {
+            const label = option?.label;
+            if (typeof label === "string") {
+              return label.toLowerCase().includes(input.toLowerCase());
+            }
+            return false;
+          }}
+          customStyle={{ width: 350 }}
+          value={selectedCountry?.country_name}
+          onSelect={(_, rec) => {
+            setSelectedMetricCategory(undefined);
+            handleCountrySelect(rec);
+          }}
+          options={countries}
+          analytics={{ eventName: "Filter By Country" }}
+        />
+
+        <div className="ml-3 mr-3 text-[15px] font-bold">Or</div>
+
+        <CustomSelect
           className="ml-1"
           showSearch
           placeholder="Filter By Metric"
-          style={{ width: 350 }}
-          value={selectedMetricCategory?.category.id ? `${selectedMetricCategory.super_category.value}->${selectedMetricCategory.category.value}->${selectedMetricCategory.metric.value}` : selectedMetricCategory ? `${selectedMetricCategory.super_category.value}->${selectedMetricCategory.metric.value}` : undefined}
+          customStyle={{ width: 350 }}
+          value={
+            selectedMetricCategory?.category?.id
+              ? `${selectedMetricCategory.super_category.value}->${selectedMetricCategory.category.value}->${selectedMetricCategory.metric.value}`
+              : selectedMetricCategory
+                ? `${selectedMetricCategory.super_category.value}->${selectedMetricCategory.metric.value}`
+                : undefined
+          }
           onSelect={(_, rec) => {
-            setSelectedMetricCategory(rec.metricCategory)
+            setSelectedMetricCategory(rec.metricCategory);
             setSelectedCountry(null);
           }}
-          options={metricCategories?.map((e) => {
-            return {
-              value: e.category.id ? `${e.super_category.value}->${e.category.value}->${e.metric.value}` : `${e.super_category.value}->${e.metric.value}`,
-              metricCategory: e
-            }
-          }) ?? []}
+          options={
+            metricCategories?.map((e) => ({
+              value: e.category.id
+                ? `${e.super_category.value}->${e.category.value}->${e.metric.value}`
+                : `${e.super_category.value}->${e.metric.value}`,
+              metricCategory: e,
+            })) ?? []
+          }
+          analytics={{ eventName: "Filter By Metric" }}
         />
       </Row>
       <Row className="w-full justify-center">
-          {/* <Button className={`visible ml-2`} onClick={async () => {
+        {/* <Button className={`visible ml-2`} onClick={async () => {
             const token = localStorage.getItem('token');
             if (token) {
               const response = await getTemplate(token);
@@ -417,8 +445,8 @@ message.error(error?.message);
               URL.revokeObjectURL(url);
             }
           }}>+ Download Bulk Upload Template</Button> */}
-            {/* <BulkAddButton visible={true}></BulkAddButton> */}
-          <Button className="ml-2" onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
+        {/* <BulkAddButton visible={true}></BulkAddButton> */}
+        <Button className="ml-2" onClick={() => setIsAddModalOpen(true)}>+ Add </Button>
       </Row>
       <div className="h-[70vh] lg:w-[75vw] w-[1024px] overflow-y-scroll mx-auto">
         <Table<ICountryTableData>
