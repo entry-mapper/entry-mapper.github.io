@@ -22,24 +22,18 @@ const CustomSelect = React.forwardRef<any, CustomSelectProps>((props, ref) => {
   } = props;
 
   const handleChange = (value: any, option: any) => {
-    // Analytics logic (optional)
     if (analytics?.eventName) {
       console.log("Select tracking:", analytics.eventName, "with value:", value);
-      // You can trigger your analytics API here
     }
 
-    // Trigger original onChange if provided
     onChange?.(value, option);
   };
 
   const handleSelect = (value: any, option: any) => {
-    // Analytics logic for select event (optional)
     if (analytics?.eventName) {
       console.log("Select event:", analytics.eventName, "with value:", value);
-      // You can trigger your analytics API here
     }
 
-    // Trigger original onSelect if provided
     onSelect?.(value, option);
   };
 
