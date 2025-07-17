@@ -5,7 +5,7 @@ import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import {  Col, Input, Row, Select, Table, TableColumnsType } from "antd";
 import { Typography } from "@/app/components/UI/Typography";
-import CustomSelect from "@/app/components/UI/Select";
+import CustomSelect from "@/app/components/UI/CustomSelect";
 import Modal from "@/app/components/UI/Modal";
 import Button from "@/app/components/UI/Button";
 import { message } from "@/app/components/UI/Message";

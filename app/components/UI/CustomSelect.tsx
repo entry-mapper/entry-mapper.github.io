@@ -14,35 +14,12 @@ interface CustomSelectProps<T = any> extends SelectProps<T> {
 
 const CustomSelect = React.forwardRef<any, CustomSelectProps>((props, ref) => {
   const {
-    customStyle,
-    analytics,
-    onChange,
-    onSelect,
     ...restProps
   } = props;
-
-  const handleChange = (value: any, option: any) => {
-    if (analytics?.eventName) {
-      console.log("Select tracking:", analytics.eventName, "with value:", value);
-    }
-
-    onChange?.(value, option);
-  };
-
-  const handleSelect = (value: any, option: any) => {
-    if (analytics?.eventName) {
-      console.log("Select event:", analytics.eventName, "with value:", value);
-    }
-
-    onSelect?.(value, option);
-  };
 
   return (
     <AntSelect
       ref={ref}
-      onChange={handleChange}
-      onSelect={handleSelect}
-      style={{ ...customStyle }}
       {...restProps}
     />
   );
