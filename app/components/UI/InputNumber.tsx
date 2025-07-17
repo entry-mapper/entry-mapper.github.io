@@ -1,14 +1,19 @@
 "use client";
 
 import { InputNumber as AntInputNumber, InputNumberProps } from "antd";
+import React from "react";
 
-export default function InputNumber(props: InputNumberProps) {
-  return <AntInputNumber {...props} />;
-}
+const InputNumber = React.forwardRef<any, InputNumberProps>((props, ref) => {
+  const {
+    ...restProps
+  } = props;
 
+  return (
+    <AntInputNumber
+      ref={ref}
+      {...restProps}
+    />
+  );
+});
 
-// import { InputNumber as AntInputNumber, InputNumberProps } from "antd";
-
-// export const InputNumber: React.FC<InputNumberProps> = ({...props}) => {
-//   return <AntInputNumber {...props} />;
-// }
+export default InputNumber;
