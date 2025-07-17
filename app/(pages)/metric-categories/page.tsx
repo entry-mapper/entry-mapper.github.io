@@ -3,7 +3,8 @@
 import { useAppDispatch, useAppSelector } from "@/app/redux/hook";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import {  Col, Input, Row, Select, Spin, Table, TableColumnsType} from "antd";
+import { Col, Input, Row, Spin, Table, TableColumnsType } from "antd";
+import CustomSelect from "@/app/components/UI/CustomSelect";
 import { Typography } from "@/app/components/UI/Typography";
 import Modal from "@/app/components/UI/Modal";
 import { message } from "@/app/components/UI/Message";
@@ -315,15 +316,15 @@ export default function MetricCategoriesComponent() {
         });
         if (res) {
           await fetchMetricCategories();
-        message.success('Updated successfully!');
+          message.success('Updated successfully!');
         }
         setIsAddModalOpen(false);
       } else {
-message.error("Please fill the required fields");
+        message.error("Please fill the required fields");
       }
     } catch (error: any) {
       console.log(error);
-    message.error(`${error.message ? error.message : JSON.stringify(error)}`);
+      message.error(`${error.message ? error.message : JSON.stringify(error)}`);
 
     }
   }
@@ -434,13 +435,18 @@ message.error("Please fill the required fields");
             ></Input>
           </Row>
           <Row className="mt-3">
-            <Select
+            <CustomSelect
               className="w-full"
               showSearch
               prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric: </Typography.Text>}
               value={formData.metric?.value}
               placeholder="Select a metric"
-              onSelect={(_, rec) => setFormData((prev) => ({ ...prev, metric: rec }))}
+              onSelect={(_, rec) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  metric: rec ? { id: rec.id as number, value: rec.value as string } : null,
+                }))
+              }
               options={metrics?.map((e) => {
                 return {
                   value: e.value,
@@ -450,14 +456,18 @@ message.error("Please fill the required fields");
             />
           </Row>
           <Row className="mt-3">
-            <Select
+            <CustomSelect
               className="w-full"
               prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Category: </Typography.Text>}
               showSearch
               value={formData.category?.value}
               placeholder="Select a category"
-              onSelect={(_, rec) => setFormData((prev) => ({ ...prev, category: rec }))}
-              options={categories?.map((e) => {
+              onSelect={(_, rec) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  category: rec ? { id: rec.id as number, value: rec.value as string } : null,
+                }))
+              } options={categories?.map((e) => {
                 return {
                   value: e.category_name,
                   id: e.category_id
@@ -466,13 +476,18 @@ message.error("Please fill the required fields");
             />
           </Row>
           <Row className="mt-3">
-            <Select
+            <CustomSelect
               prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Label: </Typography.Text>}
               className="w-full"
               showSearch
               placeholder="Select a label"
               value={formData?.label}
-              onSelect={(_, rec) => setFormData((prev) => ({ ...prev, label: rec.id }))}
+              onSelect={(_, rec) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  label: rec?.id?.toString() ?? null,
+                }))
+              }
               options={[{ value: 'eu', id: 'eu' }, { value: 'non_eu', id: 'non_eu' },]}
             />
           </Row>
@@ -527,12 +542,16 @@ message.error("Please fill the required fields");
             ></Input>
           </Row>
           <Row className="mt-3">
-            <Select
+            <CustomSelect
               className="w-full"
               showSearch
               placeholder="Select a metric"
-              onSelect={(_, rec) => setFormData((prev) => ({ ...prev, metric: rec }))}
-              options={metrics?.map((e) => {
+              onSelect={(_, rec) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  metric: rec ? { id: rec.id as number, value: rec.value as string } : null,
+                }))
+              } options={metrics?.map((e) => {
                 return {
                   value: e.value,
                   id: e.metric_id
@@ -541,12 +560,16 @@ message.error("Please fill the required fields");
             />
           </Row>
           <Row className="mt-3">
-            <Select
+            <CustomSelect
               className="w-full"
               showSearch
               placeholder="Select a category"
-              onSelect={(_, rec) => setFormData((prev) => ({ ...prev, category: rec }))}
-              options={categories?.map((e) => {
+              onSelect={(_, rec) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  category: rec ? { id: rec.id as number, value: rec.value as string } : null,
+                }))
+              } options={categories?.map((e) => {
                 return {
                   value: e.category_name,
                   id: e.category_id
@@ -555,11 +578,16 @@ message.error("Please fill the required fields");
             />
           </Row>
           <Row className="mt-3">
-            <Select
+            <CustomSelect
               className="w-full"
               showSearch
               placeholder="Select a label"
-              onSelect={(_, rec) => setFormData((prev) => ({ ...prev, label: rec.id }))}
+              onSelect={(_, rec) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  label: rec?.id?.toString() ?? null,
+                }))
+              }
               options={[{ value: 'eu', id: 'eu' }, { value: 'non_eu', id: 'non_eu' },]}
             />
           </Row>
