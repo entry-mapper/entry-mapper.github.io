@@ -20,6 +20,7 @@ import { getMetricCategories } from "@/app/api/categories/categories-get.api";
 import { AddCountryDataApi } from "@/app/api/country-data/country-data-post.api";
 import { getTemplate } from "@/app/api/metrics/data-service.api";
 import BulkAddButton from "@/app/components/bulk-add-button.component";
+import InputNumber from "@/app/components/UI/InputNumber";
 interface ICountryOptions {
   value: number;
   country: Country;
