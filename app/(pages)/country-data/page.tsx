@@ -325,18 +325,17 @@ export default function CountryData() {
                 }
                 return false;
               }}
-              customStyle={{ width: 350 }} // instead of `style`
+              style={{ width: 350 }} // instead of `style`
               value={selectedCountryToAdd?.country_name}
               onSelect={(_, rec) => setSelectedCountryToAdd(rec.country)}
               options={countries}
-              analytics={{ eventName: "Country Selected" }} // optional tracking
             />
 
             <CustomSelect
               className="mt-3"
               showSearch
               placeholder="Select a Metric"
-              customStyle={{ width: 350 }}
+              style={{ width: 350 }}
               onSelect={(_, rec) => setSelectedMetricCategoryToAdd(rec.metricCategory)}
               options={
                 metricCategories?.map((e) => ({
@@ -346,7 +345,6 @@ export default function CountryData() {
                   metricCategory: e,
                 })) ?? []
               }
-              analytics={{ eventName: "Metric Selected" }} // optional
             />
 
           </Row>
@@ -384,14 +382,13 @@ export default function CountryData() {
             }
             return false;
           }}
-          customStyle={{ width: 350 }}
+          style={{ width: 350 }}
           value={selectedCountry?.country_name}
           onSelect={(_, rec) => {
             setSelectedMetricCategory(undefined);
             handleCountrySelect(rec);
           }}
           options={countries}
-          analytics={{ eventName: "Filter By Country" }}
         />
 
         <div className="ml-3 mr-3 text-[15px] font-bold">Or</div>
@@ -400,7 +397,7 @@ export default function CountryData() {
           className="ml-1"
           showSearch
           placeholder="Filter By Metric"
-          customStyle={{ width: 350 }}
+          style={{ width: 350 }}
           value={
             selectedMetricCategory?.category?.id
               ? `${selectedMetricCategory.super_category.value}->${selectedMetricCategory.category.value}->${selectedMetricCategory.metric.value}`
@@ -420,7 +417,6 @@ export default function CountryData() {
               metricCategory: e,
             })) ?? []
           }
-          analytics={{ eventName: "Filter By Metric" }}
         />
       </Row>
       <Row className="w-full justify-center">
