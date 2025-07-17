@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter, redirect } from "next/navigation";
-import {  Col, Input, Row, Table, TableColumnsType } from "antd";
+import {  Col, Input, Row, TableColumnsType } from "antd";
 import { Typography } from "@/app/components/UI/Typography";
 import Modal from "@/app/components/UI/Modal";
+import Table from "@/app/components/UI/Table";
 import { message } from "@/app/components/UI/Message";
 import Button from "@/app/components/UI/Button";
 
