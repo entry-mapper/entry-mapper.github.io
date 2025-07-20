@@ -1,13 +1,12 @@
-'use client'
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { Tabs, Row } from "antd";
 import Button from "./UI/Button";
 import type { TabsProps } from "antd";
 import { useRouter, usePathname } from "next/navigation";
-import { useAppDispatch,useAppSelector } from "../redux/hook";
+import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { logout } from "../redux/authSlice";
-
 
 export const NavBar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -73,19 +72,28 @@ export const NavBar: React.FC = () => {
   return (
     <Row className="w-full h-[100px] justify-between items-center pl-[20px] pr-[20px] mb-8">
       <div className="text-[25px]">Admin Portal</div>
-      {isAuthenticated?<Tabs
-        activeKey={activeKey}
-        items={items}
-        size="large"
-        onChange={handleTabChange}
-        centered
-        animated={{ inkBar: true, tabPane: false }}
-      />:null}
-      {isAuthenticated ? <Button className="text-[15px] px-5 py-4 ml-20" onClick={() => dispatch(logout())}>
-        Logout
-      </Button> : null}
+      {isAuthenticated ? (
+        <Tabs
+          activeKey={activeKey}
+          items={items}
+          size="large"
+          onChange={handleTabChange}
+          centered
+          animated={{ inkBar: true, tabPane: false }}
+        />
+      ) : null}
+      {isAuthenticated ? (
+        <Button
+          className="text-[15px] px-5 py-4 ml-20"
+          onClick={() => {
+            dispatch(logout());
+            router.push("/login");
+          }}
+        >
+          Logout
+        </Button>
+      ) : null}
       {/* <Button className="text-[15px] px-5 py-4 ml-20" onClick={() => logout()}>Logout</Button> */}
-      
     </Row>
   );
 };
