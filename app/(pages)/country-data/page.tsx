@@ -5,8 +5,6 @@ import { GetCountryDataApi, getCountryDataByMetric } from "@/app/api/country-dat
 import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
 import { Col, Row,TableColumnsType } from "antd";
 import Table from "@/app/components/UI/Table";
-import isLogin from "@/app/utils/isLogin";
-import { setAuth } from "@/app/redux/authSlice";
 import CustomSelect from "@/app/components/UI/CustomSelect";
 import { Typography } from "@/app/components/UI/Typography";
 import Modal from "@/app/components/UI/Modal";
@@ -159,16 +157,6 @@ export default function CountryData() {
     setColumns(columns);
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
-    if (!isLogin()) {
-      redirect("/login");
-    }
-    else{
-      dispatch(setAuth({ isAuthenticated: true }));
-    }
-    setIsLoading(false);
-  }, [isAuthenticated, router]);
 
   const fetchCountryData = async () => {
     setIsLoading(true);

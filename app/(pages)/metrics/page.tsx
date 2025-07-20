@@ -8,9 +8,6 @@ import Modal from "@/app/components/UI/Modal";
 import Table from "@/app/components/UI/Table";
 import { message } from "@/app/components/UI/Message";
 import Button from "@/app/components/UI/Button";
-import isLogin from "@/app/utils/isLogin";
-
-import { setAuth } from "@/app/redux/authSlice";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useAppDispatch,useAppSelector } from "@/app/redux/hook";
 import { Metrics } from "@/app/interfaces/metrics.interface";
@@ -106,12 +103,7 @@ export default function MetricsComponent() {
   };
 
   useEffect(() => {
-    if (!isLogin()) {
-      redirect("/login");
-    }
-  else{
-    dispatch(setAuth({ isAuthenticated: true }));
-  }
+  
     const initialize = async () => {
       try {
         setIsLoading(true);

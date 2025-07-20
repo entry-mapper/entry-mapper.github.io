@@ -1,8 +1,6 @@
 "use client";
 
 import { useAppSelector, useAppDispatch } from "@/app/redux/hook";
-import isLogin from "@/app/utils/isLogin";
-import { setAuth } from "@/app/redux/authSlice";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import {  Col, Input, Row, TableColumnsType } from "antd";
@@ -224,14 +222,6 @@ export default function Categories() {
   }
 
   useEffect(() => {
-    // if (!isAuthenticated) {
-    //   redirect("/login");
-    // }
-    if (!isLogin()) {
-      redirect("/login");
-    }else {
-      dispatch(setAuth({ isAuthenticated: true }));
-    }
 
     const initialize = async () => {
       setIsLoading(true);

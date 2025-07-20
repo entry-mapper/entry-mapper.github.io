@@ -10,8 +10,6 @@ import { Typography } from "@/app/components/UI/Typography";
 import Modal from "@/app/components/UI/Modal";
 import { message } from "@/app/components/UI/Message";
 import Button from "@/app/components/UI/Button";
-import isLogin from "@/app/utils/isLogin";
-import { setAuth } from "@/app/redux/authSlice";
 import { GetMetricCategories, Metrics } from "@/app/interfaces/metrics.interface";
 import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
 import { DeleteOutlined, EditOutlined, SortAscendingOutlined } from "@ant-design/icons";
@@ -263,12 +261,7 @@ export default function MetricCategoriesComponent() {
     }
   };
 
-  useEffect(() => {
-    if (!isLogin()) {
-      redirect("/login");
-    }else{
-      dispatch(setAuth({ isAuthenticated: true }));
-    }
+  useEffect(() => {  
 
     const initialize = async () => {
       setIsLoading(true); // Start loading before fetching data

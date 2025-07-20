@@ -7,9 +7,7 @@ export default function isLogin(): boolean {
     const token = localStorage.getItem('token');
     const expiresIn = parseInt(localStorage.getItem('expiresIn') || '0', 10);
     const now = new Date().getTime();
-
-    console.log('isLogin:', { token, expiresIn, now });
-
+    
     if (token && expiresIn) {
       if (now < expiresIn) {
         console.log('Valid token found');
