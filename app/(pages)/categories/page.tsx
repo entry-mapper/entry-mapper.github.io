@@ -222,9 +222,6 @@ export default function Categories() {
   }
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      redirect("/login");
-    }
 
     const initialize = async () => {
       setIsLoading(true);

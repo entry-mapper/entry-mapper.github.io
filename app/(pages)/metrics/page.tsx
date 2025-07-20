@@ -8,8 +8,6 @@ import Modal from "@/app/components/UI/Modal";
 import Table from "@/app/components/UI/Table";
 import { message } from "@/app/components/UI/Message";
 import Button from "@/app/components/UI/Button";
-
-
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useAppDispatch,useAppSelector } from "@/app/redux/hook";
 import { Metrics } from "@/app/interfaces/metrics.interface";
@@ -105,9 +103,7 @@ export default function MetricsComponent() {
   };
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      redirect("/login");
-    }
+  
     const initialize = async () => {
       try {
         setIsLoading(true);

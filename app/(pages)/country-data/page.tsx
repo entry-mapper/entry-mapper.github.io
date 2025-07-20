@@ -157,13 +157,6 @@ export default function CountryData() {
     setColumns(columns);
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
-    if (!isAuthenticated) {
-      redirect("/login");
-    }
-    setIsLoading(false);
-  }, [isAuthenticated, router]);
 
   const fetchCountryData = async () => {
     setIsLoading(true);
