@@ -9,7 +9,8 @@ export const getTemplate = async (token: string) => {
     });
     return response;
   } catch (error: any) {
-    const errorMessageDefault = "An unknown error occured while fetching regions";
+    const errorMessageDefault =
+      "An unknown error occured while fetching regions";
     let errorMessage: string = "";
 
     if (error.response) {
@@ -30,7 +31,8 @@ export const getEntireDb = async (token: string) => {
     });
     return response;
   } catch (error: any) {
-    const errorMessageDefault = "An unknown error occured while fetching regions";
+    const errorMessageDefault =
+      "An unknown error occured while fetching regions";
     let errorMessage: string = "";
 
     if (error.response) {
@@ -66,24 +68,28 @@ export const resetDatabase = async (token: string) => {
 };
 
 export const postBulkUploadData = async (token: string, formData: FormData) => {
-    try {
-      const response = await http.post(`${BASE_URL}/data-service/upload`, formData, {
+  try {
+    const response = await http.post(
+      `${BASE_URL}/data-service/upload`,
+      formData,
+      {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      });
-      return response;
-    } catch (error: any) {
-      const errorMessageDefault = "An unknown error occured while fetching regions";
-      let errorMessage: string = "";
-  
-      if (error.response) {
-        errorMessage = error.response.data.message;
-      } else if (error.request) {
-        errorMessage = "The request was made but no response was received";
-      } else {
-        errorMessage = errorMessageDefault;
-      }
-      throw new Error(errorMessage);
+        "Content-Type": "multipart/form-data",
+      },
+    );
+    return response;
+  } catch (error: any) {
+    const errorMessageDefault =
+      "An unknown error occured while fetching regions";
+    let errorMessage: string = "";
+
+    if (error.response) {
+      errorMessage = error.response.data.message;
+    } else if (error.request) {
+      errorMessage = "The request was made but no response was received";
+    } else {
+      errorMessage = errorMessageDefault;
     }
-  };
-  
+    throw new Error(errorMessage);
+  }
+};

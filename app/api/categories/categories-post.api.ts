@@ -2,17 +2,24 @@ import { IPostCategory } from "@/app/interfaces/categories.interface";
 import { http } from "@/app/utils/http";
 import { BASE_URL } from "@/app/utils/config";
 
-export const postCategories = async (token: string, postCategory: IPostCategory) => {
+export const postCategories = async (
+  token: string,
+  postCategory: IPostCategory,
+) => {
   try {
-    const response = await http.post(`${BASE_URL}/categories`, {
-        "category_name": postCategory.category_name,
-        "parent_id": postCategory.parent_id,
-        "description": postCategory.description
-    }, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await http.post(
+      `${BASE_URL}/categories`,
+      {
+        category_name: postCategory.category_name,
+        parent_id: postCategory.parent_id,
+        description: postCategory.description,
+      },
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
     if (response.status == 200) {
-        return true;
+      return true;
     }
   } catch (error: any) {
     const errorMessageDefault =
@@ -27,4 +34,4 @@ export const postCategories = async (token: string, postCategory: IPostCategory)
     }
     throw new Error(errorMessage);
   }
-}
+};

@@ -9,7 +9,12 @@ import React, {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import { LoginForm, LoginResponse, LoginSuccessResponse, User } from "../interfaces/auth.interfaces";
+import {
+  LoginForm,
+  LoginResponse,
+  LoginSuccessResponse,
+  User,
+} from "../interfaces/auth.interfaces";
 import * as loginApi from "../api/auth.api";
 import { Alert } from "antd";
 
@@ -32,14 +37,14 @@ type AuthontextProviderProps = {
 // helpers
 export const setTokenDetailsInlocalStorage = (
   loginSuccessResponse: LoginSuccessResponse,
-  now: Date
+  now: Date,
 ) => {
   const { user, accessToken, expiresIn } = loginSuccessResponse;
 
   localStorage.setItem("token", accessToken);
   localStorage.setItem(
-      "expiresIn",
-      JSON.stringify(now.getTime() + (expiresIn ? expiresIn * 1000 : 0))
+    "expiresIn",
+    JSON.stringify(now.getTime() + (expiresIn ? expiresIn * 1000 : 0)),
   );
   localStorage.setItem("user", JSON.stringify(user));
 };
@@ -55,22 +60,22 @@ export const AuthContextProvider = ({ children }: AuthontextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-	const [errorAlert, setErrorAlert] = useState(false);
-	const [alertMessage, setAlertMessage] = useState("");
-	const [infoMessage, setInfoMessage] = useState("");
-	const [infoAlert, setInfoAlert] = useState(false);
+  const [errorAlert, setErrorAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [infoMessage, setInfoMessage] = useState("");
+  const [infoAlert, setInfoAlert] = useState(false);
 
-	const errorToast = (value: string) => {
-		setAlertMessage(value);
-		setErrorAlert(true);
-		setTimeout(() => setErrorAlert(false), 5000);
-	}
+  const errorToast = (value: string) => {
+    setAlertMessage(value);
+    setErrorAlert(true);
+    setTimeout(() => setErrorAlert(false), 5000);
+  };
 
-	const infoToast = (value: string) => {
-		setInfoMessage(value);
-		setInfoAlert(true);
-		setTimeout(() => setInfoAlert(false), 5000);
-	}
+  const infoToast = (value: string) => {
+    setInfoMessage(value);
+    setInfoAlert(true);
+    setTimeout(() => setInfoAlert(false), 5000);
+  };
 
   // Login function
   const login = async (formData: LoginForm) => {
@@ -124,40 +129,44 @@ export const AuthContextProvider = ({ children }: AuthontextProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logout, checkLogin, errorToast, infoToast }}
+      value={{
+        user,
+        isAuthenticated,
+        login,
+        logout,
+        checkLogin,
+        errorToast,
+        infoToast,
+      }}
     >
-			<div>
-				{
-					errorAlert &&
-					<div className="flex flex-row w-full justify-center">
-						<Alert
-							className="z-[9999] fixed flex flex-row items-center justify-center top-[32px] w-[300px] z-50"
-							message={alertMessage}
-							type="error"
-							showIcon
-							closable
-							afterClose={() => setErrorAlert(false)}
-						/>
-					</div>
-				}
-				{
-					infoAlert &&
-					<div className="flex flex-row w-full justify-center">
-						<Alert
-							className="fixed flex flex-row items-center justify-center top-[32px] w-[300px] z-50"
-							message={infoMessage}
-							type="info"
-							showIcon
-							closable
-							afterClose={() => setInfoAlert(false)}
-						/>
-					</div>
-				}
-
-			</div>
-      {!loading ? 
-      children : 
-      <div></div> //TODO: add a fancy loading icon
+      <div>
+        {errorAlert && (
+          <div className="flex flex-row w-full justify-center">
+            <Alert
+              className="z-[9999] fixed flex flex-row items-center justify-center top-[32px] w-[300px] z-50"
+              message={alertMessage}
+              type="error"
+              showIcon
+              closable
+              afterClose={() => setErrorAlert(false)}
+            />
+          </div>
+        )}
+        {infoAlert && (
+          <div className="flex flex-row w-full justify-center">
+            <Alert
+              className="fixed flex flex-row items-center justify-center top-[32px] w-[300px] z-50"
+              message={infoMessage}
+              type="info"
+              showIcon
+              closable
+              afterClose={() => setInfoAlert(false)}
+            />
+          </div>
+        )}
+      </div>
+      {
+        !loading ? children : <div></div> //TODO: add a fancy loading icon
       }
     </AuthContext.Provider>
   );

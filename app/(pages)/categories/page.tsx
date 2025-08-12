@@ -3,14 +3,19 @@
 import { useAppSelector, useAppDispatch } from "@/app/redux/hook";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
-import {  Col, Input, Row, TableColumnsType } from "antd";
+import { Col, Input, Row, TableColumnsType } from "antd";
 import Table from "@/app/components/UI/Table";
 import { Typography } from "@/app/components/UI/Typography";
 import CustomSelect from "@/app/components/UI/CustomSelect";
 import Modal from "@/app/components/UI/Modal";
 import Button from "@/app/components/UI/Button";
 import { message } from "@/app/components/UI/Message";
-import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { getCategories } from "@/app/api/categories/categories-get.api";
 import { patchCategories } from "@/app/api/categories/categories-patch.api";
 import { postCategories } from "@/app/api/categories/categories-post.api";
@@ -65,7 +70,7 @@ const MemoizedTable = React.memo(
     prevProps.data === nextProps.data &&
     prevProps.columns === nextProps.columns &&
     prevProps.editingKey === nextProps.editingKey &&
-    prevProps.isLoading === nextProps.isLoading
+    prevProps.isLoading === nextProps.isLoading,
 );
 
 export default function Categories() {
@@ -82,7 +87,7 @@ export default function Categories() {
     category_name: null,
     category_type: null,
     parent_id: null,
-    description: null
+    description: null,
   });
 
   const [dataSource, setDataSource] = useState<DataType[]>([]);
@@ -99,16 +104,20 @@ export default function Categories() {
           return (
             <Row>
               {record.key === editingKey ? (
-                <Input placeholder="Enter Category Name"
+                <Input
+                  placeholder="Enter Category Name"
                   onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, category_name: e.target.value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      category_name: e.target.value,
+                    }))
                   }
                 />
               ) : (
                 <div className="p-3 text-black">{record.category_name}</div>
               )}
             </Row>
-          )
+          );
         },
       },
       {
@@ -121,16 +130,20 @@ export default function Categories() {
           return (
             <Row>
               {record.key === editingKey ? (
-                <Input placeholder="Enter Category Description"
+                <Input
+                  placeholder="Enter Category Description"
                   onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, description: e.target.value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
                   }
                 />
               ) : (
                 <div className="p-3 text-black">{record.description}</div>
               )}
             </Row>
-          )
+          );
         },
       },
       {
@@ -143,16 +156,22 @@ export default function Categories() {
           return (
             <Row>
               {record.key === editingKey ? (
-                <Input placeholder="Enter Parent Category Id"
+                <Input
+                  placeholder="Enter Parent Category Id"
                   onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, parent_category_name: e.target.value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      parent_category_name: e.target.value,
+                    }))
                   }
                 />
               ) : (
-                <div className="p-3 text-black">{record.parent_category_name}</div>
+                <div className="p-3 text-black">
+                  {record.parent_category_name}
+                </div>
               )}
             </Row>
-          )
+          );
         },
       },
       {
@@ -168,10 +187,18 @@ export default function Categories() {
                   <Button className="w-[30px]">
                     <CheckOutlined className="text-[#00ff00]"></CheckOutlined>
                   </Button>
-                  <Button className="w-[30px]" onClick={() => {
-                    setEditingKey(null)
-                    setFormData({ parent_id: null, category_name: null, description: null, category_type: null })
-                  }}>
+                  <Button
+                    className="w-[30px]"
+                    onClick={() => {
+                      setEditingKey(null);
+                      setFormData({
+                        parent_id: null,
+                        category_name: null,
+                        description: null,
+                        category_type: null,
+                      });
+                    }}
+                  >
                     <CloseOutlined className="text-[#ff1a1a]"></CloseOutlined>
                   </Button>
                 </Row>
@@ -182,27 +209,31 @@ export default function Categories() {
                     setFormData({
                       category_name: record.category_name,
                       description: record.description,
-                      parent_id: record.parent_category_id
-                    })
+                      parent_id: record.parent_category_id,
+                    });
                     setIsEditModalOpen(true);
-                    setEditingKey(record.key)
+                    setEditingKey(record.key);
                   }}
                 >
                   <EditOutlined></EditOutlined>
                 </Button>
               )}
-              <Button className="w-[30px]"
+              <Button
+                className="w-[30px]"
                 onClick={async () => {
-                  setIdToBeDeleted(record.key)
+                  setIdToBeDeleted(record.key);
                   setIsDeleteModalOpen(true);
-                }}>
+                }}
+              >
                 <DeleteOutlined></DeleteOutlined>
               </Button>
             </Row>
           );
         },
       },
-    ], []);
+    ],
+    [],
+  );
 
   const fetchCategories = async () => {
     const token = localStorage.getItem("token");
@@ -218,11 +249,10 @@ export default function Categories() {
         }));
         setDataSource(mappedData);
       }
-    };
-  }
+    }
+  };
 
   useEffect(() => {
-
     const initialize = async () => {
       setIsLoading(true);
       try {
@@ -232,7 +262,7 @@ export default function Categories() {
       } finally {
         setIsLoading(false); // End loading state once everything is done
       }
-    }
+    };
     initialize();
   }, [isAuthenticated, router]);
 
@@ -248,22 +278,19 @@ export default function Categories() {
       const token = localStorage.getItem("token");
 
       if (token && userId && formData?.category_name) {
-        const res = await postCategories(
-          token,
-          {
-            category_name: formData?.category_name,
-            description: formData?.description,
-            parent_id: formData?.parent_id,
-            category_type: formData?.category_type
-          }
-        );
+        const res = await postCategories(token, {
+          category_name: formData?.category_name,
+          description: formData?.description,
+          parent_id: formData?.parent_id,
+          category_type: formData?.category_type,
+        });
         await fetchCategories();
       }
     } catch (error: any) {
       console.log(error);
     }
     setIsAddModalOpen(false);
-  }
+  };
 
   const handleEdit = async () => {
     try {
@@ -277,15 +304,12 @@ export default function Categories() {
       const token = localStorage.getItem("token");
 
       if (token && userId && editingKey && formData?.category_name) {
-        const res = await patchCategories(
-          token,
-          {
-            category_id: editingKey,
-            category_name: formData.category_name,
-            description: formData?.description,
-            parent_id: formData?.parent_id ?? 0,
-          },
-        );
+        const res = await patchCategories(token, {
+          category_id: editingKey,
+          category_name: formData.category_name,
+          description: formData?.description,
+          parent_id: formData?.parent_id ?? 0,
+        });
         if (res) {
           await fetchCategories();
         }
@@ -297,7 +321,7 @@ export default function Categories() {
     } catch (error: any) {
       console.log(error);
     }
-  }
+  };
 
   const handleDelete = async () => {
     try {
@@ -308,30 +332,44 @@ export default function Categories() {
           await fetchCategories();
         }
       }
-    } catch (error: any) {
-
-    }
+    } catch (error: any) {}
     setIdToBeDeleted(null);
     setIsDeleteModalOpen(false);
-  }
+  };
 
   return (
     <div className="space-y-3 w-full flex flex-col items-center">
       {/* Edit Modal */}
-      <Modal title="Edit Record" open={isEditModalOpen} destroyOnClose onCancel={() => {
-        setIsEditModalOpen(false)
-        setFormData({
-          category_name: null,
-          parent_id: null,
-          description: null,
-          category_type: null
-        });
-        setEditingKey(null);
-      }} okText="Save" onOk={handleEdit}>
+      <Modal
+        title="Edit Record"
+        open={isEditModalOpen}
+        destroyOnClose
+        onCancel={() => {
+          setIsEditModalOpen(false);
+          setFormData({
+            category_name: null,
+            parent_id: null,
+            description: null,
+            category_type: null,
+          });
+          setEditingKey(null);
+        }}
+        okText="Save"
+        onOk={handleEdit}
+      >
         <Col>
           <Row className="mt-3">
             <Input
-              prefix={<div><span className="text-[#ed0006] text-xs font-medium font-inter leading-[18px]">*</span><Typography.Text className="text-gray-700 opacity-[40%]">Category Name: </Typography.Text></div>}
+              prefix={
+                <div>
+                  <span className="text-[#ed0006] text-xs font-medium font-inter leading-[18px]">
+                    *
+                  </span>
+                  <Typography.Text className="text-gray-700 opacity-[40%]">
+                    Category Name:{" "}
+                  </Typography.Text>
+                </div>
+              }
               value={formData?.category_name ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -343,7 +381,11 @@ export default function Categories() {
           </Row>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Category Type: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Category Type:{" "}
+                </Typography.Text>
+              }
               value={formData?.category_type ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -355,13 +397,18 @@ export default function Categories() {
           </Row>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Description: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Description:{" "}
+                </Typography.Text>
+              }
               value={formData?.description ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
                   description: e.target.value,
-                }))}
+                }))
+              }
             ></Input>
           </Row>
           <Row className="mt-3">
@@ -369,33 +416,53 @@ export default function Categories() {
               className="w-full"
               showSearch
               placeholder="Select a parent category"
-              onSelect={(_, rec) => setFormData((prev) => ({ ...prev, parent_id: rec.id }))}
-              options={dataSource?.map((e) => {
-                return {
-                  value: e.category_name,
-                  id: e.key
-                }
-              }) ?? []}
+              onSelect={(_, rec) =>
+                setFormData((prev) => ({ ...prev, parent_id: rec.id }))
+              }
+              options={
+                dataSource?.map((e) => {
+                  return {
+                    value: e.category_name,
+                    id: e.key,
+                  };
+                }) ?? []
+              }
             />
           </Row>
         </Col>
       </Modal>
 
       {/* Add Modal */}
-      <Modal title="Add Record" open={isAddModalOpen} destroyOnClose onCancel={() => {
-        setIsAddModalOpen(false)
-        setFormData({
-          category_name: null,
-          parent_id: null,
-          description: null,
-          category_type: null
-        });
-        setEditingKey(null);
-      }} okText="Save" onOk={handleAdd}>
+      <Modal
+        title="Add Record"
+        open={isAddModalOpen}
+        destroyOnClose
+        onCancel={() => {
+          setIsAddModalOpen(false);
+          setFormData({
+            category_name: null,
+            parent_id: null,
+            description: null,
+            category_type: null,
+          });
+          setEditingKey(null);
+        }}
+        okText="Save"
+        onOk={handleAdd}
+      >
         <Col>
           <Row className="mt-3">
             <Input
-              prefix={<div><span className="text-[#ed0006] text-xs font-medium font-inter leading-[18px]">*</span><Typography.Text className="text-gray-700 opacity-[40%]">Category Name: </Typography.Text></div>}
+              prefix={
+                <div>
+                  <span className="text-[#ed0006] text-xs font-medium font-inter leading-[18px]">
+                    *
+                  </span>
+                  <Typography.Text className="text-gray-700 opacity-[40%]">
+                    Category Name:{" "}
+                  </Typography.Text>
+                </div>
+              }
               value={formData?.category_name ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -407,7 +474,11 @@ export default function Categories() {
           </Row>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Category Type: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Category Type:{" "}
+                </Typography.Text>
+              }
               value={formData?.category_type ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -419,13 +490,18 @@ export default function Categories() {
           </Row>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Description: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Description:{" "}
+                </Typography.Text>
+              }
               value={formData?.description ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
                   description: e.target.value,
-                }))}
+                }))
+              }
             ></Input>
           </Row>
           <Row className="mt-3">
@@ -433,22 +509,34 @@ export default function Categories() {
               className="w-full"
               showSearch
               placeholder="Select a parent category"
-              onSelect={(_, rec) => setFormData((prev) => ({ ...prev, parent_id: rec.id }))}
-              options={dataSource?.map((e) => {
-                return {
-                  value: e.category_name,
-                  id: e.key
-                }
-              }) ?? []}
+              onSelect={(_, rec) =>
+                setFormData((prev) => ({ ...prev, parent_id: rec.id }))
+              }
+              options={
+                dataSource?.map((e) => {
+                  return {
+                    value: e.category_name,
+                    id: e.key,
+                  };
+                }) ?? []
+              }
             />
           </Row>
         </Col>
       </Modal>
 
       {/* Delete Modal */}
-      <Modal title="Delete Record" open={isDeleteModalOpen} destroyOnClose onCancel={() => {
-        setIsDeleteModalOpen(false)
-      }} okText="Confirm" onOk={handleDelete} okButtonProps={{ style: { backgroundColor: 'red' } }}>
+      <Modal
+        title="Delete Record"
+        open={isDeleteModalOpen}
+        destroyOnClose
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+        }}
+        okText="Confirm"
+        onOk={handleDelete}
+        okButtonProps={{ style: { backgroundColor: "red" } }}
+      >
         <Typography.Text>Are you sure you want to delete this?</Typography.Text>
       </Modal>
       <Typography.Text className="text-[20px] underline underline-offset-2">

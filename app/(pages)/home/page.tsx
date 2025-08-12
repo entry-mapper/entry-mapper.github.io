@@ -1,7 +1,7 @@
 "use client";
 
 import { Country, ICountryData } from "@/app/interfaces/country.interfaces";
-import {  Col, Row, Table, TableColumnsType} from "antd";
+import { Col, Row, Table, TableColumnsType } from "antd";
 import { Typography } from "@/app/components/UI/Typography";
 import Modal from "@/app/components/UI/Modal";
 import { message } from "@/app/components/UI/Message";
@@ -33,21 +33,21 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOk = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       try {
         const response = await resetDatabase(token);
-        message.success(JSON.stringify(response.data?.message || response))
+        message.success(JSON.stringify(response.data?.message || response));
         setIsModalOpen(false);
       } catch (e: any) {
-        message.error(JSON.stringify(e))
+        message.error(JSON.stringify(e));
       }
-  }
-}
+    }
+  };
 
   const handleCancel = () => {
     setIsModalOpen(false);
-  }
+  };
 
   return (
     <div className="space-y-3 w-full flex flex-col items-center">
@@ -59,39 +59,51 @@ export default function Home() {
         title="Warning"
         open={isModalOpen}
         okButtonProps={{
-          danger: true
+          danger: true,
         }}
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Destroy!"
         cancelText="Cancel"
       >
-        This action will delete all metrics, categories, and their mappings from the database. Are you sure you want to proceed?
+        This action will delete all metrics, categories, and their mappings from
+        the database. Are you sure you want to proceed?
       </Modal>
 
       <Row className="w-full justify-center">
-            <Button className={`visible ml-2`} onClick={async () => {
-            const token = localStorage.getItem('token');
+        <Button
+          className={`visible ml-2`}
+          onClick={async () => {
+            const token = localStorage.getItem("token");
             if (token) {
-                const response = await getEntireDb(token);
-                // Create a blob from the response
-                const blob = new Blob([response], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                
-                // Create a temporary link to trigger the download
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'enitre-db.csv'; // Set the filename for the download
-                document.body.appendChild(link);
-                link.click();
-                
-                // Clean up
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
+              const response = await getEntireDb(token);
+              // Create a blob from the response
+              const blob = new Blob([response], { type: "text/csv" });
+              const url = URL.createObjectURL(blob);
+
+              // Create a temporary link to trigger the download
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = "enitre-db.csv"; // Set the filename for the download
+              document.body.appendChild(link);
+              link.click();
+
+              // Clean up
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
             }
-            }}>Download DB as CSV</Button>
-            <BulkAddButton visible={true}></BulkAddButton>
-            <Button className={`visible ml-2`} danger={true} onClick={() => setIsModalOpen(true)}>Reset</Button>
+          }}
+        >
+          Download DB as CSV
+        </Button>
+        <BulkAddButton visible={true}></BulkAddButton>
+        <Button
+          className={`visible ml-2`}
+          danger={true}
+          onClick={() => setIsModalOpen(true)}
+        >
+          Reset
+        </Button>
       </Row>
     </div>
   );

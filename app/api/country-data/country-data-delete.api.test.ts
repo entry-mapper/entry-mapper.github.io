@@ -38,7 +38,9 @@ describe("DelCountryDataApi", () => {
       },
     });
 
-    await expect(DelCountryDataApi("123", 999)).rejects.toThrow("Country not found");
+    await expect(DelCountryDataApi("123", 999)).rejects.toThrow(
+      "Country not found",
+    );
   });
 
   it("should throw a generic error when no response is received", async () => {
@@ -47,15 +49,17 @@ describe("DelCountryDataApi", () => {
     });
 
     await expect(DelCountryDataApi("123", 999)).rejects.toThrow(
-      "The request was made but no response was received"
+      "The request was made but no response was received",
     );
   });
 
   it("should throw default error when an unknown error occurs", async () => {
-    (http.del as jest.Mock).mockRejectedValueOnce(new Error("Unexpected failure"));
+    (http.del as jest.Mock).mockRejectedValueOnce(
+      new Error("Unexpected failure"),
+    );
 
     await expect(DelCountryDataApi("123", 999)).rejects.toThrow(
-      "An unknown error occured while fetching regions"
+      "An unknown error occured while fetching regions",
     );
   });
 });

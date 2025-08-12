@@ -3,17 +3,24 @@ import { MetricCategories } from "@/app/interfaces/metrics.interface";
 import { http } from "@/app/utils/http";
 import { BASE_URL } from "@/app/utils/config";
 
-export const patchCategories = async (token: string, patchCategory: IPatchCategory) => {
+export const patchCategories = async (
+  token: string,
+  patchCategory: IPatchCategory,
+) => {
   try {
-    const response = await http.patch(`${BASE_URL}/categories/${patchCategory.category_id}`, {
-        "category_name": patchCategory.category_name,
-        "parent_id": patchCategory.parent_id,
-        "description": patchCategory.description
-    }, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await http.patch(
+      `${BASE_URL}/categories/${patchCategory.category_id}`,
+      {
+        category_name: patchCategory.category_name,
+        parent_id: patchCategory.parent_id,
+        description: patchCategory.description,
+      },
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
     if (response.status == 200) {
-        return true;
+      return true;
     }
   } catch (error: any) {
     const errorMessageDefault =
@@ -28,4 +35,4 @@ export const patchCategories = async (token: string, patchCategory: IPatchCatego
     }
     throw new Error(errorMessage);
   }
-}
+};

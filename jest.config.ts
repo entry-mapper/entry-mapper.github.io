@@ -1,22 +1,22 @@
-import type { Config } from 'jest';
+import type { Config } from "jest";
 
 const config: Config = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
+  preset: "ts-jest",
+  testEnvironment: "node",
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1', 
+    "^@/(.*)$": "<rootDir>/$1",
   },
   collectCoverage: true,
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html', 'json'],
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "html", "json"],
   collectCoverageFrom: [
-    'app/**/*.{ts,tsx}',
-    '!app/**/*.d.ts',
-    '!app/**/node_modules/**',
-    '!app/**/*.config.{js,ts}',
-    '!app/**/coverage/**',
-    '!app/**/*.test.{ts,tsx}',
-    '!app/**/*.spec.{ts,tsx}',
+    "app/**/*.{ts,tsx}",
+    "!app/**/*.d.ts",
+    "!app/**/node_modules/**",
+    "!app/**/*.config.{js,ts}",
+    "!app/**/coverage/**",
+    "!app/**/*.test.{ts,tsx}",
+    "!app/**/*.spec.{ts,tsx}",
   ],
   coverageThreshold: {
     global: {

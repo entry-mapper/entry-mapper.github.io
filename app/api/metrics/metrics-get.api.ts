@@ -9,15 +9,15 @@ export const GetMetricsApi = async (token: string): Promise<Metrics[]> => {
     });
 
     const metrics: Metrics[] = response.map((metric: any) => ({
-        value: metric.metric,
-        metric_id: metric.id, 
-        description: metric.description,
-        unit: metric.unit,
-      }));
+      value: metric.metric,
+      metric_id: metric.id,
+      description: metric.description,
+      unit: metric.unit,
+    }));
     return metrics;
-
   } catch (error: any) {
-    const errorMessageDefault = "An unknown error occured while fetching regions";
+    const errorMessageDefault =
+      "An unknown error occured while fetching regions";
     let errorMessage: string = "";
 
     if (error.response) {

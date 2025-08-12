@@ -3,32 +3,27 @@ import { http } from "../../utils/http";
 import { BASE_URL } from "@/app/utils/config";
 
 interface FormData {
-    metricName: string | null,
-    metricDescription: string | null,
-    metricUnit: string | null,
-  }
+  metricName: string | null;
+  metricDescription: string | null;
+  metricUnit: string | null;
+}
 
 export const AddMetricsApi = async (
   token: string,
-  value: {metric: string, description: string, unit: string}
+  value: { metric: string; description: string; unit: string },
 ): Promise<Metrics> => {
   try {
-    const response = await http.post(
-      `${BASE_URL}/metrics/`, value,
-      {
-        Authorization: `Bearer ${token}`,
-      }
-    );    
+    const response = await http.post(`${BASE_URL}/metrics/`, value, {
+      Authorization: `Bearer ${token}`,
+    });
     const updatedMetric = {
-        value: response.data.metric,
-        metric_id: response.data.id,
-        description: response.data.description,
-        unit: response.data.unit,
+      value: response.data.metric,
+      metric_id: response.data.id,
+      description: response.data.description,
+      unit: response.data.unit,
     };
-    
+
     return updatedMetric;
-
-
   } catch (error: any) {
     const errorMessageDefault =
       "An unknown error occured while patching metrics";
@@ -50,18 +45,13 @@ export const AddMetricsApi = async (
 
 export const addMetricCategory = async (
   token: string,
-  value: {metric_id: number, description: string, category_id: number}
+  value: { metric_id: number; description: string; category_id: number },
 ): Promise<Metrics> => {
   try {
-    const response = await http.post(
-      `${BASE_URL}/metric-categories`, value,
-      {
-        Authorization: `Bearer ${token}`,
-      }
-    );    
+    const response = await http.post(`${BASE_URL}/metric-categories`, value, {
+      Authorization: `Bearer ${token}`,
+    });
     return response;
-
-
   } catch (error: any) {
     const errorMessageDefault =
       "An unknown error occured while patching metric categories";
