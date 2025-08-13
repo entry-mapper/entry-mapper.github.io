@@ -1,5 +1,9 @@
 import { http } from "@/app/utils/http";
-import { getCategories, getCategoriesNested, getMetricCategories } from "./categories-get.api";
+import {
+  getCategories,
+  getCategoriesNested,
+  getMetricCategories,
+} from "./categories-get.api";
 import { BASE_URL } from "@/app/utils/config";
 jest.mock("@/app/utils/http", () => ({
   http: {
@@ -21,12 +25,26 @@ describe("Category API Functions", () => {
           category_id: "1",
           category_name: "Category 1",
           description: "Description 1",
-          metrics: [{ unit: "unit1", value: 10, metric_id: "m1", description: "Metric 1" }],
+          metrics: [
+            {
+              unit: "unit1",
+              value: 10,
+              metric_id: "m1",
+              description: "Metric 1",
+            },
+          ],
           sub_categories: [
             {
               category_id: "2",
               category_name: "Subcategory 1",
-              metrics: [{ unit: "unit2", value: 20, metric_id: "m2", description: "Metric 2" }],
+              metrics: [
+                {
+                  unit: "unit2",
+                  value: 20,
+                  metric_id: "m2",
+                  description: "Metric 2",
+                },
+              ],
             },
           ],
         },
@@ -39,19 +57,33 @@ describe("Category API Functions", () => {
       expect(http.get).toHaveBeenCalledWith(
         `${BASE_URL}/categories`,
         { Authorization: `Bearer ${mockToken}` },
-        { q: "nested" }
+        { q: "nested" },
       );
       expect(result).toEqual([
         {
           category_id: "1",
           category_name: "Category 1",
           description: "Description 1",
-          metrics: [{ unit: "unit1", value: 10, metric_id: "m1", description: "Metric 1" }],
+          metrics: [
+            {
+              unit: "unit1",
+              value: 10,
+              metric_id: "m1",
+              description: "Metric 1",
+            },
+          ],
           sub_categories: [
             {
               category_id: "2",
               category_name: "Subcategory 1",
-              metrics: [{ unit: "unit2", value: 20, metric_id: "m2", description: "Metric 2" }],
+              metrics: [
+                {
+                  unit: "unit2",
+                  value: 20,
+                  metric_id: "m2",
+                  description: "Metric 2",
+                },
+              ],
             },
           ],
         },
@@ -64,14 +96,16 @@ describe("Category API Functions", () => {
         response: { data: { message: errorMessage } },
       });
 
-      await expect(getCategoriesNested(mockToken)).rejects.toThrow(errorMessage);
+      await expect(getCategoriesNested(mockToken)).rejects.toThrow(
+        errorMessage,
+      );
     });
 
     it("should throw an error when no response is received", async () => {
       (http.get as jest.Mock).mockRejectedValue({ request: true });
 
       await expect(getCategoriesNested(mockToken)).rejects.toThrow(
-        "The request was made but no response was received"
+        "The request was made but no response was received",
       );
     });
   });
@@ -92,10 +126,9 @@ describe("Category API Functions", () => {
 
       const result = await getCategories(mockToken);
 
-      expect(http.get).toHaveBeenCalledWith(
-        `${BASE_URL}/categories`,
-        { Authorization: `Bearer ${mockToken}` }
-      );
+      expect(http.get).toHaveBeenCalledWith(`${BASE_URL}/categories`, {
+        Authorization: `Bearer ${mockToken}`,
+      });
       expect(result).toEqual([
         {
           category_id: "1",
@@ -136,10 +169,9 @@ describe("Category API Functions", () => {
 
       const result = await getMetricCategories(mockToken);
 
-      expect(http.get).toHaveBeenCalledWith(
-        `${BASE_URL}/metric-categories`,
-        { Authorization: `Bearer ${mockToken}` }
-      );
+      expect(http.get).toHaveBeenCalledWith(`${BASE_URL}/metric-categories`, {
+        Authorization: `Bearer ${mockToken}`,
+      });
       expect(result).toEqual([
         {
           id: "1",
@@ -160,7 +192,9 @@ describe("Category API Functions", () => {
         response: { data: { message: errorMessage } },
       });
 
-      await expect(getMetricCategories(mockToken)).rejects.toThrow(errorMessage);
+      await expect(getMetricCategories(mockToken)).rejects.toThrow(
+        errorMessage,
+      );
     });
   });
 });

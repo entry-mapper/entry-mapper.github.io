@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter, redirect } from "next/navigation";
-import {  Col, Input, Row, TableColumnsType } from "antd";
+import { Col, Input, Row, TableColumnsType } from "antd";
 import { Typography } from "@/app/components/UI/Typography";
 import Modal from "@/app/components/UI/Modal";
 import Table from "@/app/components/UI/Table";
 import { message } from "@/app/components/UI/Message";
 import Button from "@/app/components/UI/Button";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useAppDispatch,useAppSelector } from "@/app/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/app/redux/hook";
 import { Metrics } from "@/app/interfaces/metrics.interface";
 import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
 import { PatchMetricsApi } from "@/app/api/metrics/metrics-patch.api";
@@ -68,7 +68,7 @@ const MemoizedTable = React.memo(
     prevProps.data === nextProps.data &&
     prevProps.columns === nextProps.columns &&
     prevProps.editingKey === nextProps.editingKey &&
-    prevProps.isLoading === nextProps.isLoading
+    prevProps.isLoading === nextProps.isLoading,
 );
 
 export default function MetricsComponent() {
@@ -103,7 +103,6 @@ export default function MetricsComponent() {
   };
 
   useEffect(() => {
-  
     const initialize = async () => {
       try {
         setIsLoading(true);
@@ -171,7 +170,7 @@ export default function MetricsComponent() {
         ),
       },
     ],
-    []
+    [],
   );
 
   const handleAdd = async () => {
@@ -205,7 +204,11 @@ export default function MetricsComponent() {
       console.error(error);
     }
     setIsAddModalOpen(false);
-    setFormData({ metricName: null, metricDescription: null, metricUnit: null });
+    setFormData({
+      metricName: null,
+      metricDescription: null,
+      metricUnit: null,
+    });
   };
 
   const handleEdit = async () => {
@@ -219,11 +222,7 @@ export default function MetricsComponent() {
 
       const token = localStorage.getItem("token");
 
-      if (
-        token &&
-        userId &&
-        editingKey
-      ) {
+      if (token && userId && editingKey) {
         const payload: Payload = {};
 
         if (formData.metricName) {
@@ -244,7 +243,11 @@ export default function MetricsComponent() {
     }
     setIsEditModalOpen(false);
     setEditingKey(null);
-    setFormData({ metricName: null, metricDescription: null, metricUnit: null });
+    setFormData({
+      metricName: null,
+      metricDescription: null,
+      metricUnit: null,
+    });
   };
 
   const handleDelete = async () => {
@@ -271,7 +274,11 @@ export default function MetricsComponent() {
         destroyOnClose
         onCancel={() => {
           setIsEditModalOpen(false);
-          setFormData({ metricName: null, metricDescription: null, metricUnit: null });
+          setFormData({
+            metricName: null,
+            metricDescription: null,
+            metricUnit: null,
+          });
           setEditingKey(null);
         }}
         okText="Save"
@@ -300,7 +307,10 @@ export default function MetricsComponent() {
               }
               value={formData.metricDescription ?? ""}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, metricDescription: e.target.value }))
+                setFormData((prev) => ({
+                  ...prev,
+                  metricDescription: e.target.value,
+                }))
               }
             />
           </Row>
@@ -327,7 +337,11 @@ export default function MetricsComponent() {
         destroyOnClose
         onCancel={() => {
           setIsAddModalOpen(false);
-          setFormData({ metricName: null, metricDescription: null, metricUnit: null });
+          setFormData({
+            metricName: null,
+            metricDescription: null,
+            metricUnit: null,
+          });
           setEditingKey(null);
         }}
         okText="Save"
@@ -356,7 +370,10 @@ export default function MetricsComponent() {
               }
               value={formData.metricDescription ?? ""}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, metricDescription: e.target.value }))
+                setFormData((prev) => ({
+                  ...prev,
+                  metricDescription: e.target.value,
+                }))
               }
             />
           </Row>

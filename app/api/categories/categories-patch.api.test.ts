@@ -34,7 +34,7 @@ describe("patchCategories", () => {
         parent_id: mockPatchCategory.parent_id,
         description: mockPatchCategory.description,
       },
-      { Authorization: `Bearer ${mockToken}` }
+      { Authorization: `Bearer ${mockToken}` },
     );
     expect(result).toBe(true);
   });
@@ -45,14 +45,16 @@ describe("patchCategories", () => {
       response: { data: { message: errorMessage } },
     });
 
-    await expect(patchCategories(mockToken, mockPatchCategory)).rejects.toThrow(errorMessage);
+    await expect(patchCategories(mockToken, mockPatchCategory)).rejects.toThrow(
+      errorMessage,
+    );
   });
 
   it("should throw an error when no response is received", async () => {
     (http.patch as jest.Mock).mockRejectedValue({ request: true });
 
     await expect(patchCategories(mockToken, mockPatchCategory)).rejects.toThrow(
-      "The request was made but no response was received"
+      "The request was made but no response was received",
     );
   });
 
@@ -60,7 +62,7 @@ describe("patchCategories", () => {
     (http.patch as jest.Mock).mockRejectedValue(new Error("Unexpected error"));
 
     await expect(patchCategories(mockToken, mockPatchCategory)).rejects.toThrow(
-      "An unknown error occured while fetching regions"
+      "An unknown error occured while fetching regions",
     );
   });
 });

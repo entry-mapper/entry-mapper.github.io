@@ -97,4 +97,3 @@ export const NavBar: React.FC = () => {
     </Row>
   );
 };
-

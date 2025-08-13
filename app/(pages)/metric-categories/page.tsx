@@ -10,34 +10,53 @@ import { Typography } from "@/app/components/UI/Typography";
 import Modal from "@/app/components/UI/Modal";
 import { message } from "@/app/components/UI/Message";
 import Button from "@/app/components/UI/Button";
-import { GetMetricCategories, Metrics } from "@/app/interfaces/metrics.interface";
+import {
+  GetMetricCategories,
+  Metrics,
+} from "@/app/interfaces/metrics.interface";
 import { GetMetricsApi } from "@/app/api/metrics/metrics-get.api";
-import { DeleteOutlined, EditOutlined, SortAscendingOutlined } from "@ant-design/icons";
-import { patchMetricCategories, PatchMetricsApi } from "@/app/api/metrics/metrics-patch.api";
-import { deleteMetricCategory, DelMetricsApi } from "@/app/api/metrics/metrics-del.component";
-import { addMetricCategory, AddMetricsApi } from "@/app/api/metrics/metrics-post.api";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SortAscendingOutlined,
+} from "@ant-design/icons";
+import {
+  patchMetricCategories,
+  PatchMetricsApi,
+} from "@/app/api/metrics/metrics-patch.api";
+import {
+  deleteMetricCategory,
+  DelMetricsApi,
+} from "@/app/api/metrics/metrics-del.component";
+import {
+  addMetricCategory,
+  AddMetricsApi,
+} from "@/app/api/metrics/metrics-post.api";
 import { ICategory } from "@/app/interfaces/categories.interface";
-import { getCategories, getMetricCategories } from "@/app/api/categories/categories-get.api";
+import {
+  getCategories,
+  getMetricCategories,
+} from "@/app/api/categories/categories-get.api";
 import React from "react";
 
 interface DataType {
   key: number;
-  metric: { id: number, value: string };
+  metric: { id: number; value: string };
   description: string;
   label: string;
   code: string;
   source: string;
-  l1: { id: number, value: string };
-  l2: { id: number, value: string };
+  l1: { id: number; value: string };
+  l2: { id: number; value: string };
 }
 
 interface MetricFormData {
-  metric: { id: number, value: string } | null;
+  metric: { id: number; value: string } | null;
   description: string | null;
   label: string | null;
   code: string | null;
   source: string | null;
-  category: { id: number, value: string } | null;
+  category: { id: number; value: string } | null;
 }
 
 const MemoizedTable = React.memo(
@@ -73,7 +92,7 @@ const MemoizedTable = React.memo(
     prevProps.data === nextProps.data &&
     prevProps.columns === nextProps.columns &&
     prevProps.editingKey === nextProps.editingKey &&
-    prevProps.isLoading === nextProps.isLoading
+    prevProps.isLoading === nextProps.isLoading,
 );
 
 export default function MetricCategoriesComponent() {
@@ -87,7 +106,8 @@ export default function MetricCategoriesComponent() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [idToBeDeleted, setIdToBeDeleted] = useState<number | null>(null);
-  const [metricCategories, setMetricCategories] = useState<GetMetricCategories[]>();
+  const [metricCategories, setMetricCategories] =
+    useState<GetMetricCategories[]>();
   const [formData, setFormData] = useState<MetricFormData>({
     metric: null,
     description: null,
@@ -99,116 +119,119 @@ export default function MetricCategoriesComponent() {
   const [categories, setCategories] = useState<ICategory[]>();
   const [metrics, setMetrics] = useState<Metrics[]>();
 
-  const columns = useMemo<TableColumnsType<DataType>>(() => [
-    {
-      title: "Metric Name",
-      dataIndex: "metricName",
-      key: "metricName",
-      width: "25%",
-      render: (_: any, record: DataType) => (
-        <Typography.Text>{record.metric.value}</Typography.Text>
-      ),
-    },
-    {
-      title: "L1",
-      dataIndex: "l1",
-      width: "35%",
-      key: "l1",
-      sorter: (a: any, b: any) => {
-        console.log(a.l1?.value.length);
-        return a.l1?.value.localeCompare(b.l1?.value)
+  const columns = useMemo<TableColumnsType<DataType>>(
+    () => [
+      {
+        title: "Metric Name",
+        dataIndex: "metricName",
+        key: "metricName",
+        width: "25%",
+        render: (_: any, record: DataType) => (
+          <Typography.Text>{record.metric.value}</Typography.Text>
+        ),
       },
-      render: (_: any, record: DataType) => (
-        <Typography.Text>{record.l1.value}</Typography.Text>
-      ),
-    },
-    {
-      title: "L2",
-      dataIndex: "l2",
-      width: "25%",
-      key: "l2",
-      sorter: (a: any, b: any) => {
-        if (a.l2?.value && b.l2?.value) {
-          return a.l2?.value.localeCompare(b.l2?.value)
-        }
-        return false;
+      {
+        title: "L1",
+        dataIndex: "l1",
+        width: "35%",
+        key: "l1",
+        sorter: (a: any, b: any) => {
+          console.log(a.l1?.value.length);
+          return a.l1?.value.localeCompare(b.l1?.value);
+        },
+        render: (_: any, record: DataType) => (
+          <Typography.Text>{record.l1.value}</Typography.Text>
+        ),
       },
-      render: (_: any, record: DataType) => (
-        <Typography.Text>{record.l2.value}</Typography.Text>
-      ),
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      width: "20%",
-      key: "description",
-      render: (_: any, record: DataType) => (
-        <Typography.Text>{record.description}</Typography.Text>
-      ),
-    },
-    {
-      title: "Label",
-      dataIndex: "label",
-      width: "10%",
-      key: "label",
-      render: (_: any, record: DataType) => (
-        <Typography.Text>{record.label}</Typography.Text>
-      ),
-    },
-    {
-      title: "Code",
-      dataIndex: "code",
-      width: "10%",
-      key: "code",
-      render: (_: any, record: DataType) => (
-        <Typography.Text>{record.code}</Typography.Text>
-      ),
-    },
-    {
-      title: "Source",
-      dataIndex: "source",
-      width: "10%",
-      key: "source",
-      render: (_: any, record: DataType) => (
-        <Typography.Text>{record.source}</Typography.Text>
-      ),
-    },
-    {
-      title: "Action",
-      key: "operation",
-      width: 140,
-      render: (_: any, record: DataType) => (
-        <Row className="gap-1 w-full" key={record.key}>
-          <Button
-            className="w-[30px]"
-            onClick={() => {
-              setIsEditModalOpen(true);
-              setEditingKey(record.key);
-              setFormData({
-                metric: record.metric,
-                category: record?.l2.id ? record.l2 : record.l1,
-                description: record.description,
-                label: record.label,
-                code: record.code,
-                source: record.source,
-              });
-            }}
-          >
-            <EditOutlined />
-          </Button>
-          <Button
-            className="w-[30px]"
-            onClick={() => {
-              setIdToBeDeleted(record.key);
-              setIsDeleteModalOpen(true);
-            }}
-          >
-            <DeleteOutlined />
-          </Button>
-        </Row>
-      ),
-    },
-  ], []);
+      {
+        title: "L2",
+        dataIndex: "l2",
+        width: "25%",
+        key: "l2",
+        sorter: (a: any, b: any) => {
+          if (a.l2?.value && b.l2?.value) {
+            return a.l2?.value.localeCompare(b.l2?.value);
+          }
+          return false;
+        },
+        render: (_: any, record: DataType) => (
+          <Typography.Text>{record.l2.value}</Typography.Text>
+        ),
+      },
+      {
+        title: "Description",
+        dataIndex: "description",
+        width: "20%",
+        key: "description",
+        render: (_: any, record: DataType) => (
+          <Typography.Text>{record.description}</Typography.Text>
+        ),
+      },
+      {
+        title: "Label",
+        dataIndex: "label",
+        width: "10%",
+        key: "label",
+        render: (_: any, record: DataType) => (
+          <Typography.Text>{record.label}</Typography.Text>
+        ),
+      },
+      {
+        title: "Code",
+        dataIndex: "code",
+        width: "10%",
+        key: "code",
+        render: (_: any, record: DataType) => (
+          <Typography.Text>{record.code}</Typography.Text>
+        ),
+      },
+      {
+        title: "Source",
+        dataIndex: "source",
+        width: "10%",
+        key: "source",
+        render: (_: any, record: DataType) => (
+          <Typography.Text>{record.source}</Typography.Text>
+        ),
+      },
+      {
+        title: "Action",
+        key: "operation",
+        width: 140,
+        render: (_: any, record: DataType) => (
+          <Row className="gap-1 w-full" key={record.key}>
+            <Button
+              className="w-[30px]"
+              onClick={() => {
+                setIsEditModalOpen(true);
+                setEditingKey(record.key);
+                setFormData({
+                  metric: record.metric,
+                  category: record?.l2.id ? record.l2 : record.l1,
+                  description: record.description,
+                  label: record.label,
+                  code: record.code,
+                  source: record.source,
+                });
+              }}
+            >
+              <EditOutlined />
+            </Button>
+            <Button
+              className="w-[30px]"
+              onClick={() => {
+                setIdToBeDeleted(record.key);
+                setIsDeleteModalOpen(true);
+              }}
+            >
+              <DeleteOutlined />
+            </Button>
+          </Row>
+        ),
+      },
+    ],
+    [],
+  );
 
   const fetchCategories = async () => {
     const token = localStorage.getItem("token");
@@ -224,45 +247,46 @@ export default function MetricCategoriesComponent() {
         }));
         setCategories(mappedData);
       }
-    };
-  }
+    }
+  };
 
   const fetchMetrics = async () => {
     const token = localStorage.getItem("token");
     if (token) {
       const res: Metrics[] = await GetMetricsApi(token);
       setMetrics(res);
-    };
-  }
-
+    }
+  };
 
   const fetchMetricCategories = async () => {
     const token: string | null = localStorage.getItem("token");
     if (token) {
       try {
-        const metricCategoriesResponse: GetMetricCategories[] = await getMetricCategories(token);
+        const metricCategoriesResponse: GetMetricCategories[] =
+          await getMetricCategories(token);
         setMetricCategories(metricCategoriesResponse);
-        const newTableData: DataType[] = metricCategoriesResponse.map((e: GetMetricCategories) => {
-          return {
-            key: e.id,
-            metric: { id: e.metric.id, value: e.metric.value },
-            l2: { id: e?.category.id, value: e.category?.value },
-            l1: { id: e?.super_category.id, value: e.super_category?.value },
-            description: e.description,
-            label: e.label,
-            code: e.code,
-            source: e.source,
-          }
-        })
-        setTableData(newTableData)
+        const newTableData: DataType[] = metricCategoriesResponse.map(
+          (e: GetMetricCategories) => {
+            return {
+              key: e.id,
+              metric: { id: e.metric.id, value: e.metric.value },
+              l2: { id: e?.category.id, value: e.category?.value },
+              l1: { id: e?.super_category.id, value: e.super_category?.value },
+              description: e.description,
+              label: e.label,
+              code: e.code,
+              source: e.source,
+            };
+          },
+        );
+        setTableData(newTableData);
       } catch (error) {
         console.error("Error fetching countries:", error);
       }
     }
   };
 
-  useEffect(() => {  
-
+  useEffect(() => {
     const initialize = async () => {
       setIsLoading(true); // Start loading before fetching data
       try {
@@ -292,16 +316,13 @@ export default function MetricCategoriesComponent() {
       }
 
       const token = localStorage.getItem("token");
-      console.log(formData)
+      console.log(formData);
       if (token && userId && formData?.metric?.id && formData?.category?.id) {
-        const res = await addMetricCategory(
-          token,
-          {
-            metric_id: formData.metric.id,
-            category_id: formData.category.id,
-            description: formData.description ?? ""
-          },
-        );
+        const res = await addMetricCategory(token, {
+          metric_id: formData.metric.id,
+          category_id: formData.category.id,
+          description: formData.description ?? "",
+        });
         setFormData({
           metric: null,
           description: null,
@@ -312,7 +333,7 @@ export default function MetricCategoriesComponent() {
         });
         if (res) {
           await fetchMetricCategories();
-          message.success('Updated successfully!');
+          message.success("Updated successfully!");
         }
         setIsAddModalOpen(false);
       } else {
@@ -321,9 +342,8 @@ export default function MetricCategoriesComponent() {
     } catch (error: any) {
       console.log(error);
       message.error(`${error.message ? error.message : JSON.stringify(error)}`);
-
     }
-  }
+  };
 
   const handleEdit = async () => {
     try {
@@ -336,7 +356,13 @@ export default function MetricCategoriesComponent() {
 
       const token = localStorage.getItem("token");
 
-      if (token && userId && editingKey && formData?.metric && formData?.category) {
+      if (
+        token &&
+        userId &&
+        editingKey &&
+        formData?.metric &&
+        formData?.category
+      ) {
         const res = await patchMetricCategories(
           token,
           editingKey, // metric_category_id
@@ -364,7 +390,7 @@ export default function MetricCategoriesComponent() {
     }
     setIsEditModalOpen(false);
     setEditingKey(null);
-  }
+  };
 
   const handleDelete = async () => {
     try {
@@ -375,105 +401,146 @@ export default function MetricCategoriesComponent() {
           await fetchMetricCategories();
         }
       }
-    } catch (error: any) {
-
-    }
+    } catch (error: any) {}
     setIsDeleteModalOpen(false);
-  }
+  };
 
   return (
     <div className="space-y-3 w-full flex flex-col items-center">
       {/* Edit Modal */}
-      <Modal title="Edit Record" open={isEditModalOpen} destroyOnClose onCancel={() => {
-        setIsEditModalOpen(false)
-        setFormData({
-          metric: null,
-          description: null,
-          category: null,
-          label: null,
-          code: null,
-          source: null,
-        });
-        setEditingKey(null);
-      }} okText="Save" onOk={handleEdit}>
+      <Modal
+        title="Edit Record"
+        open={isEditModalOpen}
+        destroyOnClose
+        onCancel={() => {
+          setIsEditModalOpen(false);
+          setFormData({
+            metric: null,
+            description: null,
+            category: null,
+            label: null,
+            code: null,
+            source: null,
+          });
+          setEditingKey(null);
+        }}
+        okText="Save"
+        onOk={handleEdit}
+      >
         <Col>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Description: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Description:{" "}
+                </Typography.Text>
+              }
               value={formData?.description ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
                   description: e.target.value,
-                }))}
+                }))
+              }
             ></Input>
           </Row>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Code: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Code:{" "}
+                </Typography.Text>
+              }
               value={formData?.code ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
                   code: e.target.value,
-                }))}
+                }))
+              }
             ></Input>
           </Row>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Source: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Source:{" "}
+                </Typography.Text>
+              }
               value={formData?.source ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
                   source: e.target.value,
-                }))}
+                }))
+              }
             ></Input>
           </Row>
           <Row className="mt-3">
             <CustomSelect
               className="w-full"
               showSearch
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Metric: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Metric:{" "}
+                </Typography.Text>
+              }
               value={formData.metric?.value}
               placeholder="Select a metric"
               onSelect={(_, rec) =>
                 setFormData((prev) => ({
                   ...prev,
-                  metric: rec ? { id: rec.id as number, value: rec.value as string } : null,
+                  metric: rec
+                    ? { id: rec.id as number, value: rec.value as string }
+                    : null,
                 }))
               }
-              options={metrics?.map((e) => {
-                return {
-                  value: e.value,
-                  id: e.metric_id
-                }
-              }) ?? []}
+              options={
+                metrics?.map((e) => {
+                  return {
+                    value: e.value,
+                    id: e.metric_id,
+                  };
+                }) ?? []
+              }
             />
           </Row>
           <Row className="mt-3">
             <CustomSelect
               className="w-full"
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Category: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Category:{" "}
+                </Typography.Text>
+              }
               showSearch
               value={formData.category?.value}
               placeholder="Select a category"
               onSelect={(_, rec) =>
                 setFormData((prev) => ({
                   ...prev,
-                  category: rec ? { id: rec.id as number, value: rec.value as string } : null,
+                  category: rec
+                    ? { id: rec.id as number, value: rec.value as string }
+                    : null,
                 }))
-              } options={categories?.map((e) => {
-                return {
-                  value: e.category_name,
-                  id: e.category_id
-                }
-              }) ?? []}
+              }
+              options={
+                categories?.map((e) => {
+                  return {
+                    value: e.category_name,
+                    id: e.category_id,
+                  };
+                }) ?? []
+              }
             />
           </Row>
           <Row className="mt-3">
             <CustomSelect
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Label: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Label:{" "}
+                </Typography.Text>
+              }
               className="w-full"
               showSearch
               placeholder="Select a label"
@@ -484,57 +551,82 @@ export default function MetricCategoriesComponent() {
                   label: rec?.id?.toString() ?? null,
                 }))
               }
-              options={[{ value: 'eu', id: 'eu' }, { value: 'non_eu', id: 'non_eu' },]}
+              options={[
+                { value: "eu", id: "eu" },
+                { value: "non_eu", id: "non_eu" },
+              ]}
             />
           </Row>
         </Col>
       </Modal>
 
       {/* Add Modal */}
-      <Modal title="Add Record" open={isAddModalOpen} destroyOnClose onCancel={() => {
-        setIsAddModalOpen(false)
-        setFormData({
-          metric: null,
-          description: null,
-          category: null,
-          label: null,
-          code: null,
-          source: null,
-        });
-        setEditingKey(null);
-      }} okText="Save" onOk={handleAdd}>
+      <Modal
+        title="Add Record"
+        open={isAddModalOpen}
+        destroyOnClose
+        onCancel={() => {
+          setIsAddModalOpen(false);
+          setFormData({
+            metric: null,
+            description: null,
+            category: null,
+            label: null,
+            code: null,
+            source: null,
+          });
+          setEditingKey(null);
+        }}
+        okText="Save"
+        onOk={handleAdd}
+      >
         <Col>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Description: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Description:{" "}
+                </Typography.Text>
+              }
               value={formData?.description ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
                   description: e.target.value,
-                }))}
+                }))
+              }
             ></Input>
           </Row>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Code: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Code:{" "}
+                </Typography.Text>
+              }
               value={formData?.code ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
                   code: e.target.value,
-                }))}
+                }))
+              }
             ></Input>
           </Row>
           <Row className="mt-3">
             <Input
-              prefix={<Typography.Text className="text-gray-700 opacity-[40%]">Source: </Typography.Text>}
+              prefix={
+                <Typography.Text className="text-gray-700 opacity-[40%]">
+                  Source:{" "}
+                </Typography.Text>
+              }
               value={formData?.source ?? ""}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
                   source: e.target.value,
-                }))}
+                }))
+              }
             ></Input>
           </Row>
           <Row className="mt-3">
@@ -545,14 +637,19 @@ export default function MetricCategoriesComponent() {
               onSelect={(_, rec) =>
                 setFormData((prev) => ({
                   ...prev,
-                  metric: rec ? { id: rec.id as number, value: rec.value as string } : null,
+                  metric: rec
+                    ? { id: rec.id as number, value: rec.value as string }
+                    : null,
                 }))
-              } options={metrics?.map((e) => {
-                return {
-                  value: e.value,
-                  id: e.metric_id
-                }
-              }) ?? []}
+              }
+              options={
+                metrics?.map((e) => {
+                  return {
+                    value: e.value,
+                    id: e.metric_id,
+                  };
+                }) ?? []
+              }
             />
           </Row>
           <Row className="mt-3">
@@ -563,14 +660,19 @@ export default function MetricCategoriesComponent() {
               onSelect={(_, rec) =>
                 setFormData((prev) => ({
                   ...prev,
-                  category: rec ? { id: rec.id as number, value: rec.value as string } : null,
+                  category: rec
+                    ? { id: rec.id as number, value: rec.value as string }
+                    : null,
                 }))
-              } options={categories?.map((e) => {
-                return {
-                  value: e.category_name,
-                  id: e.category_id
-                }
-              }) ?? []}
+              }
+              options={
+                categories?.map((e) => {
+                  return {
+                    value: e.category_name,
+                    id: e.category_id,
+                  };
+                }) ?? []
+              }
             />
           </Row>
           <Row className="mt-3">
@@ -584,16 +686,27 @@ export default function MetricCategoriesComponent() {
                   label: rec?.id?.toString() ?? null,
                 }))
               }
-              options={[{ value: 'eu', id: 'eu' }, { value: 'non_eu', id: 'non_eu' },]}
+              options={[
+                { value: "eu", id: "eu" },
+                { value: "non_eu", id: "non_eu" },
+              ]}
             />
           </Row>
         </Col>
       </Modal>
 
       {/* Delete Modal */}
-      <Modal title="Delete Record" open={isDeleteModalOpen} destroyOnClose onCancel={() => {
-        setIsDeleteModalOpen(false)
-      }} okText="Confirm" onOk={handleDelete} okButtonProps={{ style: { backgroundColor: 'red' } }}>
+      <Modal
+        title="Delete Record"
+        open={isDeleteModalOpen}
+        destroyOnClose
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+        }}
+        okText="Confirm"
+        onOk={handleDelete}
+        okButtonProps={{ style: { backgroundColor: "red" } }}
+      >
         <Typography.Text>Are you sure you want to delete this?</Typography.Text>
       </Modal>
 

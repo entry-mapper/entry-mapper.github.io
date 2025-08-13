@@ -3,14 +3,18 @@ import { http } from "@/app/utils/http";
 import { BASE_URL } from "@/app/utils/config";
 
 export const getCategoriesNested = async (
-  token: string
+  token: string,
 ): Promise<MetricCategories[]> => {
   try {
-    const response = await http.get(`${BASE_URL}/categories`, {
-      Authorization: `Bearer ${token}`,
-    }, {
-      q: 'nested'
-    });
+    const response = await http.get(
+      `${BASE_URL}/categories`,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+      {
+        q: "nested",
+      },
+    );
     const metricCategories: MetricCategories[] = response?.map(
       (category: any) => {
         return {
@@ -34,7 +38,7 @@ export const getCategoriesNested = async (
             })),
           })),
         };
-      }
+      },
     );
 
     return metricCategories;
@@ -64,9 +68,9 @@ export const getCategories = async (token: string) => {
         category_name: entry.category_name,
         parent_id: entry.parent_id,
         parent_category_name: entry.parent_category_name,
-        description: entry.description
-      }
-    })
+        description: entry.description,
+      };
+    });
   } catch (error: any) {
     const errorMessageDefault =
       "An unknown error occured while fetching regions";
@@ -80,7 +84,7 @@ export const getCategories = async (token: string) => {
     }
     throw new Error(errorMessage);
   }
-}
+};
 
 export const getMetricCategories = async (token: string) => {
   try {
@@ -91,14 +95,18 @@ export const getMetricCategories = async (token: string) => {
       return {
         id: entry.id,
         metric: entry.metric,
-        category: entry.super_category?.id ? entry.category : entry.super_category,
-        super_category: entry.super_category?.id ? entry.super_category: entry.category,
+        category: entry.super_category?.id
+          ? entry.category
+          : entry.super_category,
+        super_category: entry.super_category?.id
+          ? entry.super_category
+          : entry.category,
         description: entry.description,
         label: entry.label,
         code: entry.code,
         source: entry.source,
-      }
-    })
+      };
+    });
   } catch (error: any) {
     const errorMessageDefault =
       "An unknown error occured while fetching regions";
@@ -112,4 +120,4 @@ export const getMetricCategories = async (token: string) => {
     }
     throw new Error(errorMessage);
   }
-}
+};

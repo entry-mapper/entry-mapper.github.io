@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useAppDispatch } from '@/app/redux/hook';
-import { setAuth } from '@/app/redux/authSlice';
-import isLogin from '@/app/utils/isLogin';
+import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useAppDispatch } from "@/app/redux/hook";
+import { setAuth } from "@/app/redux/authSlice";
+import isLogin from "@/app/utils/isLogin";
 
 interface AuthWrapperProps {
   readonly children: React.ReactNode;
 }
 
 // Public routes that don't require authentication
-const PUBLIC_ROUTES = ['/login'];
+const PUBLIC_ROUTES = ["/login"];
 
 export default function AuthWrapper({ children }: Readonly<AuthWrapperProps>) {
   const router = useRouter();
@@ -29,19 +29,19 @@ export default function AuthWrapper({ children }: Readonly<AuthWrapperProps>) {
 
       // If user is not authenticated and trying to access a protected route
       if (!isUserLoggedIn && !isPublicRoute) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
       // If user is authenticated and trying to access login page, redirect to country-data
-      if (isUserLoggedIn && pathname === '/login') {
-        router.push('/country-data');
+      if (isUserLoggedIn && pathname === "/login") {
+        router.push("/country-data");
         return;
       }
 
       // If user is authenticated and on root path, redirect to country-data
-      if (isUserLoggedIn && pathname === '/') {
-        router.push('/country-data');
+      if (isUserLoggedIn && pathname === "/") {
+        router.push("/country-data");
         return;
       }
 

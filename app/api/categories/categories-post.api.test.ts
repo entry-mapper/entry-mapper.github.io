@@ -33,7 +33,7 @@ describe("postCategories", () => {
         parent_id: mockPostCategory.parent_id,
         description: mockPostCategory.description,
       },
-      { Authorization: `Bearer ${mockToken}` }
+      { Authorization: `Bearer ${mockToken}` },
     );
     expect(result).toBe(true);
   });
@@ -44,14 +44,16 @@ describe("postCategories", () => {
       response: { data: { message: errorMessage } },
     });
 
-    await expect(postCategories(mockToken, mockPostCategory)).rejects.toThrow(errorMessage);
+    await expect(postCategories(mockToken, mockPostCategory)).rejects.toThrow(
+      errorMessage,
+    );
   });
 
   it("should throw an error when no response is received", async () => {
     (http.post as jest.Mock).mockRejectedValue({ request: true });
 
     await expect(postCategories(mockToken, mockPostCategory)).rejects.toThrow(
-      "The request was made but no response was received"
+      "The request was made but no response was received",
     );
   });
 
@@ -59,7 +61,7 @@ describe("postCategories", () => {
     (http.post as jest.Mock).mockRejectedValue(new Error("Unexpected error"));
 
     await expect(postCategories(mockToken, mockPostCategory)).rejects.toThrow(
-      "An unknown error occured while fetching regions"
+      "An unknown error occured while fetching regions",
     );
   });
 
@@ -76,7 +78,7 @@ describe("postCategories", () => {
         parent_id: mockPostCategory.parent_id,
         description: mockPostCategory.description,
       },
-      { Authorization: `Bearer ${mockToken}` }
+      { Authorization: `Bearer ${mockToken}` },
     );
   });
 
@@ -96,7 +98,7 @@ describe("postCategories", () => {
         parent_id: postCategoryWithEmptyDesc.parent_id,
         description: "",
       },
-      { Authorization: `Bearer ${mockToken}` }
+      { Authorization: `Bearer ${mockToken}` },
     );
     expect(result).toBe(true);
   });
