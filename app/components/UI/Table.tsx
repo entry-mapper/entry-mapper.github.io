@@ -1,4 +1,5 @@
 "use client";
+import React from 'react';
 
 import { Table as AntTable, TableProps } from "antd";
 
