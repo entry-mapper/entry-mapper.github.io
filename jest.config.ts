@@ -20,7 +20,7 @@ const config: Config = {
       testEnvironment: "jsdom",
       // Explicitly use babel-jest for .tsx files to handle JSX
       transform: {
-        "^.+\\.(ts|tsx)$": "babel-jest",
+    '^.+\\.(t|j)sx?$': ['@swc/jest'],
       },
       // Setup file for React Testing Library and jest-dom matchers
       setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
